@@ -3,11 +3,17 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 
-class Sales extends Model
+class Sales extends Authenticatable
 {
     use HasFactory;
 
     protected $table = 'sales_user';
+
+    protected $fillable = [
+        'id_sales',
+        'password'
+    ];
 }
