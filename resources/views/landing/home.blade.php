@@ -1,6 +1,6 @@
 @extends('layouts.landing')
 @section('title', __('Distribuse Obat Herbal'))
-@section('content')
+@section('style')
     <style>
         .testimonial .info {
             background: url({{ asset('assets/images/example/noise.webp') }} ) center, 0 0/cover #214842;
@@ -212,6 +212,9 @@
             }
         }
     </style>
+@endsection
+@section('content')
+
 
     <section class="carousel">
         <section id="my-carousel" class="splide" aria-label="My Carousel Image">
@@ -236,7 +239,7 @@
                 <div class="box_menu_list">
                     <div class="row">
                         <div class="col-6">
-                            <a href="" class="box_menu_item">
+                            <a href="{{ route('homepage') }}" class="box_menu_item">
                                 <div class="list_menu_item">
                                     <img src="{{ asset('assets/images/logo/produk.svg') }}" alt=""
                                         style="height: 40px; width: auto; margin-bottom: 8px">
@@ -254,7 +257,7 @@
                             </button>
                         </div>
                         <div class="col-6">
-                            <a href="" class="box_menu_item">
+                            <a href="{{ route('about-us') }}" class="box_menu_item">
                                 <div class="list_menu_item">
                                     <img src="{{ asset('assets/images/logo/about-us.svg') }}" alt=""
                                         style="height: 40px; width: auto; margin-bottom: 8px">
@@ -263,7 +266,7 @@
                             </a>
                         </div>
                         <div class="col-6">
-                            <a href="s="box_menu_item">
+                            <a href="{{ route('consultation') }}" class="box_menu_item"">
                                 <div class="list_menu_item">
                                     <img src="{{ asset('assets/images/logo/konsultasi.svg') }}" alt=""
                                         style="height: 40px; width: auto; margin-bottom: 8px">
@@ -300,14 +303,14 @@
                                             <h3 style="color: black;"><?= $product->nama ?></h3>
                                             <div class="row mt-4">
                                                 <div class="col-md-5">
-                                                    <img src="{{ $product->image_url }}/"
-                                                        alt=" {{ $product->nama }} " style="width: 200px; margin:auto">
+                                                    <img src="{{ $product->image_url }}/" alt=" {{ $product->nama }} "
+                                                        style="width: 200px; margin:auto">
                                                 </div>
                                                 <div class="col-md-7">
                                                     <div class="content_product"
                                                         style="margin: auto;margin-top: 40px; max-width: 80%;">
                                                         <h5 style="color: black;"><?= $preview ?></h5>
-                                                        <a href="" class="btn"
+                                                        <a href="{{ route('product.detail', $product->url) }}" class="btn"
                                                             style="margin-top: 40px;">Selengkapnya</a>
                                                     </div>
                                                 </div>
@@ -331,8 +334,7 @@
                                             }
                                         @endphp
                                         <li class="splide__slide">
-                                            <img src="{{ $photo }}"
-                                                alt="<?= $product->nama ?>" style="width: 100%;">
+                                            <img src="{{ $photo }}" alt="<?= $product->nama ?>" style="width: 100%;">
                                         </li>
                                     @endforeach
                                 </ul>
@@ -359,15 +361,13 @@
                                 <li class="splide__slide" data-splide-interval="3000">
                                     <div class="row">
                                         <div class="col-md-2 testimoni_person">
-                                            <img class="lazy preview"
-                                                src="{{ $testimonial->image_url }}"
+                                            <img class="lazy preview" src="{{ $testimonial->image_url }}"
                                                 alt="<?= $testimonial->nama ?>" style="border-radius: 50%;" />
                                         </div>
                                         <div class="col-md-8 testimoni_comment" style="color: white; margin-top:8vh;">
                                             <?= $testimonial->komentar ?></div>
                                         <div class="col-md-2 testimoni_product">
-                                            <img class="lazy preview"
-                                                src="{{ $testimonial->product->image_url ?? '' }}"
+                                            <img class="lazy preview" src="{{ $testimonial->product->image_url ?? '' }}"
                                                 alt="{{ $testimonial->product->nama ?? '' }}" />
                                         </div>
                                     </div>
@@ -398,10 +398,10 @@
                         <li class="news_list-item col-md-4">
                             <div class="news_list-item_wrapper d-flex flex-column">
                                 <div class="media">
-                                    <img class="lazy article_image" src="{{ $blog->image_url }}"
-                                        style="height: 250px;" alt="<?= $blog->judul ?>" />
-                                    <p class="category_article" style="background-color: <?= $blog->category_color ?>;">
-                                        <?= $blog->category_name ?></p>
+                                    <img class="lazy article_image" src="{{ $blog->image_url }}" style="height: 250px;"
+                                        alt="<?= $blog->judul ?>" />
+                                    <p class="category_article" style="background-color: {{ $blog->category->color ?? '' }};">
+                                        {{ $blog->category->name ?? '' }}</p>
                                 </div>
                                 <div class="main d-flex flex-column justify-content-between">
                                     <div class="main_metadata">
@@ -410,12 +410,12 @@
                                             {{ $blog->tgl }}
                                         </span>
                                     </div>
-                                    <a class="main_title" href="" target="_blank"
+                                    <a class="main_title" href="{{ route('article.detail', $blog->url) }}"" target="_blank"
                                         rel="noopener norefferer"><?= $blog->judul ?></a>
                                     <p class="main_preview"><?= $preview_article ?></p>
                                 </div>
                                 <div class="view_more" style="margin-top: 20px;">
-                                    <a class="btn_view_more" href="">Baca
+                                    <a class="btn_view_more" href="{{ route('article.detail', $blog->url) }}">Baca
                                         Selengkapnya</a>
                                 </div>
                             </div>
@@ -426,7 +426,7 @@
             </div>
         </div>
         <div style="text-align: center; margin-top: 20px">
-            <a class="btn btn--green" href=""">Lihat Semua Artikel</a>
+            <a class="btn btn--green" href="{{ route('article') }}">Lihat Semua Artikel</a>
         </div>
     </section>
 
@@ -453,7 +453,7 @@
     </div>
 @endsection
 
-@push('script')
+@section('script')
     <script>
         var my = new Splide("#my-carousel", {
             type: "loop",
@@ -523,4 +523,4 @@
             }
         });
     </script>
-@endpush
+@endsection

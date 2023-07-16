@@ -28,4 +28,14 @@ class Product extends Model
         return $this->hasOne(Upload::class, 'idproduk', 'id');
     }
 
+    public function certificates()
+    {
+        return $this->hasMany(Certification::class, 'id_produk', 'id');
+    }
+
+    public function compositions()
+    {
+        return $this->hasMany(Composition::class, 'id_produk', 'id');
+    }
+
 }

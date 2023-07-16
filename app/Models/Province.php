@@ -10,4 +10,9 @@ class Province extends Model
     use HasFactory;
     
     protected $table = 'blw_prov';
+
+    public function cities()
+    {
+        return $this->hasMany(Regency::class);
+    }
 }

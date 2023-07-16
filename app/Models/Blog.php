@@ -17,4 +17,9 @@ class Blog extends Model
     {
         return storageAsset('public/'.$this->img);
     }
+
+    public function category()
+    {
+        return $this->belongsTo(BlogCategory::class, 'id_category', 'id');
+    }
 }

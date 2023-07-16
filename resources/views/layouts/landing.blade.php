@@ -2,7 +2,7 @@
 <html lang="en" data-layout="vertical" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-sidebar-image="none">
 
 @php
-    $provinces = App\Models\Province::get();
+    $provinces = App\Models\Province::where('status', 1)->get();
 @endphp
 
 <!-- Mirrored from themesbrand.com/velzon/html/default/pages-starter.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 08 Aug 2022 01:44:41 GMT -->
@@ -117,6 +117,8 @@
             }
         }
     </style>
+    
+    @yield('style')
 </head>
 
 <body style="background-color: #f2f3f8;">
@@ -132,12 +134,12 @@
             <nav class="header_nav">
                 <ul class="header_nav-list">
                     <li class="header_nav-list_item">
-                        <a class="nav-link d-inline-flex align-items-center" href="">
+                        <a class="nav-link d-inline-flex align-items-center" href="{{ route('homepage') }}">
                             Home
                         </a>
                     </li>
                     <li class="header_nav-list_item">
-                        <a class="nav-link d-inline-flex align-items-center" href="">
+                        <a class="nav-link d-inline-flex align-items-center" href="{{ route('about-us') }}">
                             Tentang Kami
                         </a>
                     </li>
@@ -150,19 +152,19 @@
                             <ul class="dropdown-list">
                                 @foreach ($provinces as $province)
                                 <li class="list-item nav-item">
-                                    <a class="dropdown-item" href=""></a>
+                                    <a class="dropdown-item" href="{{ route('list-mitra',str_replace(' ', '-', $province->nama)) }}">{{ $province->nama }}</a>
                                 </li>
                                 @endforeach
                             </ul>
                         </div>
                     </li>
                     <li class="header_nav-list_item">
-                        <a class="nav-link d-inline-flex align-items-center" href="">
+                        <a class="nav-link d-inline-flex align-items-center" href="{{ route('product') }}">
                             Produk
                         </a>
                     </li>
                     <li class="header_nav-list_item">
-                        <a class="nav-link d-inline-flex align-items-center" href="">
+                        <a class="nav-link d-inline-flex align-items-center" href="{{ route('consultation') }}">
                             Konsultasi
                         </a>
                     </li>
@@ -396,7 +398,7 @@
     <script src="{{ asset('assets/themes/velzon/libs/sweetalert2/sweetalert2.min.js') }}"></script>
     {{-- <script src="' . base_url('application/modules/front-modules/template/js/js-module-configuration.js') . '"></script> --}}
 
-    @stack('script')
+    @yield('script')
 </body>
 
 

@@ -10,4 +10,9 @@ class Composition extends Model
     use HasFactory;
 
     protected $table = 'blw_produk_has_komposisi';
+
+    public function getImageUrlAttribute()
+    {
+        return storageAsset('public/' . $this->image);
+    }
 }

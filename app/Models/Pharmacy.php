@@ -10,4 +10,9 @@ class Pharmacy extends Model
     use HasFactory;
 
     protected $table = 'sales_apotek';
+
+    public function sales()
+    {
+        return $this->belongsTo(Sales::class, 'id_sales', 'id_sales');
+    }
 }

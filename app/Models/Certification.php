@@ -10,4 +10,11 @@ class Certification extends Model
     use HasFactory;
 
     protected $table = 'blw_produk_has_sertifikasi';
+
+    protected $appends = ['image_url'];
+
+    public function getImageUrlAttribute()
+    {
+        return storageAsset('public/' . $this->image);
+    }
 }
