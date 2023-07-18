@@ -108,7 +108,6 @@
                     location.href = data.route;
                 },
                 error: (error) => {
-                    console.log("error");
                     $.each(error.responseJSON.errors, function(field, messages) {
                         $(`[name=${field}]`).addClass('is-invalid');
                         $(`[name=${field}]`).next().text(messages[0]);

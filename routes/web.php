@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DatamasterController;
 use App\Http\Controllers\Landing\HomeController;
 use Illuminate\Support\Facades\Route;
 
@@ -24,5 +25,7 @@ Route::get('article/{url}', [HomeController::class, 'articleDetail'])->name('art
 
 Route::get('/list-mitra/{name}', [HomeController::class, 'listMitra'])->name('list-mitra');
 Route::post('/list-mitra', [HomeController::class, 'listApotek'])->name('list-apotek');
+
+Route::get('city/{id}', [DatamasterController::class, 'city'])->name('city');
 
 require __DIR__ . '/web/sales.php';

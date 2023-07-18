@@ -13,22 +13,25 @@
     <title>SALES - @yield('title')</title>
     <!-- This page css -->
     <!-- Custom CSS -->
-    <link href="{{ asset('assets/themes/admin/assets/extra-libs/datatables.net-bs4/css/dataTables.bootstrap4.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/themes/admin/assets/extra-libs/datatables.net-bs4/css/dataTables.bootstrap4.css') }}"
+        rel="stylesheet">
     <link href="{{ asset('assets/themes/admin/dist/css/style.min.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/themes/velzon/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link href="{{ asset('assets/themes/velzon/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/themes/velzon/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet"
+        type="text/css" />
 
-<style>
-.select2-container {
-    display: block;
-}
-.ck-editor__editable_inline {
-    min-height: 400px;
-}
-</style>
+    <style>
+        .select2-container {
+            display: block;
+        }
 
-@yield('style')
+        .ck-editor__editable_inline {
+            min-height: 400px;
+        }
+    </style>
+
+    @yield('style')
 
 </head>
 
@@ -45,7 +48,8 @@
     <!-- ============================================================== -->
     <!-- Main wrapper - style you can find in pages.scss -->
     <!-- ============================================================== -->
-    <div id="main-wrapper" data-theme="light" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full" data-sidebar-position="fixed" data-header-position="fixed" data-boxed-layout="full">
+    <div id="main-wrapper" data-theme="light" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+        data-sidebar-position="fixed" data-header-position="fixed" data-boxed-layout="full">
         <!-- ============================================================== -->
         <!-- Topbar header - style you can find in pages.scss -->
         <!-- ============================================================== -->
@@ -53,7 +57,8 @@
             <nav class="navbar top-navbar navbar-expand-md">
                 <div class="navbar-header" data-logobg="skin6">
                     <!-- This is for the sidebar toggle which is visible on mobile only -->
-                    <a class="nav-toggler waves-effect waves-light d-block d-md-none" href="javascript:void(0)"><i class="ti-menu ti-close"></i></a>
+                    <a class="nav-toggler waves-effect waves-light d-block d-md-none" href="javascript:void(0)"><i
+                            class="ti-menu ti-close"></i></a>
                     <!-- ============================================================== -->
                     <!-- Logo -->
                     <!-- ============================================================== -->
@@ -62,17 +67,21 @@
                         <a href="#">
                             <b class="logo-icon">
                                 <!-- Dark Logo icon -->
-                                <img src="{{ asset('assets/images/logo/favicon.png') }}" alt="homepage" class="dark-logo" />
+                                <img src="{{ asset('assets/images/logo/favicon.png') }}" alt="homepage"
+                                    class="dark-logo" />
                                 <!-- Light Logo icon -->
-                                <img src="{{ asset('assets/images/logo/favicon.png') }}" alt="homepage" class="light-logo" />
+                                <img src="{{ asset('assets/images/logo/favicon.png') }}" alt="homepage"
+                                    class="light-logo" />
                             </b>
                             <!--End Logo icon -->
                             <!-- Logo text -->
                             <span class="logo-text">
                                 <!-- dark Logo text -->
-                                <img src="{{ asset('assets/images/logo/logo-text.png') }}" alt="homepage" class="dark-logo" style="height: 28px;" />
+                                <img src="{{ asset('assets/images/logo/logo-text.png') }}" alt="homepage"
+                                    class="dark-logo" style="height: 28px;" />
                                 <!-- Light Logo text -->
-                                <img src="{{ asset('assets/images/logo/logo-text.png') }}" class="light-logo" alt="homepage" style="height: 200px;" />
+                                <img src="{{ asset('assets/images/logo/logo-text.png') }}" class="light-logo"
+                                    alt="homepage" style="height: 200px;" />
                             </span>
                         </a>
                     </div>
@@ -82,7 +91,10 @@
                     <!-- ============================================================== -->
                     <!-- Toggle which is visible on mobile only -->
                     <!-- ============================================================== -->
-                    <a class="topbartoggler d-block d-md-none waves-effect waves-light" href="javascript:void(0)" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><i class="ti-more"></i></a>
+                    <a class="topbartoggler d-block d-md-none waves-effect waves-light" href="javascript:void(0)"
+                        data-toggle="collapse" data-target="#navbarSupportedContent"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><i
+                            class="ti-more"></i></a>
                 </div>
                 <!-- ============================================================== -->
                 <!-- End Logo -->
@@ -101,7 +113,8 @@
                             </a>
                         </li>
                     </ul>
-                    <a href="{{ route('sales.logout') }}" class="text-dark"><i data-feather="log-out" class="feather-icon"></i> Logout</a>
+                    <a href="{{ route('sales.logout') }}" class="text-dark"><i data-feather="log-out"
+                            class="feather-icon"></i> Logout</a>
                 </div>
             </nav>
         </header>
@@ -125,7 +138,7 @@
                         </li>
                         <li class='nav-small-cap'><span class='hide-menu'>Master Data</span></li>
                         <li class="sidebar-item">
-                            <a href="{{ route('sales.pharmacy') }}" class="sidebar-link sidebar-link">
+                            <a href="{{ route('sales.pharmacy.index') }}" class="sidebar-link sidebar-link">
                                 <i class="mdi mdi-home-group"></i>
                                 <span class='hide-menu'>Apotek</span>
                             </a>
@@ -133,7 +146,7 @@
 
                         <li class='nav-small-cap'><span class='hide-menu'>Laporan</span></li>
                         <li class="sidebar-item">
-                            <a href="{{ route('sales.report') }}" class="sidebar-link sidebar-link">
+                            <a href="{{ route('sales.visit.index') }}" class="sidebar-link sidebar-link">
                                 <i class="fa fa-image"></i>
                                 <span class='hide-menu'>Laporan Kunjungan</span>
                             </a>
@@ -157,7 +170,8 @@
             <!-- ============================================================== -->
             <div class="page-breadcrumb">
                 <div class="d-flex align-items-center">
-                    <h4 class="page-title text-truncate text-dark font-weight-medium mb-0">Selamat datang {{ Auth::user()->nama }}</h4>
+                    <h4 class="page-title text-truncate text-dark font-weight-medium mb-0">Selamat datang
+                        {{ Auth::user()->nama }}</h4>
                     <div class="ml-auto">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb m-0 p-0">
@@ -215,7 +229,8 @@
     <!-- apps -->
     <script src="{{ asset('assets/themes/admin/dist/js/app-style-switcher.js') }}"></script>
     <script src="{{ asset('assets/themes/admin/dist/js/feather.min.js') }}"></script>
-    <script src="{{ asset('assets/themes/admin/assets/libs/perfect-scrollbar/dist/perfect-scrollbar.jquery.min.js') }}"></script>
+    <script src="{{ asset('assets/themes/admin/assets/libs/perfect-scrollbar/dist/perfect-scrollbar.jquery.min.js') }}">
+    </script>
     <script src="{{ asset('assets/themes/admin/dist/js/sidebarmenu.js') }}"></script>
     <script src="{{ asset('assets/themes/admin/assets/extra-libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('assets/themes/admin/dist/js/pages/datatable/datatable-basic.init.js') }}"></script>

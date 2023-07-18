@@ -10,4 +10,30 @@ class VisitReport extends Model
     use HasFactory;
 
     protected $table = 'laporan_kunjungan';
+
+    protected $primaryKey = 'id_laporan';
+
+    public $timestamps = true;
+
+    const UPDATED_AT = null;
+
+    const CREATED_AT = 'timestamp';
+
+    protected $fillable = [
+        'id_sales',
+        'images',
+        'status',
+        'timestamp',
+        'id_apotek'
+    ];
+
+    public function pharmacy()
+    {
+        return $this->belongsTo(Pharmacy::class, 'id_apotek', 'id_apotek');
+    }
+
+    public function getImageUrlAttribute()
+    {
+        return storageAsset('public/' . $this->images);
+    }
 }

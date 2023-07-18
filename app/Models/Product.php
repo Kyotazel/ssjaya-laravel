@@ -20,7 +20,7 @@ class Product extends Model
 
     public function getMerkImageUrlAttribute()
     {
-        return storageAsset('public/'.$this->merk_photo);
+        return storageAsset('public/' . $this->merk_photo);
     }
 
     public function image()
@@ -37,5 +37,4 @@ class Product extends Model
     {
         return $this->hasMany(Composition::class, 'id_produk', 'id');
     }
-
 }
