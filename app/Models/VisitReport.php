@@ -34,8 +34,8 @@ class VisitReport extends Model
 
     public function getImageUrlAttribute()
     {
-        if (strpos($this->image, "public") !== false) {
-            return storageAsset($this->image);
+        if (strpos($this->images, "public") !== false) {
+            return storageAsset($this->images);
         }
         return storageAsset('public/' . $this->images);
     }
