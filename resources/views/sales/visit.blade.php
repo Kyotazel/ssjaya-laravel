@@ -167,7 +167,7 @@
                         className: 'text-center'
                     },
                     {
-                        data: 'timestamp',
+                        data: 'timestamps',
                         searchable: false,
                         className: 'text-center'
                     }

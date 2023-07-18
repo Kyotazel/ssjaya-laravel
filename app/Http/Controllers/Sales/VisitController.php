@@ -30,6 +30,9 @@ class VisitController extends Controller
                     return " <a href='#' data-toggle='modal' data-target='#imageModal' data-title='$item->nama_sales' data-img='" . $item->image_url . "'>
                                 <img src='" . $item->image_url . "' style='height: 100px; width: auto' /></a>";
                 })
+                ->editColumn('timestamps', function ($item) {
+                    return date('d M Y', strtotime($item->timestamp));
+                })
                 ->rawColumns(['image_url'])
                 ->toJson();
         }
