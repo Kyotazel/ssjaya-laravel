@@ -342,7 +342,6 @@
                         $(`[id=${field}]`).siblings(':last').text(messages[0]);
                         $(`[id=${field}]`).siblings(':last').addClass('d-block');
                     })
-                    notif_error(textStatus);
                 },
             }); //end ajax
         });

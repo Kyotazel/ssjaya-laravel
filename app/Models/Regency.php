@@ -10,4 +10,17 @@ class Regency extends Model
     use HasFactory;
 
     protected $table = 'blw_kab';
+
+    protected $fillable = [
+        'idprov',
+        'nama',
+        'status'
+    ];
+
+    public $timestamps = false;
+
+    public function province()
+    {
+        return $this->belongsTo(Province::class, 'idprov', 'id');
+    }
 }

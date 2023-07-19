@@ -17,14 +17,14 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $carousels = Carousel::get();
+        $carousels = Carousel::where('status', 1)->get();
         $products = Product::get();
-        $testimonials = Testimoni::with('product')->get();
+        $testimonials = Testimoni::with('product')->where('status', 1)->get();
         $blogs = Blog::limit(3)
             ->with(['category'])
             ->orderBy('tgl', 'DESC')
             ->get();
-        $provinces = Province::get();
+        $provinces = Province::where('status', 1)->get();
 
         return view('landing.home', get_defined_vars());
     }

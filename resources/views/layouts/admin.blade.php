@@ -185,6 +185,8 @@
                             <ul aria-expanded="false" class="collapse first-level base-level-line">
                                 <li class="sidebar-item">
                                     <a href="{{ route('admin.province.index') }}" class="sidebar-link">Provinsi</a>
+                                </li>
+                                <li class="sidebar-item">
                                     <a href="{{ route('admin.city.index') }}" class="sidebar-link">Kota</a>
                                 </li>
                             </ul>

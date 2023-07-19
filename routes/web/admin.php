@@ -28,13 +28,22 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 
         Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
         Route::resource('carousel', CarouselController::class);
+        Route::post('carousel-status/{id}', [CarouselController::class, 'status'])->name('carousel.status');
+
         Route::resource('product', ProductController::class);
+
         Route::resource('pharmacy', PharmacyController::class);
+
         Route::resource('blog-category', BlogCategoryController::class);
+
         Route::resource('blog', BlogController::class);
+
         Route::resource('testimoni', TestimoniController::class);
+
         Route::resource('visit', VisitController::class);
+        Route::post('visit-status/{id}', [VisitController::class, 'status'])->name('visit.status');
 
         Route::get('province', [AddressController::class, 'province_index'])->name('province.index');
         Route::post('province/{id}', [AddressController::class, 'province_status'])->name('province.status');

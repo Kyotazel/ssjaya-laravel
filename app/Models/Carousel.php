@@ -11,10 +11,20 @@ class Carousel extends Model
 
     protected $table = 'carousel';
 
+    protected $fillable = [
+        'photo',
+        'status'
+    ];
+
+    public $timestamps = false;
+
     protected $appends = ['image_url'];
 
     public function getImageUrlAttribute()
     {
-        return storageAsset('public/'.$this->photo);
+        if (strpos($this->photo, "public") !== false) {
+            return storageAsset($this->photo);
+        }
+        return storageAsset('public/' . $this->photo);
     }
 }

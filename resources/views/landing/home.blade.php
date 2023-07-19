@@ -310,8 +310,8 @@
                                                     <div class="content_product"
                                                         style="margin: auto;margin-top: 40px; max-width: 80%;">
                                                         <h5 style="color: black;"><?= $preview ?></h5>
-                                                        <a href="{{ route('product.detail', $product->url) }}" class="btn"
-                                                            style="margin-top: 40px;">Selengkapnya</a>
+                                                        <a href="{{ route('product.detail', $product->url) }}"
+                                                            class="btn" style="margin-top: 40px;">Selengkapnya</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -334,7 +334,8 @@
                                             }
                                         @endphp
                                         <li class="splide__slide">
-                                            <img src="{{ $photo }}" alt="<?= $product->nama ?>" style="width: 100%;">
+                                            <img src="{{ $photo }}" alt="<?= $product->nama ?>"
+                                                style="width: 100%;">
                                         </li>
                                     @endforeach
                                 </ul>
@@ -400,7 +401,8 @@
                                 <div class="media">
                                     <img class="lazy article_image" src="{{ $blog->image_url }}" style="height: 250px;"
                                         alt="<?= $blog->judul ?>" />
-                                    <p class="category_article" style="background-color: {{ $blog->category->color ?? '' }};">
+                                    <p class="category_article"
+                                        style="background-color: {{ $blog->category->color ?? '' }};">
                                         {{ $blog->category->name ?? '' }}</p>
                                 </div>
                                 <div class="main d-flex flex-column justify-content-between">
@@ -410,8 +412,8 @@
                                             {{ $blog->tgl }}
                                         </span>
                                     </div>
-                                    <a class="main_title" href="{{ route('article.detail', $blog->url) }}"" target="_blank"
-                                        rel="noopener norefferer"><?= $blog->judul ?></a>
+                                    <a class="main_title" href="{{ route('article.detail', $blog->url) }}""
+                                        target="_blank" rel="noopener norefferer"><?= $blog->judul ?></a>
                                     <p class="main_preview"><?= $preview_article ?></p>
                                 </div>
                                 <div class="view_more" style="margin-top: 20px;">
@@ -440,8 +442,8 @@
                     <div class="row">
                         <div class="list_province">
                             <?php foreach ($provinces as $province) : ?>
-                            <a href="" class="thisbutton" data-id="<?= $province->id ?>"><img
-                                    src="{{ asset('assets/images/logo/home.svg') }}"
+                            <a href="{{ route('list-mitra', str_replace(' ', '-', $province->nama)) }}" class="thisbutton"
+                                data-id="<?= $province->id ?>"><img src="{{ asset('assets/images/logo/home.svg') }}"
                                     style="display: inline-block; width: 20px; vertical-align: bottom;">
                                 <span><?= $province->nama ?></span></a>
                             <?php endforeach ?>
