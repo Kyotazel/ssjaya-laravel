@@ -23,8 +23,10 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                if($guard == 'sales') {
+                if ($guard == 'sales') {
                     return redirect(route('sales.dashboard'));
+                } else if ($guard == 'admin') {
+                    return redirect(route('admin.dashboard'));
                 }
                 return redirect(RouteServiceProvider::HOME);
             }

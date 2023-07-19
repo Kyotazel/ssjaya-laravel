@@ -20,12 +20,8 @@ Route::prefix('sales')->name('sales.')->group(function () {
     Route::middleware('auth:sales')->group(function () {
 
         Route::get('logout', [AuthController::class, 'logout'])->name('logout');
-
         Route::get('dashbaord', [DashboardController::class, 'index'])->name('dashboard');
-        Route::get('report', [DashboardController::class, 'report'])->name('report');
-
         Route::resource('pharmacy', PharmacyController::class);
-
         Route::resource('visit', VisitController::class);
     });
 });

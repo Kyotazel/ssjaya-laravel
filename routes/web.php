@@ -29,3 +29,4 @@ Route::post('/list-mitra', [HomeController::class, 'listApotek'])->name('list-ap
 Route::get('city/{id}', [DatamasterController::class, 'city'])->name('city');
 
 require __DIR__ . '/web/sales.php';
+require __DIR__ . '/web/admin.php';
