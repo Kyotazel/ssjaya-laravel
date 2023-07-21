@@ -1,12 +1,24 @@
 @extends('layouts.admin')
-@section('title', __('Testimoni'))
+@section('title', __('Kategori Blog'))
+
+@section('style')
+    <style>
+        .category_article {
+            display: inline-block;
+            color: white;
+            padding: 8px;
+            font-weight: bolder;
+            border-radius: 999em 40px 40px 999em;
+        }
+    </style>
+@endsection
 
 @section('content')
     <div class="card">
         <div class="card-header d-flex align-items-center">
             <div class="card-title mb-0 flex-grow-1">
                 <div class="btn btn-primary">
-                    <h6 class="mb-0 text-light">Daftar Testimoni</h6>
+                    <h6 class="mb-0 text-light">Daftar Kategori Blog</h6>
                 </div>
             </div>
             <button class="btn btn-success rounded-pill btn-label" onclick="add()"><i
@@ -19,10 +31,7 @@
                         <tr>
                             <th>No</th>
                             <th>Nama</th>
-                            <th>Foto</th>
-                            <th>Produk</th>
-                            <th>Komentar</th>
-                            <th>Status</th>
+                            <th>Kode Warna</th>
                             <th class="text-center">Action</th>
                         </tr>
                     </thead>
@@ -46,46 +55,19 @@
                             <!--end col-->
                             <div class="col-md-8">
                                 <div class="form-group">
-                                    <label for="nama">Nama</label>
-                                    <input type="text" name="nama" class="form-control" id="nama"
+                                    <label for="name">Nama Kategori</label>
+                                    <input type="text" name="name" class="form-control" id="name"
                                         placeholder="Masukkan Nama...">
                                     <div class="invalid-feedback"></div>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="jabatan">Jabatan</label>
-                                    <input type="text" name="jabatan" class="form-control" id="jabatan"
-                                        placeholder="Pembeli...">
+                                    <label for="color">Kode Warna</label>
+                                    <input type="text" name="color" class="form-control" id="color"
+                                        placeholder="#0000..">
                                     <div class="invalid-feedback"></div>
                                 </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="id_produk">Produk</label>
-                                    <select name="id_produk" id="id_produk" class="form-control" id="id_produk">
-                                        <option value="">Pilih Produk</option>
-                                        <?php foreach($products as $product) : ?>
-                                        <option value="<?= $product->id ?>"><?= $product->nama ?></option>
-                                        <?php endforeach ?>
-                                    </select>
-                                    <div class="invalid-feedback"></div>
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="komentar">Komenntar</label>
-                                    <textarea name="komentar" class="form-control" placeholder="Masukkan komentar..." id="komentar"></textarea>
-                                    <div class="invalid-feedback"></div>
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="image">Foto</label>
-                                    <input type="file" name="image" class="form-control" id="image">
-                                    <div class="invalid-feedback"></div>
-                                </div>
-                                <p class="text-danger update_photo">*) Apabila foto tidak diupdate, tidak perlu upload</p>
                             </div>
                             <!--end col-->
                         </div>
@@ -103,22 +85,6 @@
         </div>
     </div>
 
-    <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="imageModalLabel">Image</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <img src="" id="modalImage" class="img-fluid">
-                </div>
-            </div>
-        </div>
-    </div>
 @endsection
 
 @section('script')
@@ -134,7 +100,7 @@
                 fixedColumns: true,
                 scrollX: false,
                 ajax: {
-                    url: `{{ route('admin.testimoni.index') }}`
+                    url: `{{ route('admin.blog-category.index') }}`
                 },
                 columns: [{
                         data: 'id',
@@ -144,20 +110,10 @@
                         }
                     },
                     {
-                        data: 'nama',
+                        data: 'name',
                     },
                     {
-                        data: 'image_url',
-                    },
-                    {
-                        data: 'product.nama',
-                    },
-                    {
-                        data: 'komentar',
-                        className: 'text-wrap'
-                    },
-                    {
-                        data: 'status',
+                        data: 'color',
                         className: 'text-center'
                     },
                     {
@@ -189,7 +145,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: `{{ route('admin.testimoni.destroy', ':id') }}`.replace(':id', id),
+                        url: `{{ route('admin.blog-category.destroy', ':id') }}`.replace(':id', id),
                         type: "POST",
                         dataType: "JSON",
                         data: {
@@ -230,10 +186,10 @@
             var url;
             var status;
             if (save_method == 'add') {
-                url = `{{ route('admin.testimoni.store') }}`;
+                url = `{{ route('admin.blog-category.store') }}`;
                 status = "Ditambahkan";
             } else {
-                url = `{{ route('admin.testimoni.update', ':id') }}`.replace(':id', id_use);
+                url = `{{ route('admin.blog-category.update', ':id') }}`.replace(':id', id_use);
                 status = "Diubah";
                 formData.append('_method', 'PUT');
             }
@@ -270,86 +226,16 @@
             save_method = 'update';
 
             $.ajax({
-                url: `{{ route('admin.testimoni.edit', ':id') }}`.replace(':id', id_use),
+                url: `{{ route('admin.blog-category.edit', ':id') }}`.replace(':id', id_use),
                 type: 'GET',
                 dataType: 'JSON',
                 success: function(data) {
                     $.each(data, function(key, value) {
                         $(`[name=${key}]`).val(value);
+                        $('#modal_form').modal('show');
                     });
-                    $('#modal_form').modal('show');
                 }
             })
         })
-
-        $(document).on('click', '.change_to_active', function() {
-            var selector = $(this);
-            let status = 1;
-            Swal.fire({
-                icon: 'question',
-                text: 'Ganti menjadi aktif?',
-                showCancelButton: true,
-                confirmButtonClass: 'btn btn-primary rounded-pill w-xs me-2 mb-1 mr-3',
-                confirmButtonText: "Ya , Lanjutkan",
-                cancelButtonText: "Batal",
-                cancelButtonClass: 'btn btn-danger rounded-pill w-xs mb-1',
-                closeOnConfirm: true,
-                closeOnCancel: true,
-                buttonsStyling: false,
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    update_status(selector, status)
-                }
-            })
-        });
-
-        $(document).on('click', '.change_to_not_active', function() {
-            var selector = $(this);
-            let status = 0;
-            Swal.fire({
-                icon: 'question',
-                text: 'Ganti menjadi tidak aktif?',
-                showCancelButton: true,
-                confirmButtonClass: 'btn btn-primary rounded-pill w-xs me-2 mb-1 mr-3',
-                confirmButtonText: "Ya , Lanjutkan",
-                cancelButtonText: "Batal",
-                cancelButtonClass: 'btn btn-danger rounded-pill w-xs mb-1',
-                closeOnConfirm: true,
-                closeOnCancel: true,
-                buttonsStyling: false,
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    update_status(selector, status)
-                }
-            })
-        });
-
-
-        function update_status(selector, status) {
-            var id = selector.data('id');
-            $.ajax({
-                url: `{{ route('admin.testimoni.status', ':id') }}`.replace(':id', id),
-                type: "POST",
-                dataType: "JSON",
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    status: status
-                },
-                success: function(data) {
-                    notif_success("Data berhasil diupdate");
-                    table.ajax.reload();
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    notif_error(textStatus);
-                }
-
-            }); //end ajax
-        }
-        $(document).on('click', '[data-toggle="modal"]', function() {
-            var titleLabel = $(this).data('title');
-            var imageSrc = $(this).data('img');
-            $("#modalImage").attr("src", imageSrc);
-            $("#imageModalLabel").text(titleLabel);
-        });
     </script>
 @endsection

@@ -1,9 +1,5 @@
-@extends('layouts.sales')
+@extends('layouts.admin')
 @section('title', __('Apotek'))
-
-@section('style')
-
-@endsection
 
 @section('content')
     <div class="card">
@@ -13,40 +9,48 @@
         <div class="card-body">
             <form id="filter_form">
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="form-group">
                             <label for="filter_prov">Provinsi : </label>
                             <select name="filter_prov" id="filter_prov" class="select2">
                                 <option value="">Pilih Provinsi</option>
-                                <?php foreach ($provinces as $province) : ?>
-                                <option value="<?= $province->id ?>"><?= $province->nama ?></option>
-                                <?php endforeach ?>
+                                @foreach ($provinces as $province)
+                                    <option value="{{ $province->id }}">{{ $province->nama }}</option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="form-group">
                             <label for="filter_kota">Kota : </label>
                             <select name="filter_kota" id="filter_kota" class="select2" disabled>
                                 <option value="">Pilih Kota</option>
-                                <?php foreach ($cities as $city) : ?>
-                                <option value="<?= $city->kota ?>"><?= $city->kota ?></option>
-                                <?php endforeach ?>
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="filter_sales">Sales : </label>
+                            <select name="filter_sales" id="filter_sales" class="select2">
+                                <option value="">Pilih Sales</option>
+                                @foreach ($saless as $sales)
+                                    <option value="{{ $sales->id_sales }}">{{ $sales->nama }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
                         <div class="form-group">
                             <label for="filter_product">Produk : </label>
                             <select name="filter_product" id="filter_product" class="select2">
                                 <option value="">Pilih Produk</option>
-                                <?php foreach ($products as $product) : ?>
-                                <option value="<?= ucwords(strtolower($product->nama)) ?>"><?= $product->nama ?></option>
-                                <?php endforeach ?>
+                                @foreach ($products as $product)
+                                    <option value="{{ ucwords(strtolower($product->nama)) }}">{{ $product->nama }}</option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-12 text-right mt-3">
+                    <div class="col-md-12 text-right">
                         <button type="submit" id="filter_submit" class="btn btn-primary mr-1"><i class="fa fa-filter"></i>
                             Filter Data</button>
                         <button type="button" id="btn_export_excel" class="btn btn-success mr-1"><i
@@ -78,6 +82,7 @@
                             <th>Nama</th>
                             <th>Alamat</th>
                             <th>Kota</th>
+                            <th>Sales</th>
                             <th>Produk</th>
                             <th class="text-center">Action</th>
                         </tr>
@@ -91,12 +96,14 @@
     <form action="" method="POST" target="_blank" id="form_excel">
         <input type="hidden" name="filter_prov_excel" id="filter_prov_excel">
         <input type="hidden" name="filter_kota_excel" id="filter_kota_excel">
+        <input type="hidden" name="filter_sales_excel" id="filter_sales_excel">
         <input type="hidden" name="filter_product_excel" id="filter_product_excel">
     </form>
 
     <form action="" method="POST" target="_blank" id="form_pdf">
         <input type="hidden" name="filter_prov_pdf" id="filter_prov_pdf">
         <input type="hidden" name="filter_kota_pdf" id="filter_kota_pdf">
+        <input type="hidden" name="filter_sales_pdf" id="filter_sales_pdf">
         <input type="hidden" name="filter_product_pdf" id="filter_product_pdf">
     </form>
 
@@ -112,11 +119,23 @@
                     <div class="modal-body">
                         <div class="row text-dark">
                             <!--end col-->
-                            <div class="col-md-12">
+                            <div class="col-md-7">
                                 <div class="form-group">
                                     <label for="nama_apotek">Nama Apotek</label>
                                     <input type="text" name="nama_apotek" class="form-control" id="nama_apotek"
                                         placeholder="Apotek ...">
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <label for="id_sales">Nama Sales</label>
+                                    <select name="id_sales" id="id_sales" class="form-control">
+                                        <option value="">Pilih Sales</option>
+                                        @foreach ($saless as $sales)
+                                            <option value="{{ $sales->id_sales }}">{{ $sales->nama }}</option>
+                                        @endforeach
+                                    </select>
                                     <div class="invalid-feedback"></div>
                                 </div>
                             </div>
@@ -125,9 +144,9 @@
                                     <label for="provonsi">Provinsi</label>
                                     <select name="provinsi" id="provinsi" class="select2">
                                         <option value="">Pilih Provinsi</option>
-                                        <?php foreach ($provinces as $province) : ?>
-                                        <option value="<?= $province->id ?>"><?= $province->nama ?></option>
-                                        <?php endforeach ?>
+                                        @foreach ($provinces as $province)
+                                            <option value="{{ $province->id }}">{{ $province->nama }}</option>
+                                        @endforeach
                                     </select>
                                     <div class="invalid-feedback"></div>
                                 </div>
@@ -144,7 +163,7 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label for="alamat">Alamat</label>
-                                    <input type="text" name="alamat" id="alamat" class="form-control"
+                                    <input disabled type="text" name="alamat" id="alamat" class="form-control"
                                         placeholder="Jl. .....">
                                     <div class="invalid-feedback"></div>
                                 </div>
@@ -152,11 +171,11 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label for="produk">Produk</label>
-                                    <select name="product[]" id="product" class="select2" multiple>
-                                        <?php foreach ($products as $product) : ?>
-                                        <option value="<?= ucwords(strtolower($product->nama)) ?>"><?= $product->nama ?>
-                                        </option>
-                                        <?php endforeach ?>
+                                    <select name="product[]" id="product" class="select2" id="product" multiple>
+                                        @foreach ($products as $product)
+                                            <option value="{{ ucwords(strtolower($product->nama)) }}">
+                                                {{ $product->nama }}</option>
+                                        @endforeach
                                     </select>
                                     <div class="invalid-feedback"></div>
                                 </div>
@@ -192,11 +211,12 @@
                 fixedColumns: true,
                 scrollX: false,
                 ajax: {
-                    url: `{{ route('sales.pharmacy.index') }}`,
+                    url: `{{ route('admin.pharmacy.index') }}`,
                     data: function(query) {
                         query.kota = $("#filter_kota").val();
                         query.prov = $("#filter_prov").val();
                         query.product = $("#filter_product").val();
+                        query.sales = $("#filter_sales").val();
 
                         return query;
                     }
@@ -218,6 +238,10 @@
                     },
                     {
                         data: 'city.nama',
+                        searchable: false,
+                    },
+                    {
+                        data: 'sales.nama',
                         searchable: false,
                     },
                     {
@@ -313,10 +337,10 @@
             var url;
             var status;
             if (save_method == 'add') {
-                url = `{{ route('sales.pharmacy.store') }}`;
+                url = `{{ route('admin.pharmacy.store') }}`;
                 status = "Ditambahkan";
             } else {
-                url = `{{ route('sales.pharmacy.update', ':id') }}`.replace(':id', id_use);
+                url = `{{ route('admin.pharmacy.update', ':id') }}`.replace(':id', id_use);
                 status = "Diubah";
                 formData.append('_method', 'PUT');
             }
@@ -351,37 +375,37 @@
             id_use = $(this).data("id")
             save_method = 'update';
             $.ajax({
-                url: `{{ route('sales.pharmacy.edit', ':id') }}`.replace(':id', id_use),
+                url: `{{ route('admin.pharmacy.edit', ':id') }}`.replace(':id', id_use),
                 type: "GET",
                 dataType: "JSON",
                 success: function(data) {
-                    if (data.status) {
-                        produk = data.data.produk;
-                        arr_prod = produk.split(", ")
+                    produk = data.produk;
+                    arr_prod = produk.split(", ")
 
-                        productSelect = document.getElementById("product");
-                        provinsiSelect = $("#provinsi");
-                        kotaSelect = $("#kota");
-                        select2 = $(".select2")
-                        select2.val(null).trigger('change');
+                    productSelect = document.getElementById("product");
+                    provinsiSelect = $("#provinsi");
+                    kotaSelect = $("#kota");
+                    salesSelect = $("#id_sales");
+                    select2 = $(".select2")
+                    select2.val(null).trigger('change');
 
-                        provinsiSelect.val(data.data.provinsi).trigger('change');
-                        setTimeout(function() {
-                            kotaSelect.val(data.data.kota).trigger('change');
-                        }, 1000);
+                    provinsiSelect.val(data.provinsi).trigger('change');
+                    salesSelect.val(data.id_sales).trigger('change');
+                    setTimeout(function() {
+                        kotaSelect.val(data.kota).trigger('change');
+                    }, 1000);
 
-                        productSelect.querySelectorAll('option').forEach(option => {
-                            if (arr_prod.indexOf(option.value) > -1) {
-                                option.selected = true;
-                            }
-                        });
+                    productSelect.querySelectorAll('option').forEach(option => {
+                        if (arr_prod.indexOf(option.value) > -1) {
+                            option.selected = true;
+                        }
+                    });
 
-                        select2.trigger('change');
+                    select2.trigger('change');
 
-                        $('[name="nama_apotek"]').val(data.data.nama_apotek);
-                        $('[name="alamat"]').val(data.data.alamat);
-                        $('#modal_form').modal('show');
-                    }
+                    $('[name="nama_apotek"]').val(data.nama_apotek);
+                    $('[name="alamat"]').val(data.alamat);
+                    $('#modal_form').modal('show');
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     notif_error(textStatus);
@@ -391,7 +415,7 @@
 
         $(document).on('click', '.btn_delete', function() {
             id = $(this).data('id');
-            url = `{{ route('sales.pharmacy.destroy', ':id') }}`.replace(':id', id);
+            url = `{{ route('admin.pharmacy.destroy', ':id') }}`.replace(':id', id);
             Swal.fire({
                 icon: 'question',
                 text: 'Yakin ingin menghapus data?',
@@ -428,22 +452,6 @@
         $("#filter_submit").click(function(e) {
             e.preventDefault();
             table.ajax.reload();
-        })
-
-        $("#btn_export_excel").click(function(e) {
-            e.preventDefault();
-            $("#filter_prov_excel").val(filter_prov);
-            $("#filter_kota_excel").val(filter_kota);
-            $("#filter_product_excel").val(filter_product);
-            $("#form_excel").submit();
-        })
-
-        $("#btn_export_pdf").click(function(e) {
-            e.preventDefault();
-            $("#filter_prov_pdf").val(filter_prov);
-            $("#filter_kota_pdf").val(filter_kota);
-            $("#filter_product_pdf").val(filter_product);
-            $("#form_pdf").submit();
         })
     </script>
 @endsection

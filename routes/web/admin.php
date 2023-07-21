@@ -41,6 +41,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('blog', BlogController::class);
 
         Route::resource('testimoni', TestimoniController::class);
+        Route::post('testimoni-status/{id}', [TestimoniController::class, 'status'])->name('testimoni.status');
 
         Route::resource('visit', VisitController::class);
         Route::post('visit-status/{id}', [VisitController::class, 'status'])->name('visit.status');

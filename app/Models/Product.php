@@ -11,7 +11,7 @@ class Product extends Model
 
     protected $table = 'blw_produk';
 
-    protected $appends = ['image_url', 'merk_image_attribute'];
+    protected $appends = ['image_url', 'merk_image_url'];
 
     public function getImageUrlAttribute()
     {

@@ -11,6 +11,23 @@ class Testimoni extends Model
 
     protected $table = 'blw_testimoni';
 
+
+    public $timestamps = true;
+
+    const UPDATED_AT = null;
+
+    const CREATED_AT = 'tgl';
+
+    protected $fillable = [
+        'tgl',
+        'status',
+        'nama',
+        'foto',
+        'komentar',
+        'jabatan',
+        'id_produk'
+    ];
+
     protected $appends = ['image_url'];
 
     public function product()
@@ -20,6 +37,9 @@ class Testimoni extends Model
 
     public function getImageUrlAttribute()
     {
-        return storageAsset('public/'.$this->foto);
+        if (strpos($this->foto, "public") !== false) {
+            return storageAsset($this->foto);
+        }
+        return storageAsset('public/' . $this->foto);
     }
 }
