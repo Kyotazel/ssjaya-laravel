@@ -5,6 +5,8 @@ use App\Http\Controllers\Admin\Auth\AuthController;
 use App\Http\Controllers\Admin\BlogCategoryController;
 use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\Admin\CarouselController;
+use App\Http\Controllers\Admin\CertificateController;
+use App\Http\Controllers\Admin\CompositionController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PharmacyController;
 use App\Http\Controllers\Admin\ProductController;
@@ -33,6 +35,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('carousel-status/{id}', [CarouselController::class, 'status'])->name('carousel.status');
 
         Route::resource('product', ProductController::class);
+        Route::prefix('product-detail/{product}')->group(function () {
+            Route::resource('certification', CertificateController::class);
+            Route::resource('composition', CompositionController::class);
+        });
 
         Route::resource('pharmacy', PharmacyController::class);
 
