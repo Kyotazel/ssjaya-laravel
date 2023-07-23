@@ -24,16 +24,36 @@ class PharmacyProductSeeder extends Seeder
             return $pharmacy;
         });
 
+        $pharmacyProducts = [];
+        $counter = 0;
+        $batchSize = 1000; // Ubah sesuai kebutuhan
+
         foreach ($pharmacy_data as $pharmacy) {
             foreach ($pharmacy['produk'] as $product) {
-                $database_product = Product::select(['id'])->whereRaw("LOWER(nama) = '$product'")->first();
+                $database_product = Product::select('id')->whereRaw("LOWER(nama) = ?", [$product])->first();
                 if ($database_product) {
-                    PharmacyProduct::create([
+                    $pharmacyProducts[] = [
                         'product_id' => $database_product->id,
-                        'pharmacy_id' => $pharmacy['id_apotek']
-                    ]);
+                        'pharmacy_id' => $pharmacy['id_apotek'],
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+
+                    $counter++;
+
+                    // Lakukan insert jika counter mencapai batch size
+                    if ($counter === $batchSize) {
+                        PharmacyProduct::insert($pharmacyProducts);
+                        $pharmacyProducts = []; // Reset array untuk kelompok berikutnya
+                        $counter = 0; // Reset counter
+                    }
                 }
             }
+        }
+
+        // Insert sisanya (jika ada)
+        if (!empty($pharmacyProducts)) {
+            PharmacyProduct::insert($pharmacyProducts);
         }
     }
 }
