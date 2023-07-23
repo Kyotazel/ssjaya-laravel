@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\Province;
 use App\Models\Regency;
 use App\Models\Sales;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -15,6 +16,7 @@ class PharmacyController extends Controller
 {
     public function index()
     {
+
         if (request()->wantsJson()) {
             $query = Pharmacy::query()
                 ->when(isset(request()->prov), function ($q) {
@@ -120,5 +122,26 @@ class PharmacyController extends Controller
         Pharmacy::where('id_apotek', $id)->delete();
 
         return response()->json(['message' => 'Apotek Berhasil Dihapus']);
+    }
+
+    public function export_pdf()
+    {
+        $data_sales = 'Semua';
+        $data_provinsi = 'Semua';
+        $data_kota = 'Semua';
+        $data_product = 'Semua';
+        $data = [];
+
+        $pharmacy_data = Pharmacy::query()
+            ->with([
+                'sales',
+                'city' => function ($query) {
+                    $query->orderBy('nama');
+                }
+            ])
+            ->where('id_sales', 'agung0')
+            ->get();
+
+        return $pharmacy_data;
     }
 }

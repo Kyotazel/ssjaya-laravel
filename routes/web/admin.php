@@ -40,6 +40,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::resource('composition', CompositionController::class);
         });
 
+        Route::get('pharmacy/export_pdf', [PharmacyController::class, 'export_pdf'])->name('pharmachy.export_pdf');
         Route::resource('pharmacy', PharmacyController::class);
 
         Route::resource('blog-category', BlogCategoryController::class);
