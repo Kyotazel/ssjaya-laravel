@@ -5,24 +5,27 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PharmacyProduct extends Model
+class DepositReportPharmacy extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'pharmacy_id',
-        'product_id',
-        'stock',
-        'stock_sold'
+        'deposit_report_id',
+        'pharmacy_id'
     ];
+
+    public function despositReport()
+    {
+        return $this->belongsTo(DepositReport::class);
+    }
 
     public function pharmacy()
     {
         return $this->belongsTo(Pharmacy::class, 'pharamcy_id', 'id_apotek');
     }
 
-    public function product()
+    public function products()
     {
-        return $this->belongsTo(Product::class);
+        return $this->hasMany(DepositReportPharmacyProduct::class);
     }
 }

@@ -199,6 +199,18 @@
                                 <span class='hide-menu'>Laporan Kunjungan</span>
                             </a>
                         </li>
+                        <li class="sidebar-item">
+                            <a href="{{ route('admin.ongoing-request.index') }}" class="sidebar-link">
+                                <i data-feather="log-out" class="feather-icon"></i>
+                                <span class='hide-menu'>Barang Keluar</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="{{ route('admin.deposit-report.index') }}" class="sidebar-link">
+                                <i data-feather="log-in" class="feather-icon"></i>
+                                <span class='hide-menu'>Setoran Barang</span>
+                            </a>
+                        </li>
 
                     </ul>
                 </nav>

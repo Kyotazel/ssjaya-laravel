@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Pharmacy;
 use App\Models\Regency;
+use App\Models\Sales;
 use Illuminate\Http\Request;
 
 class DatamasterController extends Controller
@@ -11,5 +13,12 @@ class DatamasterController extends Controller
     {
         $city = Regency::where('idprov', $id)->where('status', 1)->get();
         return response()->json($city);
+    }
+
+    public function pharmacy($id)
+    {
+        $sales = Sales::where('id', $id)->first();
+        $pharmacy = Pharmacy::where('id_sales', $sales->id_sales)->with(['products.product'])->get();
+        return response()->json($pharmacy);
     }
 }

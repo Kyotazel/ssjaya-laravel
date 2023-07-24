@@ -45,7 +45,7 @@
                             <select name="filter_product" id="filter_product" class="select2">
                                 <option value="">Pilih Produk</option>
                                 @foreach ($products as $product)
-                                    <option value="{{ ucwords(strtolower($product->nama)) }}">{{ $product->nama }}</option>
+                                    <option value="{{ $product->id }}">{{ $product->nama }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -173,7 +173,7 @@
                                     <label for="produk">Produk</label>
                                     <select name="product[]" id="product" class="select2" id="product" multiple>
                                         @foreach ($products as $product)
-                                            <option value="{{ ucwords(strtolower($product->nama)) }}">
+                                            <option value="{{ $product->id }}">
                                                 {{ $product->nama }}</option>
                                         @endforeach
                                     </select>
@@ -245,7 +245,7 @@
                         searchable: false,
                     },
                     {
-                        data: 'produk',
+                        data: 'product_string',
                         searchable: false,
                         className: 'text-wrap'
                     },
@@ -379,8 +379,8 @@
                 type: "GET",
                 dataType: "JSON",
                 success: function(data) {
-                    produk = data.produk;
-                    arr_prod = produk.split(", ")
+
+                    arr_prod = data.products.map(product => product.product_id);
 
                     productSelect = document.getElementById("product");
                     provinsiSelect = $("#provinsi");
@@ -396,7 +396,8 @@
                     }, 1000);
 
                     productSelect.querySelectorAll('option').forEach(option => {
-                        if (arr_prod.indexOf(option.value) > -1) {
+                        let optionValue = parseInt(option.value);
+                        if (arr_prod.includes(optionValue)) {
                             option.selected = true;
                         }
                     });

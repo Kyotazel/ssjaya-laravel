@@ -35,4 +35,9 @@ class Pharmacy extends Model
     {
         return $this->belongsTo(Regency::class, 'kota', 'id');
     }
+
+    public function products()
+    {
+        return $this->hasMany(PharmacyProduct::class, 'pharmacy_id', 'id_apotek');
+    }
 }

@@ -10,6 +10,8 @@ use App\Http\Controllers\Admin\CompositionController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PharmacyController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\Report\DepositReportController;
+use App\Http\Controllers\Admin\Report\OngoingRequestController;
 use App\Http\Controllers\Admin\TestimoniController;
 use App\Http\Controllers\Admin\VisitController;
 use Illuminate\Support\Facades\Route;
@@ -44,7 +46,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('pharmacy', PharmacyController::class);
 
         Route::resource('blog-category', BlogCategoryController::class);
-
         Route::resource('blog', BlogController::class);
 
         Route::resource('testimoni', TestimoniController::class);
@@ -52,6 +53,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::resource('visit', VisitController::class);
         Route::post('visit-status/{id}', [VisitController::class, 'status'])->name('visit.status');
+
+        Route::resource('ongoing-request', OngoingRequestController::class);
+        Route::post('ongoing-request-status/{ongoingRequest}', [OngoingRequestController::class, 'update_status'])->name('ongoing-request.status');
+
+        Route::resource('deposit-report', DepositReportController::class);
+        Route::post('deposit-report-status/{depositReport}', [DepositReportController::class, 'update_status'])->name('deposit-report.status');
 
         Route::get('province', [AddressController::class, 'province_index'])->name('province.index');
         Route::post('province/{id}', [AddressController::class, 'province_status'])->name('province.status');
