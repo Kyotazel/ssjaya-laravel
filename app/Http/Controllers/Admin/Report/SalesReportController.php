@@ -39,13 +39,17 @@ class SalesReportController extends Controller
                 })
                 ->addColumn('products_price_stock', function ($item) {
                     $sumPrice = $item->pharmacies->sum(function ($subitem) {
-                        return $subitem->products->sum('stock') * $subitem->products->sum('product.harga');
+                        return $subitem->products->sum(function ($subsub) {
+                            return $subsub->stock * $subsub->product->harga;
+                        });
                     });
                     return 'Rp. ' . number_format($sumPrice);
                 })
                 ->addColumn('products_price_stock_sold', function ($item) {
                     $sumPrice = $item->pharmacies->sum(function ($subitem) {
-                        return $subitem->products->sum('stock_sold') * $subitem->products->sum('product.harga');
+                        return $subitem->products->sum(function ($subsub) {
+                            return $subsub->stock_sold * $subsub->product->harga;
+                        });
                     });
                     return 'Rp. ' . number_format($sumPrice);
                 })
