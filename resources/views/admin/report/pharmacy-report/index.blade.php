@@ -18,8 +18,8 @@
                             <th>No</th>
                             <th>Apotek</th>
                             <th>Sales</th>
-                            <th>Produk Terjual</th>
                             <th>Produk Tersisa</th>
+                            <th>Produk Terjual</th>
                             <th class="text-center">Action</th>
                         </tr>
                     </thead>
