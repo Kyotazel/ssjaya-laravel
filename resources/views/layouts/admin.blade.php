@@ -192,13 +192,7 @@
                             </ul>
                         </li>
 
-                        <li class='nav-small-cap'><span class='hide-menu'>Laporan</span></li>
-                        <li class="sidebar-item">
-                            <a href="{{ route('admin.visit.index') }}" class="sidebar-link">
-                                <i class="fa fa-image"></i>
-                                <span class='hide-menu'>Laporan Kunjungan</span>
-                            </a>
-                        </li>
+                        <li class='nav-small-cap'><span class='hide-menu'>Transaksi Data</span></li>
                         <li class="sidebar-item">
                             <a href="{{ route('admin.ongoing-request.index') }}" class="sidebar-link">
                                 <i data-feather="log-out" class="feather-icon"></i>
@@ -209,6 +203,27 @@
                             <a href="{{ route('admin.deposit-report.index') }}" class="sidebar-link">
                                 <i data-feather="log-in" class="feather-icon"></i>
                                 <span class='hide-menu'>Setoran Barang</span>
+                            </a>
+                        </li>
+
+
+                        <li class='nav-small-cap'><span class='hide-menu'>Laporan</span></li>
+                        <li class="sidebar-item">
+                            <a href="{{ route('admin.visit.index') }}" class="sidebar-link">
+                                <i class="fa fa-image"></i>
+                                <span class='hide-menu'>Laporan Kunjungan</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="{{ route('admin.sales-report.index') }}" class="sidebar-link">
+                                <i class="fa fa-user"></i>
+                                <span class='hide-menu'>Produk Sales</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="{{ route('admin.pharmacy-report.index') }}" class="sidebar-link">
+                                <i class="fa fa-home"></i>
+                                <span class='hide-menu'>Produk Apotek</span>
                             </a>
                         </li>
 

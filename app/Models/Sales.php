@@ -16,4 +16,9 @@ class Sales extends Authenticatable
         'id_sales',
         'password'
     ];
+
+    public function pharmacies()
+    {
+        return $this->hasMany(Pharmacy::class, 'id_sales', 'id_sales');
+    }
 }

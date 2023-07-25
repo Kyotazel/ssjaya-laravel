@@ -29,7 +29,7 @@ class Product extends Model
         'tglupdate',
     ];
 
-    protected $appends = ['image_url', 'merk_image_url'];
+    // protected $appends = ['image_url', 'merk_image_url'];
 
     public function getImageUrlAttribute()
     {

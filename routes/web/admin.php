@@ -12,6 +12,8 @@ use App\Http\Controllers\Admin\PharmacyController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\Report\DepositReportController;
 use App\Http\Controllers\Admin\Report\OngoingRequestController;
+use App\Http\Controllers\Admin\Report\PharmacyReportController;
+use App\Http\Controllers\Admin\Report\SalesReportController;
 use App\Http\Controllers\Admin\TestimoniController;
 use App\Http\Controllers\Admin\VisitController;
 use Illuminate\Support\Facades\Route;
@@ -59,6 +61,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::resource('deposit-report', DepositReportController::class);
         Route::post('deposit-report-status/{depositReport}', [DepositReportController::class, 'update_status'])->name('deposit-report.status');
+
+        Route::resource('sales-report', SalesReportController::class);
+        Route::resource('pharmacy-report', PharmacyReportController::class);
 
         Route::get('province', [AddressController::class, 'province_index'])->name('province.index');
         Route::post('province/{id}', [AddressController::class, 'province_status'])->name('province.status');
