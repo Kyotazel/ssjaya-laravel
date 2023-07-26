@@ -23,7 +23,7 @@ class OngoingRequestPharmacy extends Model
 
     public function pharmacy()
     {
-        return $this->belongsTo(Pharmacy::class, 'pharamcy_id', 'id_apotek');
+        return $this->belongsTo(Pharmacy::class, 'pharmacy_id', 'id_apotek');
     }
 
     public function products()

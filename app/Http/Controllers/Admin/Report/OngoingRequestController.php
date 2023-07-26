@@ -141,6 +141,64 @@ class OngoingRequestController extends Controller
         return response()->json(['message' => 'Status Berhasil Diperbarui']);
     }
 
+    public function show(OngoingRequest $ongoingRequest)
+    {
+        $ongoingRequest = OngoingRequest::with([
+            'sales:id,nama',
+            'pharmacies:id,ongoing_request_id,pharmacy_id',
+            'pharmacies.products:id,ongoing_request_pharmacy_id,pharmacy_product_id,stock',
+            'pharmacies.products.pharmacyProduct:id,product_id,pharmacy_id',
+            'pharmacies.products.pharmacyProduct.product:id,nama,harga',
+            'pharmacies.pharmacy:id_apotek,nama_apotek'
+        ])
+            ->withCount('pharmacies')
+            ->find($ongoingRequest->id);
+
+        $ongoingRequest->pharmacies = $ongoingRequest->pharmacies->map(function ($pharmacy) {
+            $pharmacy->product_sum = $pharmacy->products->sum(function ($product) {
+                return $product->stock;
+            });
+
+            $pharmacy->products = $pharmacy->products->map(function ($product) {
+                $product->total_price = $product->stock * $product->pharmacyProduct->product->harga;
+
+                return $product;
+            });
+
+            $pharmacy->total_price = $pharmacy->products->sum('total_price');
+
+            return $pharmacy;
+        });
+
+        $ongoingRequest->total_price = $ongoingRequest->pharmacies->sum('total_price');
+
+        $ongoingRequest->pharmacies_sum = $ongoingRequest->pharmacies->sum(function ($pharmacy) {
+            return $pharmacy->product_sum;
+        });
+
+        $productResumes = [];
+
+        foreach ($ongoingRequest->pharmacies as $pharmacy) {
+            foreach ($pharmacy['products'] as $product) {
+                $existingProductKey = collect($productResumes)->search(function ($item) use ($product) {
+                    return $item['product_id'] === $product['pharmacyProduct']['product_id'];
+                });
+
+                if ($existingProductKey !== false) {
+                    $productResumes[$existingProductKey]['stock'] += $product['stock'];
+                } else {
+                    $productResumes[] = [
+                        'product_id' => $product['pharmacyProduct']['product_id'],
+                        'product_name' => $product['pharmacyProduct']['product']['nama'],
+                        'stock' => $product['stock'],
+                    ];
+                }
+            }
+        }
+
+        return view('admin.report.ongoing-request.detail', get_defined_vars());
+    }
+
     public function destroy($id)
     {
     }

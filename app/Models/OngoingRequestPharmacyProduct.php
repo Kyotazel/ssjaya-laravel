@@ -29,4 +29,9 @@ class OngoingRequestPharmacyProduct extends Model
     {
         return $this->pharmacyProduct->product;
     }
+
+    public function pharmacy()
+    {
+        return $this->pharmacyProduct->pharmacy;
+    }
 }

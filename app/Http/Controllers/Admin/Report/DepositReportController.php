@@ -130,4 +130,62 @@ class DepositReportController extends Controller
 
         return response()->json(['message' => 'Status Berhasil Diperbarui']);
     }
+
+    public function show(DepositReport $depositReport)
+    {
+        $depositReport = DepositReport::with([
+            'sales:id,nama',
+            'pharmacies:id,deposit_report_id,pharmacy_id',
+            'pharmacies.products:id,deposit_report_pharmacy_id,pharmacy_product_id,stock',
+            'pharmacies.products.pharmacyProduct:id,product_id,pharmacy_id',
+            'pharmacies.products.pharmacyProduct.product:id,nama,harga',
+            'pharmacies.pharmacy:id_apotek,nama_apotek'
+        ])
+            ->withCount('pharmacies')
+            ->find($depositReport->id);
+
+        $depositReport->pharmacies = $depositReport->pharmacies->map(function ($pharmacy) {
+            $pharmacy->product_sum = $pharmacy->products->sum(function ($product) {
+                return $product->stock;
+            });
+
+            $pharmacy->products = $pharmacy->products->map(function ($product) {
+                $product->total_price = $product->stock * $product->pharmacyProduct->product->harga;
+
+                return $product;
+            });
+
+            $pharmacy->total_price = $pharmacy->products->sum('total_price');
+
+            return $pharmacy;
+        });
+
+        $depositReport->total_price = $depositReport->pharmacies->sum('total_price');
+
+        $depositReport->pharmacies_sum = $depositReport->pharmacies->sum(function ($pharmacy) {
+            return $pharmacy->product_sum;
+        });
+
+        $productResumes = [];
+
+        foreach ($depositReport->pharmacies as $pharmacy) {
+            foreach ($pharmacy['products'] as $product) {
+                $existingProductKey = collect($productResumes)->search(function ($item) use ($product) {
+                    return $item['product_id'] === $product['pharmacyProduct']['product_id'];
+                });
+
+                if ($existingProductKey !== false) {
+                    $productResumes[$existingProductKey]['stock'] += $product['stock'];
+                } else {
+                    $productResumes[] = [
+                        'product_id' => $product['pharmacyProduct']['product_id'],
+                        'product_name' => $product['pharmacyProduct']['product']['nama'],
+                        'stock' => $product['stock'],
+                    ];
+                }
+            }
+        }
+
+        return view('admin.report.deposit-report.detail', get_defined_vars());
+    }
 }
