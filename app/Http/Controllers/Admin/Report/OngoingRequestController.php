@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin\Report;
 use App\Http\Controllers\Controller;
 use App\Models\OngoingRequest;
 use App\Models\OngoingRequestPharmacyProduct;
+use App\Models\Pharmacy;
 use App\Models\PharmacyProduct;
+use App\Models\Product;
 use App\Models\Sales;
 use Carbon\Carbon;
 use Exception;
@@ -83,6 +85,61 @@ class OngoingRequestController extends Controller
                 $validatedData['code'] = '#' . sprintf('%04d', ($ongoingRequest->id + 1));
             }
             $ongoingRequest = OngoingRequest::create($validatedData);
+
+            foreach ($validatedData['pharmacies'] as $pharmacy) {
+                $newPharmacy = $ongoingRequest->pharmacies()->create([
+                    'pharmacy_id' => $pharmacy['pharmacy_id']
+                ]);
+
+                foreach ($pharmacy['products'] as $product) {
+                    $newPharmacy->products()->create([
+                        'pharmacy_product_id' => $product['product_id'],
+                        'stock' => $product['stock']
+                    ]);
+                }
+            }
+
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
+
+        return response()->json('ok');
+    }
+
+    public function edit($id)
+    {
+        $saless = Sales::get();
+        $ongoingRequest = OngoingRequest::with(['pharmacies.products'])->find($id);
+        $thisSales = Sales::where('id', $ongoingRequest->sales_id)->first();
+        $pharmacies = Pharmacy::get();
+        $products = Product::get();
+        $pharmacyProduct = PharmacyProduct::with(['product'])->get();
+        return view('admin.report.ongoing-request.edit', get_defined_vars());
+    }
+
+    public function update($id)
+    {
+        $validatedData = request()->validate([
+            'sales_id' => ['required'],
+            'request_date' => ['nullable'],
+            'pharmacies' => ['required']
+        ]);
+
+        if ($validatedData['request_date'] == null) {
+            $validatedData['request_date'] = now();
+        }
+
+        try {
+            DB::beginTransaction();
+
+            $ongoingRequest = OngoingRequest::with(['pharmacies.products'])->find($id);
+            $pharmacies = $ongoingRequest->pharmacies;
+            foreach ($pharmacies as $pharmacy) {
+                $pharmacy->products()->delete();
+            }
+            $ongoingRequest->pharmacies()->delete();
 
             foreach ($validatedData['pharmacies'] as $pharmacy) {
                 $newPharmacy = $ongoingRequest->pharmacies()->create([
