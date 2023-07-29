@@ -37,14 +37,15 @@ class OngoingRequestController extends Controller
                 ->addColumn('action', function ($item) {
                     $detail_route = route('admin.ongoing-request.show', $item->id);
                     $edit_route = route('admin.ongoing-request.edit', $item->id);
+
+                    $editDropdown = $item->status == 'PENDING' ? "<a class='dropdown-item' href='$edit_route'><i class='ri-ball-pen-line'></i> Edit</a>" : '';
                     return "<div class='dropdown'>
                                 <button class='btn btn-secondary dropdown-toggle' type='button' id='dropdownMenuButton' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
                                     Action 
                                 </button>
                                 <div class='dropdown-menu' aria-labelledby='dropdownMenuButton'>
-                                    <a class='dropdown-item' href='$detail_route'><i class='fa fa-desktop'></i> Detail</a>
-                                    <a class='dropdown-item' href='$edit_route'><i class='ri-ball-pen-line'></i> Edit</a>
-                                    <button class='dropdown-item btn_delete' data-id='$item->id'><i class='ri-delete-bin-line'></i> Hapus</button>
+                                <a class='dropdown-item' href='$detail_route'><i class='fa fa-desktop'></i> Detail</a>
+                                    $editDropdown
                                 </div>
                             </div>";;
                 })

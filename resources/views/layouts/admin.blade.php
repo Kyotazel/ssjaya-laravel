@@ -177,8 +177,8 @@
                                 <span class='hide-menu'>Testimoni</span>
                             </a>
                         </li>
-                        <li class="sidebar-item has-arrow" aria-expanded="false">
-                            <a href="#" class="sidebar-link">
+                        <li class="sidebar-item" aria-expanded="false">
+                            <a href="#" class="sidebar-link has-arrow">
                                 <i class="ri-community-line"></i>
                                 <span class='hide-menu'>Alamat</span>
                             </a>

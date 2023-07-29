@@ -39,7 +39,7 @@
                 fixedColumns: true,
                 scrollX: false,
                 ajax: {
-                    url: `{{ route('admin.pharmacy-report.index') }}`
+                    url: `{{ route('admin.pharmacy-report.index') . "?sales=$sales" }}`
                 },
                 columns: [{
                         data: 'id_apotek',

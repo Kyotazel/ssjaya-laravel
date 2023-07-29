@@ -65,6 +65,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('sales-report', SalesReportController::class);
         Route::resource('pharmacy-report', PharmacyReportController::class);
 
+        Route::get('pharmacy-report-log/{id}', [PharmacyReportController::class, 'log'])->name('pharmacy-report.log');
+        // Route::get('sales-report-log/{id}', [PharmacyReportController::class, 'log']);
+
         Route::get('province', [AddressController::class, 'province_index'])->name('province.index');
         Route::post('province/{id}', [AddressController::class, 'province_status'])->name('province.status');
 
