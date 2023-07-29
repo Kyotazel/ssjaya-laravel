@@ -201,7 +201,10 @@
             <div class="row">
                 @foreach ($depositReport->pharmacies as $pharmacy)
                     <div class="col-md-12 mt-4">
-                        <h4>{{ $pharmacy->pharmacy->nama_apotek }}</h4>
+                        <h4>{{ $pharmacy->pharmacy->nama_apotek }} <a href="{{ $pharmacy->image_url ?? '#' }}"
+                                target="_blank">Lihat
+                                Nota</a>
+                        </h4>
                         <table class="table table-bordered mt-2">
                             <thead>
                                 <tr class="table-active">

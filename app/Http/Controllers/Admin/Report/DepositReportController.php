@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin\Report;
 use App\Http\Controllers\Controller;
 use App\Models\DepositReport;
 use App\Models\DepositReportPharmacyProduct;
+use App\Models\Pharmacy;
 use App\Models\PharmacyProduct;
+use App\Models\Product;
 use App\Models\Sales;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -32,14 +34,15 @@ class DepositReportController extends Controller
                 ->addColumn('action', function ($item) {
                     $detail_route = route('admin.deposit-report.show', $item->id);
                     $edit_route = route('admin.deposit-report.edit', $item->id);
+
+                    $editDropdown = $item->status == 'PENDING' ? "<a class='dropdown-item' href='$edit_route'><i class='ri-ball-pen-line'></i> Edit</a>" : '';
                     return "<div class='dropdown'>
                                 <button class='btn btn-secondary dropdown-toggle' type='button' id='dropdownMenuButton' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
                                     Action 
                                 </button>
                                 <div class='dropdown-menu' aria-labelledby='dropdownMenuButton'>
-                                    <a class='dropdown-item' href='$detail_route'><i class='fa fa-desktop'></i> Detail</a>
-                                    <a class='dropdown-item' href='$edit_route'><i class='ri-ball-pen-line'></i> Edit</a>
-                                    <button class='dropdown-item btn_delete' data-id='$item->id'><i class='ri-delete-bin-line'></i> Hapus</button>
+                                <a class='dropdown-item' href='$detail_route'><i class='fa fa-desktop'></i> Detail</a>
+                                    $editDropdown
                                 </div>
                             </div>";;
                 })
@@ -74,8 +77,69 @@ class DepositReportController extends Controller
             $depositReport = DepositReport::create($validatedData);
 
             foreach ($validatedData['pharmacies'] as $pharmacy) {
+                $imageUrl = '';
+                if (isset($pharmacy['image_url'])) {
+                    $imageUrl = $pharmacy['image']->store('public');
+                }
                 $newPharmacy = $depositReport->pharmacies()->create([
-                    'pharmacy_id' => $pharmacy['pharmacy_id']
+                    'pharmacy_id' => $pharmacy['pharmacy_id'],
+                    'image_url' => $imageUrl
+                ]);
+
+                foreach ($pharmacy['products'] as $product) {
+                    $newPharmacy->products()->create([
+                        'pharmacy_product_id' => $product['product_id'],
+                        'stock' => $product['stock']
+                    ]);
+                }
+            }
+
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
+
+        return response()->json('ok');
+    }
+
+    public function edit($id)
+    {
+        $saless = Sales::get();
+        $depositReport = DepositReport::with(['pharmacies.products'])->find($id);
+        $thisSales = Sales::where('id', $depositReport->sales_id)->first();
+        $pharmacies = Pharmacy::get();
+        $products = Product::get();
+        $pharmacyProduct = PharmacyProduct::with(['product'])->get();
+        return view('admin.report.deposit-report.edit', get_defined_vars());
+    }
+
+    public function update($id)
+    {
+        $validatedData = request()->validate([
+            'sales_id' => ['required'],
+            'request_date' => ['nullable'],
+            'pharmacies' => ['required']
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $depositReport = DepositReport::with(['pharmacies.products'])->find($id);
+            $pharmacies = $depositReport->pharmacies;
+            foreach ($pharmacies as $pharmacy) {
+                $pharmacy->products()->delete();
+            }
+            $depositReport->pharmacies()->delete();
+
+            foreach ($validatedData['pharmacies'] as $pharmacy) {
+                $imageUrl = '';
+                if (isset($pharmacy['image_url'])) {
+                    $imageUrl = $pharmacy['image']->store('public');
+                }
+                $newPharmacy = $depositReport->pharmacies()->create([
+                    'pharmacy_id' => $pharmacy['pharmacy_id'],
+                    'image_url' => $imageUrl
                 ]);
 
                 foreach ($pharmacy['products'] as $product) {
@@ -135,7 +199,7 @@ class DepositReportController extends Controller
     {
         $depositReport = DepositReport::with([
             'sales:id,nama',
-            'pharmacies:id,deposit_report_id,pharmacy_id',
+            'pharmacies:id,deposit_report_id,pharmacy_id,image_url',
             'pharmacies.products:id,deposit_report_pharmacy_id,pharmacy_product_id,stock',
             'pharmacies.products.pharmacyProduct:id,product_id,pharmacy_id',
             'pharmacies.products.pharmacyProduct.product:id,nama,harga',

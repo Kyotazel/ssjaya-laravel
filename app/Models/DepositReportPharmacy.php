@@ -11,7 +11,8 @@ class DepositReportPharmacy extends Model
 
     protected $fillable = [
         'deposit_report_id',
-        'pharmacy_id'
+        'pharmacy_id',
+        'image_url'
     ];
 
     public function despositReport()
@@ -27,5 +28,10 @@ class DepositReportPharmacy extends Model
     public function products()
     {
         return $this->hasMany(DepositReportPharmacyProduct::class);
+    }
+
+    public function getImageUrlAttribute($value)
+    {
+        return storageAsset($value);
     }
 }

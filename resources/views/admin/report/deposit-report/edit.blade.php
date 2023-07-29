@@ -1,17 +1,22 @@
 @extends('layouts.admin')
-@section('title', __('Tambahkan Setoran Barang'))
+@section('title', __('Perbarui Setoran Barang'))
 
 @section('style')
     <style>
     </style>
 @endsection
 
+@php
+    $index_counter = 0;
+    $index_detail = 0;
+@endphp
+
 @section('content')
     <form class="form_input">
         <div class="card">
             <div class="card-header d-flex align-items-center">
                 <div class="card-title mb-0 flex-grow-1">
-                    <h3 class="mb-0 text-dark">Tambah Setoran Barang</h3>
+                    <h3 class="mb-0 text-dark">Perbarui Setoran Barang</h3>
                 </div>
                 <a class="btn btn-lg btn-outline-primary rounded-pill btn-label mr-2"
                     href="{{ route('admin.deposit-report.index') }}">
@@ -28,7 +33,8 @@
                             <select name="sales_id" id="sales_id" class="form-control">
                                 <option value="">Pilih Sales</option>
                                 @foreach ($saless as $sales)
-                                    <option value="{{ $sales->id }}">{{ $sales->nama }}</option>
+                                    <option {{ $depositReport->sales_id == $sales->id ? 'selected' : '' }}
+                                        value="{{ $sales->id }}">{{ $sales->nama }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -49,7 +55,87 @@
         </div>
 
         <div class="data-apotek">
-
+            @foreach ($depositReport->pharmacies as $key => $pharmacy)
+                <div class="card pharmacy_card" data-id="{{ $index_counter }}">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-11">
+                                <div class="form-group">
+                                    <label for="pharmacies[{{ $index_counter }}][pharmacy_id]">Apotek</label>
+                                    <select name="pharmacies[{{ $index_counter }}][pharmacy_id]"
+                                        id="pharmacies[{{ $index_counter }}][pharmacy_id]"
+                                        onchange="onProductSelectChange(this)" class="form-control">
+                                        <option value="">Pilih Apotek</option>
+                                        @foreach ($pharmacies->where('id_sales', $thisSales->id_sales) as $pharmacy_item)
+                                            <option
+                                                {{ $pharmacy_item->id_apotek == $pharmacy->pharmacy_id ? 'selected' : '' }}
+                                                value="{{ $pharmacy_item->id_apotek }}">{{ $pharmacy_item->nama_apotek }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="pharmacies[{{ $index_counter }}][image]">Nota <span
+                                            class="text-danger">(Upload Ulang Juga Nota)</span></label>
+                                    <input type="file" name="pharmacies[{{ $index_counter }}][image]"
+                                        id="pharmacies[{{ $index_counter }}][image]" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                                <button class="btn btn-lg btn-danger rounded-pill btn-label btn_delete_pharmacy"
+                                    data-id={{ $index_counter }}><i class="fa fa-trash"></i>
+                            </div>
+                        </div>
+                        <div class="row product_item_{{ $index_counter }}">
+                            @foreach ($pharmacy->products as $keyChild => $product)
+                                <div class="col-md-8 product_data" data-parent="{{ $index_counter }}"
+                                    data-id="{{ $index_detail }}">
+                                    <div class="form-group">
+                                        <label
+                                            for="pharmacies[{{ $index_counter }}][products][{{ $index_detail }}][product_id]">Product
+                                        </label>
+                                        <select
+                                            name="pharmacies[{{ $index_counter }}][products][{{ $index_detail }}][product_id]"
+                                            id="pharmacies[{{ $index_counter }}][products][{{ $index_detail }}][product_id]"
+                                            class="form-control">
+                                            <option value="">Pilih Produk</option>
+                                            @foreach ($pharmacyProduct->where('pharmacy_id', $pharmacy->pharmacy_id) as $product_item)
+                                                <option
+                                                    {{ $product_item->id == $product->pharmacy_product_id ? 'selected' : '' }}
+                                                    value="{{ $product_item->id }}">{{ $product_item->product->nama }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 product_data" data-parent="{{ $index_counter }}"
+                                    data-id="{{ $index_detail }}">
+                                    <div class="form-group">
+                                        <label
+                                            for="pharmacies[{{ $index_counter }}][products][{{ $index_detail }}][stock]">Quantity</label>
+                                        <input type="number" class="form-control"
+                                            name="pharmacies[{{ $index_counter }}][products][{{ $index_detail }}][stock]"
+                                            value="{{ $product->stock }}"
+                                            id="pharmacies[{{ $index_counter }}][products][{{ $index_detail }}][stock]">
+                                    </div>
+                                </div>
+                                <div class="col-md-1 product_data" data-parent="{{ $index_counter }}"
+                                    data-id="{{ $index_detail }}">
+                                    <button class="btn btn-lg btn-outline-danger rounded-pill btn-label btn_delete_product"
+                                        data-id="{{ $index_detail++ }}"><i class="fa fa-trash"></i>
+                                </div>
+                            @endforeach
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <button class="btn btn-md btn-outline-primary btn-block rounded-pill btn_add_product"
+                                    data-id="{{ $index_counter++ }}"><i class="ri-add-circle-line label-icon"></i> Tambah
+                                    Produk</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
         </div>
     </form>
 @endsection
@@ -58,7 +144,19 @@
     <script>
         let response_data, selected_product_id, selectedProductId;
 
-        let index = 0;
+        $.ajax({
+            url: `{{ route('pharmacy', ':id') }}`.replace(':id', `{{ $thisSales->id }}`),
+            type: "GET",
+            dataType: "JSON",
+            success: function(data) {
+                response_data = data;
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                notif_error(textStatus);
+            }
+        })
+
+        let index = {{ $index_counter }} + 1;
 
         function appendPharmacy() {
             let html = `<div class="card pharmacy_card" data-id="${index}">
@@ -94,7 +192,7 @@
             index++;
         }
 
-        let product_index = 0;
+        let product_index = {{ $index_detail }} + 1;
 
         function appendProduct(index) {
             let html = `
@@ -119,6 +217,7 @@
             $(`.product_item_${index}`).append(html);
             let selectElem = $(`.product_item_${index}`).find(
                 `select[name="pharmacies[${index}][products][${product_index}][product_id]"]`);
+            console.log(selectElem);
             selectElem.empty();
             selectElem.append('<option value="">Pilih Produk</option>');
             if (response_data && response_data.length > 0) {
@@ -186,10 +285,10 @@
 
 
         $(document).on('change', '[name=sales_id]', function(e) {
-            let id = $(this).val();
+            let sales_id = $(this).val();
             $('.pharmacy_card').remove();
             $.ajax({
-                url: `{{ route('pharmacy', ':id') }}`.replace(':id', id),
+                url: `{{ route('pharmacy', ':id') }}`.replace(':id', sales_id),
                 type: "GET",
                 dataType: "JSON",
                 success: function(data) {
@@ -206,9 +305,11 @@
             e.preventDefault();
             let formData = new FormData($('.form_input')[0]);
             formData.append('_token', '{{ csrf_token() }}')
+            formData.append('_method', 'PUT')
 
             $.ajax({
-                url: `{{ route('admin.deposit-report.store') }}`,
+                url: `{{ route('admin.deposit-report.update', ':id') }}`.replace(':id',
+                    `{{ $depositReport->id }}`),
                 type: "POST",
                 data: formData,
                 contentType: false,
