@@ -144,6 +144,20 @@
                             </a>
                         </li>
 
+                        <li class='nav-small-cap'><span class='hide-menu'>Transaksi Data</span></li>
+                        <li class="sidebar-item {{ Route::is('sales.ongoing*') ? 'selected' : '' }}">
+                            <a href="{{ route('sales.ongoing-request.index') }}" class="sidebar-link">
+                                <i data-feather="log-out" class="feather-icon"></i>
+                                <span class='hide-menu'>Barang Keluar</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item {{ Route::is('sales.deposit*') ? 'selected' : '' }}">
+                            <a href="{{ route('sales.deposit-report.index') }}" class="sidebar-link">
+                                <i data-feather="log-in" class="feather-icon"></i>
+                                <span class='hide-menu'>Setoran Barang</span>
+                                </i>
+                            </a>
+                        </li>
                         <li class='nav-small-cap'><span class='hide-menu'>Laporan</span></li>
                         <li class="sidebar-item">
                             <a href="{{ route('sales.visit.index') }}" class="sidebar-link sidebar-link">

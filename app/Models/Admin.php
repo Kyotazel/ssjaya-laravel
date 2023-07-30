@@ -11,4 +11,22 @@ class Admin extends Authenticatable
     use HasFactory;
 
     protected $table = 'app_user';
+
+    public $timestamps = true;
+
+    const UPDATED_AT = 'updated_date';
+
+    const CREATED_AT = 'created_date';
+
+    protected $fillable = [
+        'name',
+        'username',
+        'password',
+        'is_admin',
+        'status',
+        'is_delete',
+        'last_login'
+    ];
+
+    protected $hidden = ['password'];
 }

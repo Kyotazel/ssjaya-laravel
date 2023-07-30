@@ -40,9 +40,9 @@
                             <label for="filter_product">Produk : </label>
                             <select name="filter_product" id="filter_product" class="select2">
                                 <option value="">Pilih Produk</option>
-                                <?php foreach ($products as $product) : ?>
-                                <option value="<?= ucwords(strtolower($product->nama)) ?>"><?= $product->nama ?></option>
-                                <?php endforeach ?>
+                                @foreach ($products as $product)
+                                    <option value="{{ $product->id }}">{{ $product->nama }}</option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
@@ -152,11 +152,11 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label for="produk">Produk</label>
-                                    <select name="product[]" id="product" class="select2" multiple>
-                                        <?php foreach ($products as $product) : ?>
-                                        <option value="<?= ucwords(strtolower($product->nama)) ?>"><?= $product->nama ?>
-                                        </option>
-                                        <?php endforeach ?>
+                                    <select name="product[]" id="product" class="select2" id="product" multiple>
+                                        @foreach ($products as $product)
+                                            <option value="{{ $product->id }}">
+                                                {{ $product->nama }}</option>
+                                        @endforeach
                                     </select>
                                     <div class="invalid-feedback"></div>
                                 </div>
@@ -221,7 +221,7 @@
                         searchable: false,
                     },
                     {
-                        data: 'produk',
+                        data: 'product_string',
                         searchable: false,
                         className: 'text-wrap'
                     },
@@ -355,33 +355,31 @@
                 type: "GET",
                 dataType: "JSON",
                 success: function(data) {
-                    if (data.status) {
-                        produk = data.data.produk;
-                        arr_prod = produk.split(", ")
+                    arr_prod = data.products.map(product => product.product_id);
 
-                        productSelect = document.getElementById("product");
-                        provinsiSelect = $("#provinsi");
-                        kotaSelect = $("#kota");
-                        select2 = $(".select2")
-                        select2.val(null).trigger('change');
+                    productSelect = document.getElementById("product");
+                    provinsiSelect = $("#provinsi");
+                    kotaSelect = $("#kota");
+                    select2 = $(".select2")
+                    select2.val(null).trigger('change');
 
-                        provinsiSelect.val(data.data.provinsi).trigger('change');
-                        setTimeout(function() {
-                            kotaSelect.val(data.data.kota).trigger('change');
-                        }, 1000);
+                    provinsiSelect.val(data.provinsi).trigger('change');
+                    setTimeout(function() {
+                        kotaSelect.val(data.kota).trigger('change');
+                    }, 1000);
 
-                        productSelect.querySelectorAll('option').forEach(option => {
-                            if (arr_prod.indexOf(option.value) > -1) {
-                                option.selected = true;
-                            }
-                        });
+                    productSelect.querySelectorAll('option').forEach(option => {
+                        let optionValue = parseInt(option.value);
+                        if (arr_prod.includes(optionValue)) {
+                            option.selected = true;
+                        }
+                    });
 
-                        select2.trigger('change');
+                    select2.trigger('change');
 
-                        $('[name="nama_apotek"]').val(data.data.nama_apotek);
-                        $('[name="alamat"]').val(data.data.alamat);
-                        $('#modal_form').modal('show');
-                    }
+                    $('[name="nama_apotek"]').val(data.nama_apotek);
+                    $('[name="alamat"]').val(data.alamat);
+                    $('#modal_form').modal('show');
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     notif_error(textStatus);

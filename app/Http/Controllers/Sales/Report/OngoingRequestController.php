@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Report;
+namespace App\Http\Controllers\Sales\Report;
 
 use App\Http\Controllers\Controller;
 use App\Models\OngoingRequest;
@@ -21,7 +21,12 @@ class OngoingRequestController extends Controller
     {
 
         if (request()->wantsJson()) {
-            $query = OngoingRequest::query()->with(['sales', 'pharmacies.products'])->withCount(['pharmacies']);
+            $query = OngoingRequest::query()->with([
+                'pharmacies.products'
+            ])
+                ->where('sales_id', authUser()->id)
+                ->withCount(['pharmacies'])
+                ->where('sales_id', authUser()->id_sales);
 
             return DataTables::of($query)
                 ->addIndexColumn()
@@ -37,17 +42,14 @@ class OngoingRequestController extends Controller
                     });
                 })
                 ->addColumn('action', function ($item) {
-                    $detail_route = route('admin.ongoing-request.show', $item->id);
-                    $edit_route = route('admin.ongoing-request.edit', $item->id);
+                    $detail_route = route('sales.ongoing-request.show', $item->id);
 
-                    $editDropdown = ($item->status == 'PENDING' && authUser()->is_admin) ? "<a class='dropdown-item' href='$edit_route'><i class='ri-ball-pen-line'></i> Edit</a>" : '';
                     return "<div class='dropdown'>
                                 <button class='btn btn-secondary dropdown-toggle' type='button' id='dropdownMenuButton' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
                                     Action 
                                 </button>
                                 <div class='dropdown-menu' aria-labelledby='dropdownMenuButton'>
                                 <a class='dropdown-item' href='$detail_route'><i class='fa fa-desktop'></i> Detail</a>
-                                    $editDropdown
                                 </div>
                             </div>";;
                 })
@@ -55,13 +57,13 @@ class OngoingRequestController extends Controller
         }
 
         $statuses = OngoingRequest::STATUS;
-        return view('admin.report.ongoing-request.index', get_defined_vars());
+        return view('sales.report.ongoing-request.index', get_defined_vars());
     }
 
     public function create()
     {
-        $saless = Sales::get();
-        return view('admin.report.ongoing-request.create', get_defined_vars());
+        $sales = Sales::where('id_sales', authUser()->id_sales)->first();
+        return view('sales.report.ongoing-request.create', get_defined_vars());
     }
 
     public function store()
@@ -106,97 +108,6 @@ class OngoingRequestController extends Controller
         }
 
         return response()->json('ok');
-    }
-
-    public function edit($id)
-    {
-        $saless = Sales::get();
-        $ongoingRequest = OngoingRequest::with(['pharmacies.products'])->find($id);
-        $thisSales = Sales::where('id', $ongoingRequest->sales_id)->first();
-        $pharmacies = Pharmacy::get();
-        $products = Product::get();
-        $pharmacyProduct = PharmacyProduct::with(['product'])->get();
-        return view('admin.report.ongoing-request.edit', get_defined_vars());
-    }
-
-    public function update($id)
-    {
-        $validatedData = request()->validate([
-            'sales_id' => ['required'],
-            'request_date' => ['nullable'],
-            'pharmacies' => ['required']
-        ]);
-
-        if ($validatedData['request_date'] == null) {
-            $validatedData['request_date'] = now();
-        }
-
-        try {
-            DB::beginTransaction();
-
-            $ongoingRequest = OngoingRequest::with(['pharmacies.products'])->find($id);
-            $pharmacies = $ongoingRequest->pharmacies;
-            foreach ($pharmacies as $pharmacy) {
-                $pharmacy->products()->delete();
-            }
-            $ongoingRequest->pharmacies()->delete();
-
-            foreach ($validatedData['pharmacies'] as $pharmacy) {
-                $newPharmacy = $ongoingRequest->pharmacies()->create([
-                    'pharmacy_id' => $pharmacy['pharmacy_id']
-                ]);
-
-                foreach ($pharmacy['products'] as $product) {
-                    $newPharmacy->products()->create([
-                        'pharmacy_product_id' => $product['product_id'],
-                        'stock' => $product['stock']
-                    ]);
-                }
-            }
-
-            DB::commit();
-        } catch (Exception $e) {
-            DB::rollBack();
-            throw $e;
-        }
-
-        return response()->json('ok');
-    }
-
-    public function update_status(OngoingRequest $ongoingRequest)
-    {
-        $validatedData = request()->validate([
-            'status' => ['required']
-        ]);
-
-        try {
-            DB::beginTransaction();
-
-            $ongoingRequest->update($validatedData);
-
-            if ($validatedData['status'] == 'APPROVED') {
-                $pharmacies = $ongoingRequest->pharmacies;
-
-                $new_products = [];
-                foreach ($pharmacies as $pharmacy) {
-                    $products = OngoingRequestPharmacyProduct::where('ongoing_request_pharmacy_id', $pharmacy->id)->get();
-                    foreach ($products as $product) {
-                        $new_products[] = $product;
-                    }
-                }
-
-                foreach ($new_products as $product) {
-                    PharmacyProduct::find($product["pharmacy_product_id"])->update(['stock' => $product['stock']]);
-                }
-            }
-
-            DB::commit();
-        } catch (Exception $e) {
-            DB::rollBack();
-            throw $e;
-        }
-
-        return response()->json(['message' => 'Status Berhasil Diperbarui']);
     }
 
     public function show(OngoingRequest $ongoingRequest)
@@ -254,10 +165,6 @@ class OngoingRequestController extends Controller
             }
         }
 
-        return view('admin.report.ongoing-request.detail', get_defined_vars());
-    }
-
-    public function destroy($id)
-    {
+        return view('sales.report.ongoing-request.detail', get_defined_vars());
     }
 }

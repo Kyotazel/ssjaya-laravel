@@ -3,6 +3,8 @@
 use App\Http\Controllers\Sales\Auth\AuthController;
 use App\Http\Controllers\Sales\DashboardController;
 use App\Http\Controllers\Sales\PharmacyController;
+use App\Http\Controllers\Sales\Report\DepositReportController;
+use App\Http\Controllers\Sales\Report\OngoingRequestController;
 use App\Http\Controllers\Sales\VisitController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -23,5 +25,8 @@ Route::prefix('sales')->name('sales.')->group(function () {
         Route::get('dashbaord', [DashboardController::class, 'index'])->name('dashboard');
         Route::resource('pharmacy', PharmacyController::class);
         Route::resource('visit', VisitController::class);
+
+        Route::resource('ongoing-request', OngoingRequestController::class);
+        Route::resource('deposit-report', DepositReportController::class);
     });
 });

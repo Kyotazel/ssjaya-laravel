@@ -8,6 +8,8 @@ use App\Http\Controllers\Admin\CarouselController;
 use App\Http\Controllers\Admin\CertificateController;
 use App\Http\Controllers\Admin\CompositionController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\Entity\AdminController;
+use App\Http\Controllers\Admin\Entity\SalesController;
 use App\Http\Controllers\Admin\PharmacyController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\Report\DepositReportController;
@@ -66,12 +68,15 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('pharmacy-report', PharmacyReportController::class);
 
         Route::get('pharmacy-report-log/{id}', [PharmacyReportController::class, 'log'])->name('pharmacy-report.log');
-        // Route::get('sales-report-log/{id}', [PharmacyReportController::class, 'log']);
 
         Route::get('province', [AddressController::class, 'province_index'])->name('province.index');
         Route::post('province/{id}', [AddressController::class, 'province_status'])->name('province.status');
 
         Route::get('city', [AddressController::class, 'city_index'])->name('city.index');
         Route::post('city/{id}', [AddressController::class, 'city_status'])->name('city.status');
+
+        // ENTITY
+        Route::resource('sales', SalesController::class);
+        Route::resource('admin', AdminController::class);
     });
 });

@@ -12,10 +12,17 @@ class Sales extends Authenticatable
 
     protected $table = 'sales_user';
 
+    public $timestamps = false;
+
     protected $fillable = [
+        'id',
+        'nama',
         'id_sales',
-        'password'
+        'password',
+        'nomor'
     ];
+
+    protected $hidden = ['password'];
 
     public function pharmacies()
     {

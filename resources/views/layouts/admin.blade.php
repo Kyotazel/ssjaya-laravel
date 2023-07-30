@@ -130,102 +130,121 @@
                 <!-- Sidebar navigation-->
                 <nav class="sidebar-nav">
                     <ul id="sidebarnav">
-                        <li class="sidebar-item">
+                        <li class="sidebar-item {{ Route::is('admin.dashboard*') ? 'selected' : '' }}">
                             <a href="{{ route('admin.dashboard') }}" class="sidebar-link">
                                 <i class="mdi mdi-home"></i>
                                 <span class='hide-menu'>Dashboard</span>
                             </a>
                         </li>
 
-                        <li class='nav-small-cap'><span class='hide-menu'>Master Data</span></li>
-                        <li class="sidebar-item">
-                            <a href="{{ route('admin.carousel.index') }}" class="sidebar-link">
-                                <i class="ri-speed-line"></i>
-                                <span class='hide-menu'>Carousel</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a href="{{ route('admin.product.index') }}" class="sidebar-link">
-                                <i class="ri-product-hunt-line"></i>
-                                <span class='hide-menu'>Produk</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a href="{{ route('admin.pharmacy.index') }}" class="sidebar-link">
-                                <i class="mdi mdi-home-group"></i>
-                                <span class='hide-menu'>Apotek</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a href="#" class="sidebar-link has-arrow" aria-expanded="false">
-                                <i class="ri-article-line"></i>
-                                <span class='hide-menu'>Artikel</span>
-                            </a>
-                            <ul aria-expanded='false' class='collapse  first-level base-level-line'>
-                                <li class="sidebar-item">
-                                    <a href="{{ route('admin.blog-category.index') }}" class="sidebar-link">Kategori
-                                        Artikel</a>
-                                </li>
-                                <li class="sidebar-item">
-                                    <a href="{{ route('admin.blog.index') }}" class="sidebar-link">Artikel</a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="sidebar-item">
-                            <a href="{{ route('admin.testimoni.index') }}" class="sidebar-link">
-                                <i class="ri-account-box-line"></i>
-                                <span class='hide-menu'>Testimoni</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item" aria-expanded="false">
-                            <a href="#" class="sidebar-link has-arrow">
-                                <i class="ri-community-line"></i>
-                                <span class='hide-menu'>Alamat</span>
-                            </a>
-                            <ul aria-expanded="false" class="collapse first-level base-level-line">
-                                <li class="sidebar-item">
-                                    <a href="{{ route('admin.province.index') }}" class="sidebar-link">Provinsi</a>
-                                </li>
-                                <li class="sidebar-item">
-                                    <a href="{{ route('admin.city.index') }}" class="sidebar-link">Kota</a>
-                                </li>
-                            </ul>
-                        </li>
+                        @if (authUser()->is_admin)
+                            <li class='nav-small-cap'><span class='hide-menu'>Master Data</span></li>
+                            <li class="sidebar-item {{ Route::is('admin.carousel*') ? 'selected' : '' }}">
+                                <a href="{{ route('admin.carousel.index') }}" class="sidebar-link">
+                                    <i class="ri-speed-line"></i>
+                                    <span class='hide-menu'>Carousel</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item {{ Route::is('admin.product*') ? 'selected' : '' }}">
+                                <a href="{{ route('admin.product.index') }}" class="sidebar-link">
+                                    <i class="ri-product-hunt-line"></i>
+                                    <span class='hide-menu'>Produk</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item {{ Route::is('admin.pharmacy.*') ? 'selected' : '' }}">
+                                <a href="{{ route('admin.pharmacy.index') }}" class="sidebar-link">
+                                    <i class="mdi mdi-home-group"></i>
+                                    <span class='hide-menu'>Apotek</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a href="#" class="sidebar-link has-arrow" aria-expanded="false">
+                                    <i class="ri-article-line"></i>
+                                    <span class='hide-menu'>Artikel</span>
+                                </a>
+                                <ul aria-expanded='false' class='collapse  first-level base-level-line'>
+                                    <li class="sidebar-item {{ Route::is('admin.blog*') ? 'selected' : '' }}">
+                                        <a href="{{ route('admin.blog-category.index') }}"
+                                            class="sidebar-link">Kategori
+                                            Artikel</a>
+                                    </li>
+                                    <li class="sidebar-item {{ Route::is('admin.blog*') ? 'selected' : '' }}">
+                                        <a href="{{ route('admin.blog.index') }}" class="sidebar-link">Artikel</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="sidebar-item {{ Route::is('admin.testimoni*') ? 'selected' : '' }}">
+                                <a href="{{ route('admin.testimoni.index') }}" class="sidebar-link">
+                                    <i class="ri-account-box-line"></i>
+                                    <span class='hide-menu'>Testimoni</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item" aria-expanded="false">
+                                <a href="#" class="sidebar-link has-arrow">
+                                    <i class="ri-community-line"></i>
+                                    <span class='hide-menu'>Alamat</span>
+                                </a>
+                                <ul aria-expanded="false" class="collapse first-level base-level-line">
+                                    <li class="sidebar-item {{ Route::is('admin.province*') ? 'selected' : '' }}">
+                                        <a href="{{ route('admin.province.index') }}"
+                                            class="sidebar-link">Provinsi</a>
+                                    </li>
+                                    <li class="sidebar-item {{ Route::is('admin.city*') ? 'selected' : '' }}">
+                                        <a href="{{ route('admin.city.index') }}" class="sidebar-link">Kota</a>
+                                    </li>
+                                </ul>
+                            </li>
+
+                            <li class='nav-small-cap'><span class='hide-menu'>Entitas</span></li>
+                            <li class="sidebar-item {{ Route::is('admin.sales.*') }}">
+                                <a href="{{ route('admin.sales.index') }}" class="sidebar-link">
+                                    <i class="fa fa-user"></i>
+                                    <span class='hide-menu'>Sales</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item {{ Route::is('admin.admin*') ? 'selected' : '' }}">
+                                <a href="{{ route('admin.admin.index') }}" class="sidebar-link">
+                                    <i class="fa fa-user"></i>
+                                    <span class='hide-menu'>Admin</span>
+                                </a>
+                            </li>
+                        @endif
 
                         <li class='nav-small-cap'><span class='hide-menu'>Transaksi Data</span></li>
-                        <li class="sidebar-item">
+                        <li class="sidebar-item {{ Route::is('admin.ongoing*') ? 'selected' : '' }}">
                             <a href="{{ route('admin.ongoing-request.index') }}" class="sidebar-link">
                                 <i data-feather="log-out" class="feather-icon"></i>
                                 <span class='hide-menu'>Barang Keluar</span>
                             </a>
                         </li>
-                        <li class="sidebar-item">
+                        <li class="sidebar-item {{ Route::is('admin.deposit*') ? 'selected' : '' }}">
                             <a href="{{ route('admin.deposit-report.index') }}" class="sidebar-link">
                                 <i data-feather="log-in" class="feather-icon"></i>
                                 <span class='hide-menu'>Setoran Barang</span>
                             </a>
                         </li>
 
-
-                        <li class='nav-small-cap'><span class='hide-menu'>Laporan</span></li>
-                        <li class="sidebar-item">
-                            <a href="{{ route('admin.visit.index') }}" class="sidebar-link">
-                                <i class="fa fa-image"></i>
-                                <span class='hide-menu'>Laporan Kunjungan</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a href="{{ route('admin.sales-report.index') }}" class="sidebar-link">
-                                <i class="fa fa-user"></i>
-                                <span class='hide-menu'>Produk Sales</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a href="{{ route('admin.pharmacy-report.index') }}" class="sidebar-link">
-                                <i class="fa fa-home"></i>
-                                <span class='hide-menu'>Produk Apotek</span>
-                            </a>
-                        </li>
+                        @if (authUser()->is_admin)
+                            <li class='nav-small-cap'><span class='hide-menu'>Laporan</span></li>
+                            <li class="sidebar-item {{ Route::is('admin.visit*') ? 'selected' : '' }}">
+                                <a href="{{ route('admin.visit.index') }}" class="sidebar-link">
+                                    <i class="fa fa-image"></i>
+                                    <span class='hide-menu'>Laporan Kunjungan</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item {{ Route::is('admin.sales-report*') ? 'selected' : '' }}">
+                                <a href="{{ route('admin.sales-report.index') }}" class="sidebar-link">
+                                    <i class="fa fa-user"></i>
+                                    <span class='hide-menu'>Produk Sales</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item {{ Route::is('admin.pharmacy-report.*') ? 'selected' : '' }}">
+                                <a href="{{ route('admin.pharmacy-report.index') }}" class="sidebar-link">
+                                    <i class="fa fa-home"></i>
+                                    <span class='hide-menu'>Produk Apotek</span>
+                                </a>
+                            </li>
+                        @endif
 
                     </ul>
                 </nav>

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Report;
+namespace App\Http\Controllers\Sales\Report;
 
 use App\Http\Controllers\Controller;
 use App\Models\DepositReport;
@@ -19,11 +19,7 @@ class DepositReportController extends Controller
     {
 
         if (request()->wantsJson()) {
-            $query = DepositReport::query()->with([
-                'sales',
-                'pharmacies.products'
-            ])
-                ->withCount(['pharmacies']);
+            $query = DepositReport::query()->with(['sales', 'pharmacies.products'])->withCount(['pharmacies']);
 
             return DataTables::of($query)
                 ->addIndexColumn()
@@ -36,17 +32,14 @@ class DepositReportController extends Controller
                     });
                 })
                 ->addColumn('action', function ($item) {
-                    $detail_route = route('admin.deposit-report.show', $item->id);
-                    $edit_route = route('admin.deposit-report.edit', $item->id);
+                    $detail_route = route('sales.deposit-report.show', $item->id);
 
-                    $editDropdown = ($item->status == 'PENDING' && authUser()->is_admin) ? "<a class='dropdown-item' href='$edit_route'><i class='ri-ball-pen-line'></i> Edit</a>" : '';
                     return "<div class='dropdown'>
                                 <button class='btn btn-secondary dropdown-toggle' type='button' id='dropdownMenuButton' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
                                     Action 
                                 </button>
                                 <div class='dropdown-menu' aria-labelledby='dropdownMenuButton'>
                                 <a class='dropdown-item' href='$detail_route'><i class='fa fa-desktop'></i> Detail</a>
-                                    $editDropdown
                                 </div>
                             </div>";;
                 })
@@ -54,13 +47,13 @@ class DepositReportController extends Controller
         }
 
         $statuses = DepositReport::STATUS;
-        return view('admin.report.deposit-report.index', get_defined_vars());
+        return view('sales.report.deposit-report.index', get_defined_vars());
     }
 
     public function create()
     {
-        $saless = Sales::get();
-        return view('admin.report.deposit-report.create', get_defined_vars());
+        $sales = Sales::where('id_sales', authUser()->id_sales)->first();
+        return view('sales.report.deposit-report.create', get_defined_vars());
     }
 
     public function store()
@@ -82,7 +75,7 @@ class DepositReportController extends Controller
 
             foreach ($validatedData['pharmacies'] as $pharmacy) {
                 $imageUrl = '';
-                if (isset($pharmacy['image_url'])) {
+                if (isset($pharmacy['image'])) {
                     $imageUrl = $pharmacy['image']->store('public');
                 }
                 $newPharmacy = $depositReport->pharmacies()->create([
@@ -105,98 +98,6 @@ class DepositReportController extends Controller
         }
 
         return response()->json('ok');
-    }
-
-    public function edit($id)
-    {
-        $saless = Sales::get();
-        $depositReport = DepositReport::with(['pharmacies.products'])->find($id);
-        $thisSales = Sales::where('id', $depositReport->sales_id)->first();
-        $pharmacies = Pharmacy::get();
-        $products = Product::get();
-        $pharmacyProduct = PharmacyProduct::with(['product'])->get();
-        return view('admin.report.deposit-report.edit', get_defined_vars());
-    }
-
-    public function update($id)
-    {
-        $validatedData = request()->validate([
-            'sales_id' => ['required'],
-            'request_date' => ['nullable'],
-            'pharmacies' => ['required']
-        ]);
-
-        try {
-            DB::beginTransaction();
-
-            $depositReport = DepositReport::with(['pharmacies.products'])->find($id);
-            $pharmacies = $depositReport->pharmacies;
-            foreach ($pharmacies as $pharmacy) {
-                $pharmacy->products()->delete();
-            }
-            $depositReport->pharmacies()->delete();
-
-            foreach ($validatedData['pharmacies'] as $pharmacy) {
-                $imageUrl = '';
-                if (isset($pharmacy['image_url'])) {
-                    $imageUrl = $pharmacy['image']->store('public');
-                }
-                $newPharmacy = $depositReport->pharmacies()->create([
-                    'pharmacy_id' => $pharmacy['pharmacy_id'],
-                    'image_url' => $imageUrl
-                ]);
-
-                foreach ($pharmacy['products'] as $product) {
-                    $newPharmacy->products()->create([
-                        'pharmacy_product_id' => $product['product_id'],
-                        'stock' => $product['stock']
-                    ]);
-                }
-            }
-
-            DB::commit();
-        } catch (Exception $e) {
-            DB::rollBack();
-            throw $e;
-        }
-
-        return response()->json('ok');
-    }
-
-    public function update_status(DepositReport $depositReport)
-    {
-        $validatedData = request()->validate([
-            'status' => ['required']
-        ]);
-
-        try {
-            DB::beginTransaction();
-
-            $depositReport->update($validatedData);
-
-            if ($validatedData['status'] == 'APPROVED') {
-                $pharmacies = $depositReport->pharmacies;
-
-                $new_products = [];
-                foreach ($pharmacies as $pharmacy) {
-                    $products = DepositReportPharmacyProduct::where('deposit_report_pharmacy_id', $pharmacy->id)->get();
-                    foreach ($products as $product) {
-                        $new_products[] = $product;
-                    }
-                }
-
-                foreach ($new_products as $product) {
-                    PharmacyProduct::find($product["pharmacy_product_id"])->update(['stock_sold' => $product['stock']]);
-                }
-            }
-
-            DB::commit();
-        } catch (Exception $e) {
-            DB::rollBack();
-            throw $e;
-        }
-
-        return response()->json(['message' => 'Status Berhasil Diperbarui']);
     }
 
     public function show(DepositReport $depositReport)
@@ -254,6 +155,6 @@ class DepositReportController extends Controller
             }
         }
 
-        return view('admin.report.deposit-report.detail', get_defined_vars());
+        return view('sales.report.deposit-report.detail', get_defined_vars());
     }
 }
