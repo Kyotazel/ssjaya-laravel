@@ -64,6 +64,8 @@
     <script>
         let response_data, selected_product_id, selectedProductId;
 
+        let products = @json($products);
+
         let index = 0;
 
         function appendPharmacy() {
@@ -100,12 +102,18 @@
 
         function appendProduct(index) {
             let html = `
-                            <div class="col-md-8 product_data" data-parent="${index}" data-id="${product_index}">
+                            <div class="col-md-5 product_data" data-parent="${index}" data-id="${product_index}">
                                 <div class="form-group">
                                     <label for="pharmacies[${index}][products][${product_index}][product_id]">Product</label>
                                     <select name="pharmacies[${index}][products][${product_index}][product_id]" id="pharmacies[${index}][products][${product_index}][product_id]" class="form-control">
                                         <option value="">Pilih Produk</option>
                                     </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3 product_data" data-parent="${index}" data-id="${product_index}">
+                                <div class="form-group">
+                                    <label for="pharmacies[${index}][products][${product_index}][price]">Harga</label>
+                                    <input type="number" class="form-control" name="pharmacies[${index}][products][${product_index}][price]" id="pharmacies[${index}][products][${product_index}][price]">
                                 </div>
                             </div>
                             <div class="col-md-3 product_data" data-parent="${index}" data-id="${product_index}">
@@ -121,20 +129,13 @@
             $(`.product_item_${index}`).append(html);
             let selectElem = $(`.product_item_${index}`).find(
                 `select[name="pharmacies[${index}][products][${product_index}][product_id]"]`);
-            console.log(selectElem);
             selectElem.empty();
             selectElem.append('<option value="">Pilih Produk</option>');
-            if (response_data && response_data.length > 0) {
-                response_data.forEach(apotek => {
-                    if (apotek.id_apotek == selectedProductId) {
-                        apotek.products.forEach(product => {
-                            selectElem.append(
-                                `<option value="${product.id}">${product.product.nama}</option>`
-                            );
-                        });
-                    }
-                });
-            }
+            products.forEach(product => {
+                selectElem.append(
+                    `<option value="${product.id}">${product.nama}</option>`
+                )
+            })
 
             product_index++;
         }
@@ -184,7 +185,6 @@
             id = $(element).closest('.pharmacy_card').data('id');
             $(`.product_data[data-parent=${id}]`).remove();
 
-            // Lakukan apa pun yang perlu Anda lakukan dengan selectedProductId atau id di sini.
         }
 
 
@@ -210,20 +210,37 @@
             let formData = new FormData($('.form_input')[0]);
             formData.append('_token', '{{ csrf_token() }}')
 
-            $.ajax({
-                url: `{{ route('admin.ongoing-request.store') }}`,
-                type: "POST",
-                data: formData,
-                contentType: false,
-                processData: false,
-                dataType: "JSON",
-                success: function(data) {
-                    window.location.href = `{{ route('admin.ongoing-request.index') }}`;
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    notif_error("Mohon Lengkapi Data");
+            Swal.fire({
+                icon: 'question',
+                text: 'apakah anda yakin data yang dimasukkan sudah sesuai?',
+                showCancelButton: true,
+                confirmButtonClass: 'btn btn-primary rounded-pill w-xs me-2 mb-1 mr-3',
+                confirmButtonText: "Ya , Simpan",
+                cancelButtonText: "Batal",
+                cancelButtonClass: 'btn btn-danger rounded-pill w-xs mb-1',
+                closeOnConfirm: true,
+                closeOnCancel: true,
+                buttonsStyling: false,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: `{{ route('admin.ongoing-request.store') }}`,
+                        type: "POST",
+                        data: formData,
+                        contentType: false,
+                        processData: false,
+                        dataType: "JSON",
+                        success: function(data) {
+                            window.location.href = `{{ route('admin.ongoing-request.index') }}`;
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            notif_error("Mohon Lengkapi Data");
+                        }
+                    })
                 }
-            })
+            });
+
+
         })
     </script>
 @endsection

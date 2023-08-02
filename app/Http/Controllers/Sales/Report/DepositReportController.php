@@ -19,7 +19,13 @@ class DepositReportController extends Controller
     {
 
         if (request()->wantsJson()) {
-            $query = DepositReport::query()->with(['sales', 'pharmacies.products'])->withCount(['pharmacies']);
+            $query = DepositReport::query()->with([
+                'sales',
+                'pharmacies.products'
+            ])
+                ->withCount(['pharmacies'])
+                ->where('sales_id', authUser()->id)
+                ->where('status', '!=', 'ARCHIVED');
 
             return DataTables::of($query)
                 ->addIndexColumn()

@@ -18,7 +18,8 @@ class DepositReport extends Model
     const STATUS = [
         'PENDING',
         'APPROVED',
-        'REJECTED'
+        'REJECTED',
+        'ARCHIVED'
     ];
 
     public function sales()

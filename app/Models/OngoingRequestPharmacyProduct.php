@@ -12,7 +12,8 @@ class OngoingRequestPharmacyProduct extends Model
     protected $fillable = [
         'ongoing_request_pharmacy_id',
         'pharmacy_product_id',
-        'stock'
+        'stock',
+        'price'
     ];
 
     public function ongoingRequestPharmacy()

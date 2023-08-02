@@ -220,7 +220,7 @@
                         <li class="sidebar-item {{ Route::is('admin.deposit*') ? 'selected' : '' }}">
                             <a href="{{ route('admin.deposit-report.index') }}" class="sidebar-link">
                                 <i data-feather="log-in" class="feather-icon"></i>
-                                <span class='hide-menu'>Setoran Barang</span>
+                                <span class='hide-menu'>Setoran Barang Laku</span>
                             </a>
                         </li>
 

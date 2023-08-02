@@ -25,8 +25,8 @@ class OngoingRequestController extends Controller
                 'pharmacies.products'
             ])
                 ->where('sales_id', authUser()->id)
-                ->withCount(['pharmacies'])
-                ->where('sales_id', authUser()->id_sales);
+                ->where('status', '!=', 'ARCHIVED')
+                ->withCount(['pharmacies']);
 
             return DataTables::of($query)
                 ->addIndexColumn()

@@ -120,12 +120,13 @@
                         className: 'text-center',
                         render: function(data, type, row, meta) {
                             if (row.status == 'PENDING') {
-                                return `<button class="btn btn-sm btn_update_status btn-warning" data-id="${row.id}">Pending</button>`
+                                return `<button class="btn btn-sm btn_update_status btn-warning" data-id="${row.id}">Menunggu</button>`
                             } else if (row.status == 'APPROVED') {
-                                return `<button class="btn btn-sm btn-success">Approved</button>`
-                            } else {
-                                return `<button class="btn btn-sm btn-danger">Rejected</button>`
+                                return `<button class="btn btn-sm btn-success">Disetujui</button>`
+                            } else if (row.status == 'REJECTED') {
+                                return `<button class="btn btn-sm btn-danger">Ditolak</button>`
                             }
+                            return `<button class="btn btn-sm btn-secondary">Diarsipkan</button>`
                         }
                     },
                     {
@@ -146,6 +147,13 @@
             e.preventDefault();
             id_use = $(this).data('id')
             $('#modal_status').modal('show');
+        })
+
+        $(document).on('click', '.archiveButton', function(e) {
+            e.preventDefault();
+            id_use = $(this).data('id')
+            $("#status").val('ARCHIVED');
+            $('.btn_save').click();
         })
 
         $(document).on('click', '.btn_save', function(e) {

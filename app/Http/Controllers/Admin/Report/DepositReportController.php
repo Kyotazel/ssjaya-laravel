@@ -23,6 +23,7 @@ class DepositReportController extends Controller
                 'sales',
                 'pharmacies.products'
             ])
+                ->where('status', '!=', 'ARCHIVED')
                 ->withCount(['pharmacies']);
 
             return DataTables::of($query)
@@ -39,6 +40,7 @@ class DepositReportController extends Controller
                     $detail_route = route('admin.deposit-report.show', $item->id);
                     $edit_route = route('admin.deposit-report.edit', $item->id);
 
+                    $archiveButton =  "<button class='dropdown-item archiveButton' data-id='$item->id'><i class='fa fa-trash'></i> Arsipkan</button>";
                     $editDropdown = ($item->status == 'PENDING' && authUser()->is_admin) ? "<a class='dropdown-item' href='$edit_route'><i class='ri-ball-pen-line'></i> Edit</a>" : '';
                     return "<div class='dropdown'>
                                 <button class='btn btn-secondary dropdown-toggle' type='button' id='dropdownMenuButton' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
@@ -47,6 +49,7 @@ class DepositReportController extends Controller
                                 <div class='dropdown-menu' aria-labelledby='dropdownMenuButton'>
                                 <a class='dropdown-item' href='$detail_route'><i class='fa fa-desktop'></i> Detail</a>
                                     $editDropdown
+                                    $archiveButton
                                 </div>
                             </div>";;
                 })

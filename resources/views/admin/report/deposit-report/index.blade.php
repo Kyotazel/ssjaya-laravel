@@ -1,12 +1,12 @@
 @extends('layouts.admin')
-@section('title', __('Setoran Barang'))
+@section('title', __('Setoran Barang Laku'))
 
 @section('content')
     <div class="card">
         <div class="card-header d-flex align-items-center">
             <div class="card-title mb-0 flex-grow-1">
                 <div class="btn btn-primary">
-                    <h6 class="mb-0 text-light">Daftar Barang Keluar</h6>
+                    <h6 class="mb-0 text-light">Daftar Setoran Barang Laku</h6>
                 </div>
             </div>
             <a class="btn btn-success rounded-pill btn-label" href="{{ route('admin.deposit-report.create') }}"><i
@@ -116,12 +116,13 @@
                         className: 'text-center',
                         render: function(data, type, row, meta) {
                             if (row.status == 'PENDING') {
-                                return `<button class="btn btn-sm btn_update_status btn-warning" data-id="${row.id}">Pending</button>`
+                                return `<button class="btn btn-sm btn_update_status btn-warning" data-id="${row.id}">Menunggu</button>`
                             } else if (row.status == 'APPROVED') {
-                                return `<button class="btn btn-sm btn-success">Approved</button>`
-                            } else {
-                                return `<button class="btn btn-sm btn-danger">Rejected</button>`
+                                return `<button class="btn btn-sm btn-success">Disetujui</button>`
+                            } else if (row.status == 'REJECTED') {
+                                return `<button class="btn btn-sm btn-danger">Ditolak</button>`
                             }
+                            return `<button class="btn btn-sm btn-secondary">Diarsipkan</button>`
                         }
                     },
                     {
@@ -142,6 +143,13 @@
             e.preventDefault();
             id_use = $(this).data('id')
             $('#modal_status').modal('show');
+        })
+
+        $(document).on('click', '.archiveButton', function(e) {
+            e.preventDefault();
+            id_use = $(this).data('id')
+            $("#status").val('ARCHIVED');
+            $('.btn_save').click();
         })
 
         $(document).on('click', '.btn_save', function(e) {

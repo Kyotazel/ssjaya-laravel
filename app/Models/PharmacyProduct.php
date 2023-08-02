@@ -13,7 +13,9 @@ class PharmacyProduct extends Model
         'pharmacy_id',
         'product_id',
         'stock',
-        'stock_sold'
+        'stock_sold',
+        'price_stock',
+        'price_stock_sold'
     ];
 
     public function pharmacy()
