@@ -134,7 +134,22 @@
                                 Status
                             </h5>
                             <p>
-                                {{ $ongoingRequest->status }}
+                                @switch($ongoingRequest->status)
+                                    @case('APPROVED')
+                                        Disetujui
+                                    @break
+
+                                    @case('REJECTED')
+                                        Ditolak
+                                    @break
+
+                                    @case('ARCHIVED')
+                                        Diarsipkan
+                                    @break
+
+                                    @default
+                                        Menunggu
+                                @endswitch
                             </p>
                         </div>
                     </div>
@@ -152,7 +167,7 @@
                         </div>
                         <div class="col">
                             <h5>
-                                Created At
+                                Tanggal Dibuat
                             </h5>
                             <p>
                                 {{ $ongoingRequest->created_at->timezone('Asia/Jakarta')->format('d M Y, H:i') }}
@@ -173,7 +188,7 @@
                         </div>
                         <div class="col">
                             <h5>
-                                Request Date
+                                Tanggal Permintaan
                             </h5>
                             <p>
                                 {{ carbonParse($ongoingRequest->request_date)->timezone('Asia/Jakarta')->format('d M Y, H:i') }}
@@ -227,8 +242,8 @@
                 <table class="table table-bordered">
                     <thead>
                         <tr class="table-active">
-                            <th>Product</th>
-                            <th>Quantity</th>
+                            <th>Produk</th>
+                            <th>Jumlah</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -253,8 +268,8 @@
                         <table class="table table-bordered mt-2">
                             <thead>
                                 <tr class="table-active">
-                                    <th>Product</th>
-                                    <th>Quantity</th>
+                                    <th>Produk</th>
+                                    <th>Jumlah</th>
                                     <th>Harga Satuan</th>
                                 </tr>
                             </thead>

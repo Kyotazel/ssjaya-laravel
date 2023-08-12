@@ -28,6 +28,7 @@ Route::post('/list-mitra', [HomeController::class, 'listApotek'])->name('list-ap
 
 Route::get('city/{id}', [DatamasterController::class, 'city'])->name('city');
 Route::get('pharmacy/{id}', [DatamasterController::class, 'pharmacy'])->name('pharmacy');
+Route::get('pharmacy-report/{id}', [DatamasterController::class, 'pharmacyReport'])->name('pharmacy.report');
 
 require __DIR__ . '/web/sales.php';
 require __DIR__ . '/web/admin.php';

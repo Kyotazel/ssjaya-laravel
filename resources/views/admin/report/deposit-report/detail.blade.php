@@ -134,7 +134,22 @@
                                 Status
                             </h5>
                             <p>
-                                {{ $depositReport->status }}
+                                @switch($depositReport->status)
+                                    @case('APPROVED')
+                                        Disetujui
+                                    @break
+
+                                    @case('REJECTED')
+                                        Ditolak
+                                    @break
+
+                                    @case('ARCHIVED')
+                                        Diarsipkan
+                                    @break
+
+                                    @default
+                                        Menunggu
+                                @endswitch
                             </p>
                         </div>
                     </div>
@@ -152,7 +167,7 @@
                         </div>
                         <div class="col">
                             <h5>
-                                Created At
+                                Tanggal Dibuat
                             </h5>
                             <p>
                                 {{ $depositReport->created_at->timezone('Asia/Jakarta')->format('d M Y, H:i') }}
@@ -206,8 +221,8 @@
                 <table class="table table-bordered">
                     <thead>
                         <tr class="table-active">
-                            <th>Product</th>
-                            <th>Quantity</th>
+                            <th>Produk</th>
+                            <th>Jumlah</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -238,8 +253,8 @@
                         <table class="table table-bordered mt-2">
                             <thead>
                                 <tr class="table-active">
-                                    <th>Product</th>
-                                    <th>Quantity</th>
+                                    <th>Produk</th>
+                                    <th>Jumlah</th>
                                 </tr>
                             </thead>
                             <tbody>

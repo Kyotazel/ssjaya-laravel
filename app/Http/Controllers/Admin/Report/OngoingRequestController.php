@@ -133,7 +133,8 @@ class OngoingRequestController extends Controller
     public function edit($id)
     {
         $saless = Sales::get();
-        $ongoingRequest = OngoingRequest::with(['pharmacies.products'])->find($id);
+        $ongoingRequest = OngoingRequest::with(['pharmacies.products.pharmacyProduct'])->find($id);
+        // return $ongoingRequest;
         $thisSales = Sales::where('id', $ongoingRequest->sales_id)->first();
         $pharmacies = Pharmacy::get();
         $products = Product::get();
@@ -169,9 +170,23 @@ class OngoingRequestController extends Controller
                 ]);
 
                 foreach ($pharmacy['products'] as $product) {
+                    $pharmacyProduct = PharmacyProduct::where([
+                        'pharmacy_id' => $pharmacy['pharmacy_id'],
+                        'product_id' => $product['product_id']
+                    ])
+                        ->first();
+                    if (!$pharmacyProduct) {
+                        $pharmacyProduct = PharmacyProduct::create([
+                            'pharmacy_id' => $pharmacy['pharmacy_id'],
+                            'product_id' => $product['product_id'],
+                            'stock' => 0,
+                            'stock_sold' => 0
+                        ]);
+                    }
                     $newPharmacy->products()->create([
-                        'pharmacy_product_id' => $product['product_id'],
-                        'stock' => $product['stock']
+                        'pharmacy_product_id' => $pharmacyProduct->id,
+                        'stock' => $product['stock'],
+                        'price' => $product['price']
                     ]);
                 }
             }

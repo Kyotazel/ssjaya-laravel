@@ -85,7 +85,7 @@ class DepositReportController extends Controller
 
             foreach ($validatedData['pharmacies'] as $pharmacy) {
                 $imageUrl = '';
-                if (isset($pharmacy['image_url'])) {
+                if (isset($pharmacy['image'])) {
                     $imageUrl = $pharmacy['image']->store('public');
                 }
                 $newPharmacy = $depositReport->pharmacies()->create([
@@ -96,7 +96,8 @@ class DepositReportController extends Controller
                 foreach ($pharmacy['products'] as $product) {
                     $newPharmacy->products()->create([
                         'pharmacy_product_id' => $product['product_id'],
-                        'stock' => $product['stock']
+                        'stock' => $product['stock'],
+                        'price' => $product['price']
                     ]);
                 }
             }
@@ -189,7 +190,13 @@ class DepositReportController extends Controller
                 }
 
                 foreach ($new_products as $product) {
-                    PharmacyProduct::find($product["pharmacy_product_id"])->update(['stock_sold' => $product['stock']]);
+                    $pharmacyProduct = PharmacyProduct::find($product["pharmacy_product_id"]);
+                    $pharmacyProduct->update([
+                        'stock' => $pharmacyProduct->stock - $product['stock'],
+                        'stock_sold' => $pharmacyProduct->stock_sold + $product['stock'],
+                        'price_stock' =>  $pharmacyProduct->price_stock - $product['price'],
+                        'price_stock_sold' => $pharmacyProduct->price_stock_sold + $product['price']
+                    ]);
                 }
             }
 

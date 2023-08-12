@@ -20,10 +20,10 @@
                 </div>
                 <a class="btn btn-lg btn-outline-primary rounded-pill btn-label mr-2"
                     href="{{ route('admin.ongoing-request.index') }}">
-                    Cancel</a>
+                    Batalkan</a>
                 <button type="button" class="btn btn-lg btn-primary rounded-pill btn-label btn_submit"><i
-                        class="ri-add-circle-line label-icon"></i>
-                    Submit</button>
+                        class="fa fa-save"></i>
+                    Perbarui</button>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -41,7 +41,7 @@
                     </div>
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label for="request_date">Request Date</label>
+                            <label for="request_date">Tanggal Permintaan</label>
                             <input type="date" name="request_date" id="request_date" class="form-control">
                         </div>
                     </div>
@@ -70,7 +70,7 @@
                                     <label for="pharmacies[{{ $index_counter }}][pharmacy_id]">Apotek</label>
                                     <select name="pharmacies[{{ $index_counter }}][pharmacy_id]"
                                         id="pharmacies[{{ $index_counter }}][pharmacy_id]"
-                                        onchange="onProductSelectChange(this)" class="form-control">
+                                        onchange="onProductSelectChange(this)" class="form-control select2pharmacy">
                                         <option value="">Pilih Apotek</option>
                                         @foreach ($pharmacies->where('id_sales', $thisSales->id_sales) as $pharmacy_item)
                                             <option
@@ -88,23 +88,28 @@
                         </div>
                         <div class="row product_item_{{ $index_counter }}">
                             @foreach ($pharmacy->products as $keyChild => $product)
-                                <div class="col-md-8 product_data" data-parent="{{ $index_counter }}"
+                                <div class="col-md-5 product_data" data-parent="{{ $index_counter }}"
                                     data-id="{{ $index_detail }}">
                                     <div class="form-group">
                                         <label
-                                            for="pharmacies[{{ $index_counter }}][products][{{ $index_detail }}][product_id]">Product
+                                            for="pharmacies[{{ $index_counter }}][products][{{ $index_detail }}][product_id]">Produk
                                         </label>
                                         <select
                                             name="pharmacies[{{ $index_counter }}][products][{{ $index_detail }}][product_id]"
                                             id="pharmacies[{{ $index_counter }}][products][{{ $index_detail }}][product_id]"
                                             class="form-control">
                                             <option value="">Pilih Produk</option>
-                                            @foreach ($pharmacyProduct->where('pharmacy_id', $pharmacy->pharmacy_id) as $product_item)
+                                            @foreach ($products as $product_item)
+                                                <option
+                                                    {{ $product->pharmacyProduct->product_id == $product_item->id ? 'selected' : '' }}
+                                                    value="{{ $product_item->id }}">{{ $product_item->nama }}</option>
+                                            @endforeach
+                                            {{-- @foreach ($pharmacyProduct->where('pharmacy_id', $pharmacy->pharmacy_id) as $product_item)
                                                 <option
                                                     {{ $product_item->id == $product->pharmacy_product_id ? 'selected' : '' }}
                                                     value="{{ $product_item->id }}">{{ $product_item->product->nama }}
                                                 </option>
-                                            @endforeach
+                                            @endforeach --}}
                                         </select>
                                     </div>
                                 </div>
@@ -112,7 +117,18 @@
                                     data-id="{{ $index_detail }}">
                                     <div class="form-group">
                                         <label
-                                            for="pharmacies[{{ $index_counter }}][products][{{ $index_detail }}][stock]">Quantity</label>
+                                            for="pharmacies[{{ $index_counter }}][products][{{ $index_detail }}][price]">Harga</label>
+                                        <input type="number" class="form-control"
+                                            name="pharmacies[{{ $index_counter }}][products][{{ $index_detail }}][price]"
+                                            value="{{ $product->price }}"
+                                            id="pharmacies[{{ $index_counter }}][products][{{ $index_detail }}][price]">
+                                    </div>
+                                </div>
+                                <div class="col-md-3 product_data" data-parent="{{ $index_counter }}"
+                                    data-id="{{ $index_detail }}">
+                                    <div class="form-group">
+                                        <label
+                                            for="pharmacies[{{ $index_counter }}][products][{{ $index_detail }}][stock]">Jumlah</label>
                                         <input type="number" class="form-control"
                                             name="pharmacies[{{ $index_counter }}][products][{{ $index_detail }}][stock]"
                                             value="{{ $product->stock }}"
@@ -144,6 +160,10 @@
     <script>
         let response_data, selected_product_id, selectedProductId;
 
+        $('.select2pharmacy').select2();
+
+        let products = @json($products);
+
         $.ajax({
             url: `{{ route('pharmacy', ':id') }}`.replace(':id', `{{ $thisSales->id }}`),
             type: "GET",
@@ -165,7 +185,7 @@
                                     <div class="col-md-11">
                                         <div class="form-group">
                                             <label for="pharmacies[${index}][pharmacy_id]">Apotek</label>
-                                            <select name="pharmacies[${index}][pharmacy_id]" id="pharmacies[${index}][pharmacy_id]" onchange="onProductSelectChange(this)" class="form-control">
+                                            <select name="pharmacies[${index}][pharmacy_id]" id="pharmacies[${index}][pharmacy_id]" onchange="onProductSelectChange(this)" class="form-control select2pharmacy">
                                                 <option value="">Pilih Apotek</option>
                                             </select>
                                         </div>
@@ -185,6 +205,7 @@
                             </div>
                         </div>`
             $('.data-apotek').append(html);
+            $('.select2pharmacy').select2();
             index++;
         }
 
@@ -192,9 +213,9 @@
 
         function appendProduct(index) {
             let html = `
-                            <div class="col-md-8 product_data" data-parent="${index}" data-id="${product_index}">
+                            <div class="col-md-5 product_data" data-parent="${index}" data-id="${product_index}">
                                 <div class="form-group">
-                                    <label for="pharmacies[${index}][products][${product_index}][product_id]">Product</label>
+                                    <label for="pharmacies[${index}][products][${product_index}][product_id]">Produk</label>
                                     <select name="pharmacies[${index}][products][${product_index}][product_id]" id="pharmacies[${index}][products][${product_index}][product_id]" class="form-control">
                                         <option value="">Pilih Produk</option>
                                     </select>
@@ -202,7 +223,13 @@
                             </div>
                             <div class="col-md-3 product_data" data-parent="${index}" data-id="${product_index}">
                                 <div class="form-group">
-                                    <label for="pharmacies[${index}][products][${product_index}][stock]">Quantity</label>
+                                    <label for="pharmacies[${index}][products][${product_index}][price]">Harga</label>
+                                    <input type="number" class="form-control" name="pharmacies[${index}][products][${product_index}][price]" id="pharmacies[${index}][products][${product_index}][price]">
+                                </div>
+                            </div>
+                            <div class="col-md-3 product_data" data-parent="${index}" data-id="${product_index}">
+                                <div class="form-group">
+                                    <label for="pharmacies[${index}][products][${product_index}][stock]">Jumlah</label>
                                     <input type="number" class="form-control" name="pharmacies[${index}][products][${product_index}][stock]" id="pharmacies[${index}][products][${product_index}][stock]">
                                 </div>
                             </div>
@@ -213,20 +240,13 @@
             $(`.product_item_${index}`).append(html);
             let selectElem = $(`.product_item_${index}`).find(
                 `select[name="pharmacies[${index}][products][${product_index}][product_id]"]`);
-            console.log(selectElem);
             selectElem.empty();
             selectElem.append('<option value="">Pilih Produk</option>');
-            if (response_data && response_data.length > 0) {
-                response_data.forEach(apotek => {
-                    if (apotek.id_apotek == selectedProductId) {
-                        apotek.products.forEach(product => {
-                            selectElem.append(
-                                `<option value="${product.id}">${product.product.nama}</option>`
-                            );
-                        });
-                    }
-                });
-            }
+            products.forEach(product => {
+                selectElem.append(
+                    `<option value="${product.id}">${product.nama}</option>`
+                )
+            })
 
             product_index++;
         }
@@ -303,19 +323,35 @@
             formData.append('_token', '{{ csrf_token() }}')
             formData.append('_method', 'PUT')
 
-            $.ajax({
-                url: `{{ route('admin.ongoing-request.update', ':id') }}`.replace(':id',
-                    `{{ $ongoingRequest->id }}`),
-                type: "POST",
-                data: formData,
-                contentType: false,
-                processData: false,
-                dataType: "JSON",
-                success: function(data) {
-                    window.location.href = `{{ route('admin.ongoing-request.index') }}`;
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    notif_error("Mohon Lengkapi Data");
+            Swal.fire({
+                icon: 'question',
+                text: 'apakah anda yakin data yang dimasukkan sudah sesuai?',
+                showCancelButton: true,
+                confirmButtonClass: 'btn btn-primary rounded-pill w-xs me-2 mb-1 mr-3',
+                confirmButtonText: "Ya , Simpan",
+                cancelButtonText: "Batal",
+                cancelButtonClass: 'btn btn-danger rounded-pill w-xs mb-1',
+                closeOnConfirm: true,
+                closeOnCancel: true,
+                buttonsStyling: false,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: `{{ route('admin.ongoing-request.update', ':id') }}`.replace(':id',
+                            `{{ $ongoingRequest->id }}`),
+                        type: "POST",
+                        data: formData,
+                        contentType: false,
+                        processData: false,
+                        dataType: "JSON",
+                        success: function(data) {
+                            window.location.href =
+                                `{{ route('admin.ongoing-request.index') }}`;
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            notif_error("Mohon Lengkapi Data");
+                        }
+                    })
                 }
             })
         })

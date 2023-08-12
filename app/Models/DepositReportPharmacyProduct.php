@@ -12,7 +12,8 @@ class DepositReportPharmacyProduct extends Model
     protected $fillable = [
         'deposit_report_pharmacy_id',
         'pharmacy_product_id',
-        'stock'
+        'stock',
+        'price'
     ];
 
     public function depositReportPharmacy()

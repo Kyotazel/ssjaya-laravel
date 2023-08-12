@@ -19,8 +19,8 @@
                         <tr>
                             <th>No</th>
                             <th>Kode</th>
-                            <th>Created At</th>
-                            <th>Request Date</th>
+                            <th>Tanggal Dibuat</th>
+                            <th>Tanggal Permintaan</th>
                             <th>Sales</th>
                             <th>Jumlah Apotek</th>
                             <th>Jumlah Produk</th>

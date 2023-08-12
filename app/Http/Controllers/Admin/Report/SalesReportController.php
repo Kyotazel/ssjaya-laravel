@@ -16,41 +16,36 @@ class SalesReportController extends Controller
         if (request()->wantsJson()) {
             $query = Sales::query()
                 ->with([
-                    'pharmacies:id_apotek,id_sales,id_apotek',
                     'pharmacies.products:id,pharmacy_id,stock,stock_sold,product_id',
                     'pharmacies.products.product:id,harga'
-                ]);
+                ])
+                ->with('pharmacies', function ($q) {
+                    $q->withSum('products', 'stock')
+                        ->withSum('products', 'stock_sold')
+                        ->withSum('products', 'price_stock')
+                        ->withSum('products', 'price_stock_sold')
+                        ->having('products_sum_price_stock_sold', '<>', 0)
+                        ->orHaving('products_sum_price_stock', '<>', 0);
+                });
 
             return DataTables::of($query)
                 ->addIndexColumn()
                 ->addColumn('products_sum_stock', function ($item) {
-                    $stockSum = $item->pharmacies->sum(function ($subitem) {
-                        return $subitem->products->sum('stock');
-                    });
+                    $stockSum = $item->pharmacies->sum('products_sum_stock');
 
                     return $stockSum;
                 })
                 ->addColumn('products_sum_stock_sold', function ($item) {
-                    $stockSum = $item->pharmacies->sum(function ($subitem) {
-                        return $subitem->products->sum('stock_sold');
-                    });
+                    $stockSum = $item->pharmacies->sum('products_sum_stock_sold');
 
                     return $stockSum;
                 })
                 ->addColumn('products_price_stock', function ($item) {
-                    $sumPrice = $item->pharmacies->sum(function ($subitem) {
-                        return $subitem->products->sum(function ($subsub) {
-                            return $subsub->stock * $subsub->product->harga;
-                        });
-                    });
+                    $sumPrice = $item->pharmacies->sum('products_sum_price_stock');
                     return 'Rp. ' . number_format($sumPrice);
                 })
                 ->addColumn('products_price_stock_sold', function ($item) {
-                    $sumPrice = $item->pharmacies->sum(function ($subitem) {
-                        return $subitem->products->sum(function ($subsub) {
-                            return $subsub->stock_sold * $subsub->product->harga;
-                        });
-                    });
+                    $sumPrice = $item->pharmacies->sum('products_sum_price_stock_sold');
                     return 'Rp. ' . number_format($sumPrice);
                 })
                 ->addColumn('action', function ($item) {
@@ -72,39 +67,28 @@ class SalesReportController extends Controller
 
     public function show($id)
     {
-        $sales = Sales::where('id', $id)
+        $sales = Sales::query()
             ->with([
-                'pharmacies:id_apotek,id_sales',
-                'pharmacies.products:pharmacy_id,product_id,stock,stock_sold',
-                'pharmacies.products.product:id,nama,harga'
+                'pharmacies.products:id,pharmacy_id,stock,stock_sold,product_id,price_stock,price_stock_sold',
+                'pharmacies.products.product:id,harga,nama'
             ])
+            ->with('pharmacies', function ($q) {
+                $q->withSum('products', 'stock')
+                    ->withSum('products', 'stock_sold')
+                    ->withSum('products', 'price_stock')
+                    ->withSum('products', 'price_stock_sold')
+                    ->having('products_sum_price_stock_sold', '<>', 0)
+                    ->orHaving('products_sum_price_stock', '<>', 0);
+            })
             ->withCount('pharmacies')
-            ->first();
+            ->find($id);
 
-        $sales->pharmacies = $sales->pharmacies->map(function ($pharmacy) {
-            $pharmacy->products = $pharmacy->products->map(function ($product) {
-                $product->price_stock = $product->stock * $product->product->harga;
-                $product->price_stock_sold = $product->stock_sold * $product->product->harga;
-
-                return $product;
-            });
-
-            $pharmacy->products_sum_stock = $pharmacy->products->sum('stock');
-            $pharmacy->products_sum_stock_sold = $pharmacy->products->sum('stock_sold');
-            $pharmacy->products_price_stock = $pharmacy->products->sum(function ($product) {
-                return $product->stock * $product->product->harga;
-            });
-            $pharmacy->products_price_stock_sold = $pharmacy->products->sum(function ($product) {
-                return $product->stock_sold * $product->product->harga;
-            });
-
-            return $pharmacy;
-        });
+        // return $sales;
 
         $sales->products_sum_stock = $sales->pharmacies->sum('products_sum_stock');
         $sales->products_sum_stock_sold = $sales->pharmacies->sum('products_sum_stock_sold');
-        $sales->products_price_stock = $sales->pharmacies->sum('products_price_stock');
-        $sales->products_price_stock_sold = $sales->pharmacies->sum('products_price_stock_sold');
+        $sales->products_price_stock = $sales->pharmacies->sum('products_sum_price_stock');
+        $sales->products_price_stock_sold = $sales->pharmacies->sum('products_sum_price_stock_sold');
 
         // return $sales;
 
@@ -114,8 +98,6 @@ class SalesReportController extends Controller
         foreach ($sales->pharmacies as $pharmacy) {
             // Calculate the total price for each product in the pharmacy
             $productsInPharmacy = $pharmacy->products->map(function ($product) {
-                $product->price_stock = $product->stock * $product->product->harga;
-                $product->price_stock_sold = $product->stock_sold * $product->product->harga;
                 return $product;
             });
 

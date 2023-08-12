@@ -15,10 +15,10 @@
                 </div>
                 <a class="btn btn-lg btn-outline-primary rounded-pill btn-label mr-2"
                     href="{{ route('admin.ongoing-request.index') }}">
-                    Cancel</a>
+                    Batalkan</a>
                 <button type="button" class="btn btn-lg btn-primary rounded-pill btn-label btn_submit"><i
-                        class="ri-add-circle-line label-icon"></i>
-                    Submit</button>
+                        class="fa fa-save"></i>
+                    Simpan</button>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -35,7 +35,7 @@
                     </div>
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label for="request_date">Request Date</label>
+                            <label for="request_date">Tanggal Permintaan</label>
                             <input type="date" name="request_date" id="request_date" class="form-control">
                         </div>
                     </div>
@@ -75,7 +75,7 @@
                                     <div class="col-md-11">
                                         <div class="form-group">
                                             <label for="pharmacies[${index}][pharmacy_id]">Apotek</label>
-                                            <select name="pharmacies[${index}][pharmacy_id]" id="pharmacies[${index}][pharmacy_id]" onchange="onProductSelectChange(this)" class="form-control">
+                                            <select name="pharmacies[${index}][pharmacy_id]" id="pharmacies[${index}][pharmacy_id]" onchange="onProductSelectChange(this)" class="form-control select2pharmacy">
                                                 <option value="">Pilih Apotek</option>
                                             </select>
                                         </div>
@@ -95,6 +95,7 @@
                             </div>
                         </div>`
             $('.data-apotek').append(html);
+            $('.select2pharmacy').select2();
             index++;
         }
 
@@ -104,7 +105,7 @@
             let html = `
                             <div class="col-md-5 product_data" data-parent="${index}" data-id="${product_index}">
                                 <div class="form-group">
-                                    <label for="pharmacies[${index}][products][${product_index}][product_id]">Product</label>
+                                    <label for="pharmacies[${index}][products][${product_index}][product_id]">Produk</label>
                                     <select name="pharmacies[${index}][products][${product_index}][product_id]" id="pharmacies[${index}][products][${product_index}][product_id]" class="form-control">
                                         <option value="">Pilih Produk</option>
                                     </select>
@@ -118,7 +119,7 @@
                             </div>
                             <div class="col-md-3 product_data" data-parent="${index}" data-id="${product_index}">
                                 <div class="form-group">
-                                    <label for="pharmacies[${index}][products][${product_index}][stock]">Quantity</label>
+                                    <label for="pharmacies[${index}][products][${product_index}][stock]">Jumlah</label>
                                     <input type="number" class="form-control" name="pharmacies[${index}][products][${product_index}][stock]" id="pharmacies[${index}][products][${product_index}][stock]">
                                 </div>
                             </div>
