@@ -180,7 +180,7 @@
                 <div class="col-md-12">
                     <h3 class="text-dark">Ringkasan Produk</h3>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <div class="item-data-total">
                         <svg width="70" height="71" class="ml-4" viewBox="0 0 60 61" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
@@ -197,7 +197,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
+                {{-- <div class="col-md-6">
                     <div class="item-data-total">
                         <svg width="71" height="71" class="ml-4" viewBox="0 0 61 61" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
@@ -213,7 +213,7 @@
                             <p>Rp. {{ number_format($depositReport->total_price) }}</p>
                         </div>
                     </div>
-                </div>
+                </div> --}}
             </div>
         </div>
         <div class="row mx-5">

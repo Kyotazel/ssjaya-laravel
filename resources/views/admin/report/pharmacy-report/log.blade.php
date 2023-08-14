@@ -62,8 +62,9 @@
                             <h2>
                                 Produk Tersisa
                             </h2>
-                            <p>{{ $pharmacy->products_sum_stock }} (Rp.
-                                {{ number_format($pharmacy->products_price_stock) }})</p>
+                            <p>{{ $pharmacy->products_sum_stock }}</p>
+                            {{-- <p>{{ $pharmacy->products_sum_stock }} (Rp.
+                                {{ number_format($pharmacy->products_price_stock) }})</p> --}}
                         </div>
                     </div>
                 </div>
@@ -80,8 +81,9 @@
                             <h2>
                                 Produk Terjual
                             </h2>
-                            <p>{{ $pharmacy->products_sum_stock_sold }} (Rp.
-                                {{ number_format($pharmacy->products_price_stock_sold) }})</p>
+                            <p>{{ $pharmacy->products_sum_stock_sold }}</p>
+                            {{-- <p>{{ $pharmacy->products_sum_stock_sold }} (Rp.
+                                {{ number_format($pharmacy->products_price_stock_sold) }})</p> --}}
                         </div>
                     </div>
                 </div>
@@ -98,9 +100,11 @@
                             <h2>
                                 Total Produk
                             </h2>
-                            <p>{{ $pharmacy->products_sum_stock_sold + $pharmacy->products_sum_stock }} (Rp.
-                                {{ number_format($pharmacy->products_price_stock_sold + $pharmacy->products_price_stock) }})
+                            <p>{{ $pharmacy->products_sum_stock_sold + $pharmacy->products_sum_stock }}
                             </p>
+                            {{-- <p>{{ $pharmacy->products_sum_stock_sold + $pharmacy->products_sum_stock }} (Rp.
+                                {{ number_format($pharmacy->products_price_stock_sold + $pharmacy->products_price_stock) }})
+                            </p> --}}
                         </div>
                     </div>
                 </div>
@@ -116,7 +120,7 @@
                                     <th>Nama Produk</th>
                                     <th>Timestamp</th>
                                     <th>Stok</th>
-                                    <th>harga</th>
+                                    {{-- <th>harga</th> --}}
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -159,9 +163,9 @@
                     {
                         data: 'stock',
                     },
-                    {
-                        data: 'harga',
-                    }
+                    // {
+                    //     data: 'harga',
+                    // }
                 ],
                 order: [3],
                 columnDefs: [{

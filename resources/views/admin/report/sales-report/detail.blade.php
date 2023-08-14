@@ -118,8 +118,9 @@
                             <h2>
                                 Produk Tersisa
                             </h2>
-                            <p>{{ $sales->products_sum_stock }} (Rp.
-                                {{ number_format($sales->products_price_stock) }})</p>
+                            <p>{{ $sales->products_sum_stock }}</p>
+                            {{-- <p>{{ $sales->products_sum_stock }} (Rp.
+                                {{ number_format($sales->products_price_stock) }})</p> --}}
                         </div>
                     </div>
                 </div>
@@ -136,8 +137,9 @@
                             <h2>
                                 Produk Terjual
                             </h2>
-                            <p>{{ $sales->products_sum_stock_sold }} (Rp.
-                                {{ number_format($sales->products_price_stock_sold) }})</p>
+                            <p>{{ $sales->products_sum_stock_sold }}</p>
+                            {{-- <p>{{ $sales->products_sum_stock_sold }} (Rp.
+                                {{ number_format($sales->products_price_stock_sold) }})</p> --}}
                         </div>
                     </div>
                 </div>
@@ -154,9 +156,10 @@
                             <h2>
                                 Total Produk
                             </h2>
-                            <p>{{ $sales->products_sum_stock_sold + $sales->products_sum_stock }} (Rp.
+                            <p>{{ $sales->products_sum_stock_sold + $sales->products_sum_stock }}</p>
+                            {{-- <p>{{ $sales->products_sum_stock_sold + $sales->products_sum_stock }} (Rp.
                                 {{ number_format($sales->products_price_stock_sold + $sales->products_price_stock) }})
-                            </p>
+                            </p> --}}
                         </div>
                     </div>
                 </div>
@@ -183,7 +186,7 @@
                         </thead>
                         <tbody>
                             @foreach ($products as $product)
-                                <tr>
+                                {{-- <tr>
                                     <td>{{ $product['nama'] }}</td>
                                     <td>{{ $product['stock_sold'] }} (Rp.
                                         {{ number_format($product['price_stock_sold']) }})
@@ -191,6 +194,13 @@
                                     <td>{{ $product['stock'] }} (Rp. {{ number_format($product['price_stock']) }})</td>
                                     <td>{{ $product['stock_sold'] + $product['stock'] }} (Rp.
                                         {{ number_format($product['price_stock_sold'] + $product['price_stock']) }})</td>
+                                </tr> --}}
+                                <tr>
+                                    <td>{{ $product['nama'] }}</td>
+                                    <td>{{ $product['stock_sold'] }}
+                                    </td>
+                                    <td>{{ $product['stock'] }}</td>
+                                    <td>{{ $product['stock_sold'] + $product['stock'] }}</td>
                                 </tr>
                             @endforeach
                         </tbody>

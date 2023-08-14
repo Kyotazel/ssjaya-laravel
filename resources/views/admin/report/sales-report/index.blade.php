@@ -53,13 +53,15 @@
                     {
                         searchable: false,
                         render: function(data, type, row, meta) {
-                            return `${row.products_sum_stock} (${row.products_price_stock})`
+                            // return `${row.products_sum_stock} (${row.products_price_stock})`
+                            return `${row.products_sum_stock}`
                         }
                     },
                     {
                         searchable: false,
                         render: function(data, type, row, meta) {
-                            return `${row.products_sum_stock_sold} (${row.products_price_stock_sold})`
+                            // return `${row.products_sum_stock_sold} (${row.products_price_stock_sold})`
+                            return `${row.products_sum_stock_sold}`
                         }
                     },
                     {
