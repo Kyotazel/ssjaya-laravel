@@ -114,11 +114,14 @@ class DepositReportController extends Controller
     public function edit($id)
     {
         $saless = Sales::get();
-        $depositReport = DepositReport::with(['pharmacies.products'])->find($id);
+        $depositReport = DepositReport::with([
+            'pharmacies.products.pharmacyProduct.product',
+            'pharmacies.pharmacy'
+        ])->find($id);
         $thisSales = Sales::where('id', $depositReport->sales_id)->first();
-        $pharmacies = Pharmacy::get();
-        $products = Product::get();
-        $pharmacyProduct = PharmacyProduct::with(['product'])->get();
+        // $pharmacies = Pharmacy::get();
+        // $products = Product::get();
+        // $pharmacyProduct = PharmacyProduct::with(['product'])->get();
         return view('admin.report.deposit-report.edit', get_defined_vars());
     }
 
@@ -126,7 +129,6 @@ class DepositReportController extends Controller
     {
         $validatedData = request()->validate([
             'sales_id' => ['required'],
-            'request_date' => ['nullable'],
             'pharmacies' => ['required']
         ]);
 
@@ -153,7 +155,8 @@ class DepositReportController extends Controller
                 foreach ($pharmacy['products'] as $product) {
                     $newPharmacy->products()->create([
                         'pharmacy_product_id' => $product['product_id'],
-                        'stock' => $product['stock']
+                        'stock' => $product['stock'],
+                        'price' => $product['price']
                     ]);
                 }
             }

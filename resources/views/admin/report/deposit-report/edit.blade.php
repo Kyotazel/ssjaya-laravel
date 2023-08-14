@@ -20,10 +20,10 @@
                 </div>
                 <a class="btn btn-lg btn-outline-primary rounded-pill btn-label mr-2"
                     href="{{ route('admin.deposit-report.index') }}">
-                    Cancel</a>
+                    Batalkan</a>
                 <button type="button" class="btn btn-lg btn-primary rounded-pill btn-label btn_submit"><i
-                        class="ri-add-circle-line label-icon"></i>
-                    Submit</button>
+                        class="fa fa-save"></i>
+                    Perbarui</button>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -31,11 +31,11 @@
                         <div class="form-group">
                             <label for="sales_id">Sales</label>
                             <select name="sales_id" id="sales_id" class="form-control">
-                                <option value="">Pilih Sales</option>
-                                @foreach ($saless as $sales)
+                                <option value="{{ $thisSales->id }}">{{ $thisSales->nama }}</option>
+                                {{-- @foreach ($saless as $sales)
                                     <option {{ $depositReport->sales_id == $sales->id ? 'selected' : '' }}
                                         value="{{ $sales->id }}">{{ $sales->nama }}</option>
-                                @endforeach
+                                @endforeach --}}
                             </select>
                         </div>
                     </div>
@@ -48,9 +48,6 @@
                 <div class="card-title mb-0 flex-grow-1">
                     <h3 class="mb-0 text-dark">Data Apotek</h3>
                 </div>
-                <button class="btn btn-lg btn-primary rounded-pill btn-label btn_add_apotek">
-                    <i class="ri-add-circle-line label-icon"></i> Apotek
-                </button>
             </div>
         </div>
 
@@ -65,13 +62,8 @@
                                     <select name="pharmacies[{{ $index_counter }}][pharmacy_id]"
                                         id="pharmacies[{{ $index_counter }}][pharmacy_id]"
                                         onchange="onProductSelectChange(this)" class="form-control">
-                                        <option value="">Pilih Apotek</option>
-                                        @foreach ($pharmacies->where('id_sales', $thisSales->id_sales) as $pharmacy_item)
-                                            <option
-                                                {{ $pharmacy_item->id_apotek == $pharmacy->pharmacy_id ? 'selected' : '' }}
-                                                value="{{ $pharmacy_item->id_apotek }}">{{ $pharmacy_item->nama_apotek }}
-                                            </option>
-                                        @endforeach
+                                        <option value="{{ $pharmacy->pharmacy->id_apotek }}">
+                                            {{ $pharmacy->pharmacy->nama_apotek }}</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
@@ -92,28 +84,29 @@
                                     data-id="{{ $index_detail }}">
                                     <div class="form-group">
                                         <label
-                                            for="pharmacies[{{ $index_counter }}][products][{{ $index_detail }}][product_id]">Product
+                                            for="pharmacies[{{ $index_counter }}][products][{{ $index_detail }}][product_id]">Produk
                                         </label>
                                         <select
                                             name="pharmacies[{{ $index_counter }}][products][{{ $index_detail }}][product_id]"
                                             id="pharmacies[{{ $index_counter }}][products][{{ $index_detail }}][product_id]"
                                             class="form-control">
-                                            <option value="">Pilih Produk</option>
-                                            @foreach ($pharmacyProduct->where('pharmacy_id', $pharmacy->pharmacy_id) as $product_item)
-                                                <option
-                                                    {{ $product_item->id == $product->pharmacy_product_id ? 'selected' : '' }}
-                                                    value="{{ $product_item->id }}">{{ $product_item->product->nama }}
-                                                </option>
-                                            @endforeach
+                                            <option value="{{ $product->pharmacyProduct->id }}">
+                                                {{ $product->pharmacyProduct->product->nama }}</option>
                                         </select>
                                     </div>
                                 </div>
+                                <input type="hidden" value="{{ $product->price }}"
+                                    class="form-control product_data product-price" data-id="{{ $index_detail }}"
+                                    name="pharmacies[{{ $index_counter }}][products][{{ $index_detail }}][price]"
+                                    id="pharmacies[{{ $index_counter }}][products][{{ $index_detail }}][price]">
                                 <div class="col-md-3 product_data" data-parent="{{ $index_counter }}"
                                     data-id="{{ $index_detail }}">
                                     <div class="form-group">
                                         <label
-                                            for="pharmacies[{{ $index_counter }}][products][{{ $index_detail }}][stock]">Quantity</label>
-                                        <input type="number" class="form-control"
+                                            for="pharmacies[{{ $index_counter }}][products][{{ $index_detail }}][stock]">Jumlah</label>
+                                        <input type="number" class="form-control product-stock"
+                                            data-prev-price={{ $product->price }} data-prev-stock={{ $product->stock }}
+                                            data-id="{{ $index_detail }}"
                                             name="pharmacies[{{ $index_counter }}][products][{{ $index_detail }}][stock]"
                                             value="{{ $product->stock }}"
                                             id="pharmacies[{{ $index_counter }}][products][{{ $index_detail }}][stock]">
@@ -125,13 +118,6 @@
                                         data-id="{{ $index_detail++ }}"><i class="fa fa-trash"></i>
                                 </div>
                             @endforeach
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <button class="btn btn-md btn-outline-primary btn-block rounded-pill btn_add_product"
-                                    data-id="{{ $index_counter++ }}"><i class="ri-add-circle-line label-icon"></i> Tambah
-                                    Produk</button>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -154,6 +140,22 @@
             error: function(jqXHR, textStatus, errorThrown) {
                 notif_error(textStatus);
             }
+        })
+
+        $(document).on('keyup', '.product-stock', function(e) {
+            e.preventDefault();
+            thisIndex = $(this).data('id');
+            prevStock = $(this).data('prev-stock')
+            prevPrice = $(this).data('prev-price')
+            stock = $(this).val();
+            if (stock > prevStock) {
+                $(this).val(prevStock);
+                stock = prevStock
+            }
+            price = $(`.product-price[data-id=${thisIndex}]`).val()
+            pricePerItem = prevPrice / prevStock;
+            priceNow = pricePerItem * stock;
+            $(`.product-price[data-id=${thisIndex}]`).val(priceNow);
         })
 
         let index = {{ $index_counter }} + 1;
@@ -179,12 +181,6 @@
                                     </div>
                                 </div>
                                 <div class="row product_item_${index}">
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <button class="btn btn-md btn-outline-primary btn-block rounded-pill btn_add_product" data-id="${index}"><i
-                                                class="ri-add-circle-line label-icon"></i> Tambah Produk</button>
-                                    </div>
                                 </div>
                             </div>
                         </div>`

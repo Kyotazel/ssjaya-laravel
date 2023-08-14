@@ -103,18 +103,12 @@
 
         function appendProduct(index) {
             let html = `
-                            <div class="col-md-5 product_data" data-parent="${index}" data-id="${product_index}">
+                            <div class="col-md-8 product_data" data-parent="${index}" data-id="${product_index}">
                                 <div class="form-group">
                                     <label for="pharmacies[${index}][products][${product_index}][product_id]">Produk</label>
                                     <select name="pharmacies[${index}][products][${product_index}][product_id]" id="pharmacies[${index}][products][${product_index}][product_id]" class="form-control">
                                         <option value="">Pilih Produk</option>
                                     </select>
-                                </div>
-                            </div>
-                            <div class="col-md-3 product_data" data-parent="${index}" data-id="${product_index}">
-                                <div class="form-group">
-                                    <label for="pharmacies[${index}][products][${product_index}][price]">Harga</label>
-                                    <input type="number" class="form-control" name="pharmacies[${index}][products][${product_index}][price]" id="pharmacies[${index}][products][${product_index}][price]">
                                 </div>
                             </div>
                             <div class="col-md-3 product_data" data-parent="${index}" data-id="${product_index}">
@@ -197,7 +191,9 @@
                 type: "GET",
                 dataType: "JSON",
                 success: function(data) {
+                    Swal.showLoading();
                     response_data = data;
+                    Swal.close();
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     notif_error(textStatus);

@@ -95,7 +95,7 @@
 
         function appendProduct(index, data = null) {
             let html = `
-                    <div class="col-md-5 product_data" data-parent="${index}" data-id="${product_index}">
+                    <div class="col-md-8 product_data" data-parent="${index}" data-id="${product_index}">
                         <div class="form-group">
                             <label for="pharmacies[${index}][products][${product_index}][product_id]">Produk</label>
                             <select name="pharmacies[${index}][products][${product_index}][product_id]" id="pharmacies[${index}][products][${product_index}][product_id]" class="form-control">
@@ -103,12 +103,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-3 product_data" data-parent="${index}" data-id="${product_index}">
-                        <div class="form-group">
-                            <label for="pharmacies[${index}][products][${product_index}][price]">Total Setoran</label>
-                            <input type="number" value="${data?.price_stock}" class="form-control product-price" data-id=${product_index} name="pharmacies[${index}][products][${product_index}][price]" id="pharmacies[${index}][products][${product_index}][price]">
-                        </div>
-                    </div>
+                    <input type="hidden" value="${data?.price_stock}" class="form-control product_data product-price" data-id=${product_index} name="pharmacies[${index}][products][${product_index}][price]" id="pharmacies[${index}][products][${product_index}][price]">
                     <div class="col-md-3 product_data" data-parent="${index}" data-id="${product_index}">
                         <div class="form-group">
                             <label for="pharmacies[${index}][products][${product_index}][stock]">Jumlah</label>

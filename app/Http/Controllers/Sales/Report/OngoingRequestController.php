@@ -62,6 +62,7 @@ class OngoingRequestController extends Controller
 
     public function create()
     {
+        $products = Product::get();
         $sales = Sales::where('id_sales', authUser()->id_sales)->first();
         return view('sales.report.ongoing-request.create', get_defined_vars());
     }
@@ -94,10 +95,31 @@ class OngoingRequestController extends Controller
                 ]);
 
                 foreach ($pharmacy['products'] as $product) {
+                    $pharmacyProduct = PharmacyProduct::where([
+                        'pharmacy_id' => $pharmacy['pharmacy_id'],
+                        'product_id' => $product['product_id']
+                    ])
+                        ->first();
+                    if (!$pharmacyProduct) {
+                        $pharmacyProduct = PharmacyProduct::create([
+                            'pharmacy_id' => $pharmacy['pharmacy_id'],
+                            'product_id' => $product['product_id'],
+                            'stock' => 0,
+                            'stock_sold' => 0
+                        ]);
+                    }
+                    $thisProduct = Product::where('id', $product['product_id'])->first();
                     $newPharmacy->products()->create([
-                        'pharmacy_product_id' => $product['product_id'],
-                        'stock' => $product['stock']
+                        'pharmacy_product_id' => $pharmacyProduct->id,
+                        'stock' => $product['stock'],
+                        'price' => $thisProduct->harga
                     ]);
+
+                    // $newPharmacy->products()->create([
+                    //     'pharmacy_product_id' => $pharmacyProduct->id,
+                    //     'stock' => $product['stock'],
+                    //     'price' => $product['price']
+                    // ]);
                 }
             }
 
@@ -115,7 +137,7 @@ class OngoingRequestController extends Controller
         $ongoingRequest = OngoingRequest::with([
             'sales:id,nama',
             'pharmacies:id,ongoing_request_id,pharmacy_id',
-            'pharmacies.products:id,ongoing_request_pharmacy_id,pharmacy_product_id,stock',
+            'pharmacies.products:id,ongoing_request_pharmacy_id,pharmacy_product_id,stock,price',
             'pharmacies.products.pharmacyProduct:id,product_id,pharmacy_id',
             'pharmacies.products.pharmacyProduct.product:id,nama,harga',
             'pharmacies.pharmacy:id_apotek,nama_apotek'
@@ -129,7 +151,7 @@ class OngoingRequestController extends Controller
             });
 
             $pharmacy->products = $pharmacy->products->map(function ($product) {
-                $product->total_price = $product->stock * $product->pharmacyProduct->product->harga;
+                $product->total_price = $product->stock * $product->price;
 
                 return $product;
             });

@@ -88,7 +88,7 @@
                         </div>
                         <div class="row product_item_{{ $index_counter }}">
                             @foreach ($pharmacy->products as $keyChild => $product)
-                                <div class="col-md-5 product_data" data-parent="{{ $index_counter }}"
+                                <div class="col-md-8 product_data" data-parent="{{ $index_counter }}"
                                     data-id="{{ $index_detail }}">
                                     <div class="form-group">
                                         <label
@@ -111,17 +111,6 @@
                                                 </option>
                                             @endforeach --}}
                                         </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 product_data" data-parent="{{ $index_counter }}"
-                                    data-id="{{ $index_detail }}">
-                                    <div class="form-group">
-                                        <label
-                                            for="pharmacies[{{ $index_counter }}][products][{{ $index_detail }}][price]">Harga</label>
-                                        <input type="number" class="form-control"
-                                            name="pharmacies[{{ $index_counter }}][products][{{ $index_detail }}][price]"
-                                            value="{{ $product->price }}"
-                                            id="pharmacies[{{ $index_counter }}][products][{{ $index_detail }}][price]">
                                     </div>
                                 </div>
                                 <div class="col-md-3 product_data" data-parent="{{ $index_counter }}"
@@ -213,18 +202,12 @@
 
         function appendProduct(index) {
             let html = `
-                            <div class="col-md-5 product_data" data-parent="${index}" data-id="${product_index}">
+                            <div class="col-md-8 product_data" data-parent="${index}" data-id="${product_index}">
                                 <div class="form-group">
                                     <label for="pharmacies[${index}][products][${product_index}][product_id]">Produk</label>
                                     <select name="pharmacies[${index}][products][${product_index}][product_id]" id="pharmacies[${index}][products][${product_index}][product_id]" class="form-control">
                                         <option value="">Pilih Produk</option>
                                     </select>
-                                </div>
-                            </div>
-                            <div class="col-md-3 product_data" data-parent="${index}" data-id="${product_index}">
-                                <div class="form-group">
-                                    <label for="pharmacies[${index}][products][${product_index}][price]">Harga</label>
-                                    <input type="number" class="form-control" name="pharmacies[${index}][products][${product_index}][price]" id="pharmacies[${index}][products][${product_index}][price]">
                                 </div>
                             </div>
                             <div class="col-md-3 product_data" data-parent="${index}" data-id="${product_index}">

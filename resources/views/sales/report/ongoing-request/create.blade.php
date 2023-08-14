@@ -14,11 +14,11 @@
                     <h3 class="mb-0 text-dark">Tambah Barang Keluar</h3>
                 </div>
                 <a class="btn btn-lg btn-outline-primary rounded-pill btn-label mr-2"
-                    href="{{ route('admin.ongoing-request.index') }}">
-                    Cancel</a>
+                    href="{{ route('sales.ongoing-request.index') }}">
+                    Batalkan</a>
                 <button type="button" class="btn btn-lg btn-primary rounded-pill btn-label btn_submit"><i
-                        class="ri-add-circle-line label-icon"></i>
-                    Submit</button>
+                        class="fa fa-save"></i>
+                    Simpan</button>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -32,7 +32,7 @@
                     </div>
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label for="request_date">Request Date</label>
+                            <label for="request_date">Tanggal Permintaan</label>
                             <input type="date" name="request_date" id="request_date" class="form-control">
                         </div>
                     </div>
@@ -45,7 +45,7 @@
                 <div class="card-title mb-0 flex-grow-1">
                     <h3 class="mb-0 text-dark">Data Apotek</h3>
                 </div>
-                <button class="btn btn-lg btn-primary rounded-pill btn-label btn_add_apotek">
+                <button type="button" class="btn btn-lg btn-primary rounded-pill btn-label btn_add_apotek">
                     <i class="ri-add-circle-line label-icon"></i> Apotek
                 </button>
             </div>
@@ -62,16 +62,20 @@
         let response_data, selected_product_id, selectedProductId;
 
         $.ajax({
-            url: `{{ route('pharmacy', ':id') }}`.replace(':id', `{{ $sales->id }}`),
+            url: `{{ route('pharmacy', ':id') }}`.replace(':id', {{ $sales->id }}),
             type: "GET",
             dataType: "JSON",
             success: function(data) {
+                Swal.showLoading();
                 response_data = data;
+                Swal.close();
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 notif_error(textStatus);
             }
         })
+
+        let products = @json($products);
 
         let index = 0;
 
@@ -82,7 +86,7 @@
                                     <div class="col-md-11">
                                         <div class="form-group">
                                             <label for="pharmacies[${index}][pharmacy_id]">Apotek</label>
-                                            <select name="pharmacies[${index}][pharmacy_id]" id="pharmacies[${index}][pharmacy_id]" onchange="onProductSelectChange(this)" class="form-control">
+                                            <select name="pharmacies[${index}][pharmacy_id]" id="pharmacies[${index}][pharmacy_id]" onchange="onProductSelectChange(this)" class="form-control select2pharmacy">
                                                 <option value="">Pilih Apotek</option>
                                             </select>
                                         </div>
@@ -102,6 +106,7 @@
                             </div>
                         </div>`
             $('.data-apotek').append(html);
+            $('.select2pharmacy').select2();
             index++;
         }
 
@@ -111,7 +116,7 @@
             let html = `
                             <div class="col-md-8 product_data" data-parent="${index}" data-id="${product_index}">
                                 <div class="form-group">
-                                    <label for="pharmacies[${index}][products][${product_index}][product_id]">Product</label>
+                                    <label for="pharmacies[${index}][products][${product_index}][product_id]">Produk</label>
                                     <select name="pharmacies[${index}][products][${product_index}][product_id]" id="pharmacies[${index}][products][${product_index}][product_id]" class="form-control">
                                         <option value="">Pilih Produk</option>
                                     </select>
@@ -119,7 +124,7 @@
                             </div>
                             <div class="col-md-3 product_data" data-parent="${index}" data-id="${product_index}">
                                 <div class="form-group">
-                                    <label for="pharmacies[${index}][products][${product_index}][stock]">Quantity</label>
+                                    <label for="pharmacies[${index}][products][${product_index}][stock]">Jumlah</label>
                                     <input type="number" class="form-control" name="pharmacies[${index}][products][${product_index}][stock]" id="pharmacies[${index}][products][${product_index}][stock]">
                                 </div>
                             </div>
@@ -130,20 +135,13 @@
             $(`.product_item_${index}`).append(html);
             let selectElem = $(`.product_item_${index}`).find(
                 `select[name="pharmacies[${index}][products][${product_index}][product_id]"]`);
-            console.log(selectElem);
             selectElem.empty();
             selectElem.append('<option value="">Pilih Produk</option>');
-            if (response_data && response_data.length > 0) {
-                response_data.forEach(apotek => {
-                    if (apotek.id_apotek == selectedProductId) {
-                        apotek.products.forEach(product => {
-                            selectElem.append(
-                                `<option value="${product.id}">${product.product.nama}</option>`
-                            );
-                        });
-                    }
-                });
-            }
+            products.forEach(product => {
+                selectElem.append(
+                    `<option value="${product.id}">${product.nama}</option>`
+                )
+            })
 
             product_index++;
         }
@@ -193,46 +191,44 @@
             id = $(element).closest('.pharmacy_card').data('id');
             $(`.product_data[data-parent=${id}]`).remove();
 
-            // Lakukan apa pun yang perlu Anda lakukan dengan selectedProductId atau id di sini.
         }
-
-
-        $(document).on('change', '[name=sales_id]', function(e) {
-            let id = $(this).val();
-            $('.pharmacy_card').remove();
-            $.ajax({
-                url: `{{ route('pharmacy', ':id') }}`.replace(':id', id),
-                type: "GET",
-                dataType: "JSON",
-                success: function(data) {
-                    response_data = data;
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    notif_error(textStatus);
-                }
-            })
-
-        })
 
         $(document).on('click', '.btn_submit', function(e) {
             e.preventDefault();
             let formData = new FormData($('.form_input')[0]);
             formData.append('_token', '{{ csrf_token() }}')
 
-            $.ajax({
-                url: `{{ route('sales.ongoing-request.store') }}`,
-                type: "POST",
-                data: formData,
-                contentType: false,
-                processData: false,
-                dataType: "JSON",
-                success: function(data) {
-                    window.location.href = `{{ route('sales.ongoing-request.index') }}`;
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    notif_error("Mohon Lengkapi Data");
+            Swal.fire({
+                icon: 'question',
+                text: 'apakah anda yakin data yang dimasukkan sudah sesuai?',
+                showCancelButton: true,
+                confirmButtonClass: 'btn btn-primary rounded-pill w-xs me-2 mb-1 mr-3',
+                confirmButtonText: "Ya , Simpan",
+                cancelButtonText: "Batal",
+                cancelButtonClass: 'btn btn-danger rounded-pill w-xs mb-1',
+                closeOnConfirm: true,
+                closeOnCancel: true,
+                buttonsStyling: false,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: `{{ route('sales.ongoing-request.store') }}`,
+                        type: "POST",
+                        data: formData,
+                        contentType: false,
+                        processData: false,
+                        dataType: "JSON",
+                        success: function(data) {
+                            window.location.href = `{{ route('sales.ongoing-request.index') }}`;
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            notif_error("Mohon Lengkapi Data");
+                        }
+                    })
                 }
-            })
+            });
+
+
         })
     </script>
 @endsection

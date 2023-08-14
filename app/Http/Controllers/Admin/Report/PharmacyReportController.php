@@ -83,13 +83,15 @@ class PharmacyReportController extends Controller
                 LEFT JOIN ongoing_request_pharmacies orp ON orp.id = orpp.ongoing_request_pharmacy_id
                 LEFT JOIN pharmacy_products pp ON pp.id = orpp.pharmacy_product_id
                 LEFT JOIN blw_produk op ON op.id = pp.product_id
-                WHERE orp.pharmacy_id = $id)
+                LEFT JOIN ongoing_requests ar ON ar.id = orp.ongoing_request_id
+                WHERE orp.pharmacy_id = $id AND ar.status = 'APPROVED')
                 UNION ALL
                 (SELECT drpp.id, drpp.stock, drpp.created_at r_ca, drpp.price as harga, dp.nama as nama, 'setoran barang' as type_trans FROM deposit_report_pharmacy_products drpp
                 LEFT JOIN deposit_report_pharmacies drp ON drp.id = drpp.deposit_report_pharmacy_id
                 LEFT JOIN pharmacy_products pp ON pp.id = drpp.pharmacy_product_id
                 LEFT JOIN blw_produk dp ON dp.id = pp.product_id
-                WHERE drp.pharmacy_id = $id)
+                LEFT JOIN deposit_reports dr ON dr.id = drp.deposit_report_id
+                WHERE drp.pharmacy_id = $id AND dr.status = 'APPROVED')
             ) AS unioned_data ORDER BY r_ca DESC)");
 
             $query = DB::select($raw);

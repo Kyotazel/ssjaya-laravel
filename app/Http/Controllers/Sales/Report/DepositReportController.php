@@ -92,7 +92,8 @@ class DepositReportController extends Controller
                 foreach ($pharmacy['products'] as $product) {
                     $newPharmacy->products()->create([
                         'pharmacy_product_id' => $product['product_id'],
-                        'stock' => $product['stock']
+                        'stock' => $product['stock'],
+                        'price' => $product['price']
                     ]);
                 }
             }

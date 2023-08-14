@@ -113,11 +113,18 @@ class OngoingRequestController extends Controller
                             'stock_sold' => 0
                         ]);
                     }
+                    $thisProduct = Product::where('id', $product['product_id'])->first();
                     $newPharmacy->products()->create([
                         'pharmacy_product_id' => $pharmacyProduct->id,
                         'stock' => $product['stock'],
-                        'price' => $product['price']
+                        'price' => $thisProduct->harga
                     ]);
+
+                    // $newPharmacy->products()->create([
+                    //     'pharmacy_product_id' => $pharmacyProduct->id,
+                    //     'stock' => $product['stock'],
+                    //     'price' => $product['price']
+                    // ]);
                 }
             }
 
@@ -183,11 +190,18 @@ class OngoingRequestController extends Controller
                             'stock_sold' => 0
                         ]);
                     }
+
+                    $thisProduct = Product::where('id', $product['product_id'])->first();
                     $newPharmacy->products()->create([
                         'pharmacy_product_id' => $pharmacyProduct->id,
                         'stock' => $product['stock'],
-                        'price' => $product['price']
+                        'price' => $thisProduct->harga
                     ]);
+                    // $newPharmacy->products()->create([
+                    //     'pharmacy_product_id' => $pharmacyProduct->id,
+                    //     'stock' => $product['stock'],
+                    //     'price' => $product['price']
+                    // ]);
                 }
             }
 
