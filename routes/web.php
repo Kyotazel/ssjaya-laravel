@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DatamasterController;
 use App\Http\Controllers\Landing\HomeController;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -29,6 +30,13 @@ Route::post('/list-mitra', [HomeController::class, 'listApotek'])->name('list-ap
 Route::get('city/{id}', [DatamasterController::class, 'city'])->name('city');
 Route::get('pharmacy/{id}', [DatamasterController::class, 'pharmacy'])->name('pharmacy');
 Route::get('pharmacy-report/{id}', [DatamasterController::class, 'pharmacyReport'])->name('pharmacy.report');
+
+Route::get('/secret/reset-database', function () {
+    Artisan::call('migrate:rollback');
+    Artisan::call('migrate');
+
+    return "Berhasil Reset Data";
+});
 
 require __DIR__ . '/web/sales.php';
 require __DIR__ . '/web/admin.php';

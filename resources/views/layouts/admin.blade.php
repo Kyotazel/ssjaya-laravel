@@ -224,28 +224,25 @@
                             </a>
                         </li>
 
-                        @if (authUser()->is_admin)
-                            <li class='nav-small-cap'><span class='hide-menu'>Laporan</span></li>
-                            <li class="sidebar-item {{ Route::is('admin.visit*') ? 'selected' : '' }}">
-                                <a href="{{ route('admin.visit.index') }}" class="sidebar-link">
-                                    <i class="fa fa-image"></i>
-                                    <span class='hide-menu'>Laporan Kunjungan</span>
-                                </a>
-                            </li>
-                            <li class="sidebar-item {{ Route::is('admin.sales-report*') ? 'selected' : '' }}">
-                                <a href="{{ route('admin.sales-report.index') }}" class="sidebar-link">
-                                    <i class="fa fa-user"></i>
-                                    <span class='hide-menu'>Produk Sales</span>
-                                </a>
-                            </li>
-                            <li class="sidebar-item {{ Route::is('admin.pharmacy-report.*') ? 'selected' : '' }}">
-                                <a href="{{ route('admin.pharmacy-report.index') }}" class="sidebar-link">
-                                    <i class="fa fa-home"></i>
-                                    <span class='hide-menu'>Produk Apotek</span>
-                                </a>
-                            </li>
-                        @endif
-
+                        <li class='nav-small-cap'><span class='hide-menu'>Laporan</span></li>
+                        <li class="sidebar-item {{ Route::is('admin.visit*') ? 'selected' : '' }}">
+                            <a href="{{ route('admin.visit.index') }}" class="sidebar-link">
+                                <i class="fa fa-image"></i>
+                                <span class='hide-menu'>Laporan Kunjungan</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item {{ Route::is('admin.sales-report*') ? 'selected' : '' }}">
+                            <a href="{{ route('admin.sales-report.index') }}" class="sidebar-link">
+                                <i class="fa fa-user"></i>
+                                <span class='hide-menu'>Produk Sales</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item {{ Route::is('admin.pharmacy-report.*') ? 'selected' : '' }}">
+                            <a href="{{ route('admin.pharmacy-report.index') }}" class="sidebar-link">
+                                <i class="fa fa-home"></i>
+                                <span class='hide-menu'>Produk Apotek</span>
+                            </a>
+                        </li>
                     </ul>
                 </nav>
                 <!-- End Sidebar navigation -->

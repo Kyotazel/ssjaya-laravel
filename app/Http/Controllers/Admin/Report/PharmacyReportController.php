@@ -79,14 +79,14 @@ class PharmacyReportController extends Controller
 
         if (request()->wantsJson()) {
             $raw = DB::raw("(SELECT * FROM (
-                (SELECT orpp.id, orpp.stock, orpp.created_at r_ca, orpp.price as harga, op.nama as nama, 'produk keluar' as type_trans FROM ongoing_request_pharmacy_products orpp
+                (SELECT orpp.id, orpp.stock, CONVERT_TZ(orpp.created_at, '+00:00', '+07:00') as r_ca, orpp.price as harga, op.nama as nama, 'produk keluar' as type_trans FROM ongoing_request_pharmacy_products orpp
                 LEFT JOIN ongoing_request_pharmacies orp ON orp.id = orpp.ongoing_request_pharmacy_id
                 LEFT JOIN pharmacy_products pp ON pp.id = orpp.pharmacy_product_id
                 LEFT JOIN blw_produk op ON op.id = pp.product_id
                 LEFT JOIN ongoing_requests ar ON ar.id = orp.ongoing_request_id
                 WHERE orp.pharmacy_id = $id AND ar.status = 'APPROVED')
                 UNION ALL
-                (SELECT drpp.id, drpp.stock, drpp.created_at r_ca, drpp.price as harga, dp.nama as nama, 'setoran barang' as type_trans FROM deposit_report_pharmacy_products drpp
+                (SELECT drpp.id, drpp.stock, CONVERT_TZ(drpp.created_at, '+00:00', '+07:00') as r_ca, drpp.price as harga, dp.nama as nama, 'setoran barang' as type_trans FROM deposit_report_pharmacy_products drpp
                 LEFT JOIN deposit_report_pharmacies drp ON drp.id = drpp.deposit_report_pharmacy_id
                 LEFT JOIN pharmacy_products pp ON pp.id = drpp.pharmacy_product_id
                 LEFT JOIN blw_produk dp ON dp.id = pp.product_id
