@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\Entity\AdminController;
 use App\Http\Controllers\Admin\Entity\SalesController;
 use App\Http\Controllers\Admin\PharmacyController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\PurchaseController;
 use App\Http\Controllers\Admin\Report\DepositReportController;
 use App\Http\Controllers\Admin\Report\OngoingRequestController;
 use App\Http\Controllers\Admin\Report\PharmacyReportController;
@@ -58,16 +59,19 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('visit', VisitController::class);
         Route::post('visit-status/{id}', [VisitController::class, 'status'])->name('visit.status');
 
-        Route::resource('ongoing-request', OngoingRequestController::class);
-        Route::post('ongoing-request-status/{ongoingRequest}', [OngoingRequestController::class, 'update_status'])->name('ongoing-request.status');
+        // Route::resource('ongoing-request', OngoingRequestController::class);
+        // Route::post('ongoing-request-status/{ongoingRequest}', [OngoingRequestController::class, 'update_status'])->name('ongoing-request.status');
 
-        Route::resource('deposit-report', DepositReportController::class);
-        Route::post('deposit-report-status/{depositReport}', [DepositReportController::class, 'update_status'])->name('deposit-report.status');
+        // Route::resource('deposit-report', DepositReportController::class);
+        // Route::post('deposit-report-status/{depositReport}', [DepositReportController::class, 'update_status'])->name('deposit-report.status');
 
-        Route::resource('sales-report', SalesReportController::class);
-        Route::resource('pharmacy-report', PharmacyReportController::class);
+        // Route::resource('sales-report', SalesReportController::class);
+        // Route::resource('pharmacy-report', PharmacyReportController::class);
 
-        Route::get('pharmacy-report-log/{id}', [PharmacyReportController::class, 'log'])->name('pharmacy-report.log');
+        // Route::get('pharmacy-report-log/{id}', [PharmacyReportController::class, 'log'])->name('pharmacy-report.log');
+
+        Route::resource('purchase', PurchaseController::class);
+        Route::post('purchase/{purchase}/change-status', [PurchaseController::class, 'changeStatus'])->name('purchase.status');
 
         Route::get('province', [AddressController::class, 'province_index'])->name('province.index');
         Route::post('province/{id}', [AddressController::class, 'province_status'])->name('province.status');

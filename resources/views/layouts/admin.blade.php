@@ -211,18 +211,18 @@
                         @endif
 
                         <li class='nav-small-cap'><span class='hide-menu'>Transaksi Data</span></li>
-                        <li class="sidebar-item {{ Route::is('admin.ongoing*') ? 'selected' : '' }}">
-                            <a href="{{ route('admin.ongoing-request.index') }}" class="sidebar-link">
-                                <i data-feather="log-out" class="feather-icon"></i>
-                                <span class='hide-menu'>Barang Keluar</span>
+                        <li class="sidebar-item {{ Route::is('admin.purchase*') ? 'selected' : '' }}">
+                            <a href="{{ route('admin.purchase.index') }}" class="sidebar-link">
+                                <i class="ri-article-line"></i>
+                                <span class='hide-menu'>Rekap Nota</span>
                             </a>
                         </li>
-                        <li class="sidebar-item {{ Route::is('admin.deposit*') ? 'selected' : '' }}">
+                        {{-- <li class="sidebar-item {{ Route::is('admin.deposit*') ? 'selected' : '' }}">
                             <a href="{{ route('admin.deposit-report.index') }}" class="sidebar-link">
                                 <i data-feather="log-in" class="feather-icon"></i>
                                 <span class='hide-menu'>Setoran Barang Laku</span>
                             </a>
-                        </li>
+                        </li> --}}
 
                         <li class='nav-small-cap'><span class='hide-menu'>Laporan</span></li>
                         <li class="sidebar-item {{ Route::is('admin.visit*') ? 'selected' : '' }}">
@@ -231,7 +231,7 @@
                                 <span class='hide-menu'>Laporan Kunjungan</span>
                             </a>
                         </li>
-                        <li class="sidebar-item {{ Route::is('admin.sales-report*') ? 'selected' : '' }}">
+                        {{-- <li class="sidebar-item {{ Route::is('admin.sales-report*') ? 'selected' : '' }}">
                             <a href="{{ route('admin.sales-report.index') }}" class="sidebar-link">
                                 <i class="fa fa-user"></i>
                                 <span class='hide-menu'>Produk Sales</span>
@@ -242,7 +242,7 @@
                                 <i class="fa fa-home"></i>
                                 <span class='hide-menu'>Produk Apotek</span>
                             </a>
-                        </li>
+                        </li> --}}
                     </ul>
                 </nav>
                 <!-- End Sidebar navigation -->
