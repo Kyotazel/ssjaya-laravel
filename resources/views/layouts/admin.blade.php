@@ -211,7 +211,7 @@
                         @endif
 
                         <li class='nav-small-cap'><span class='hide-menu'>Transaksi Data</span></li>
-                        <li class="sidebar-item {{ Route::is('admin.purchase*') ? 'selected' : '' }}">
+                        <li class="sidebar-item {{ Route::is('admin.purchase.*') ? 'selected' : '' }}">
                             <a href="{{ route('admin.purchase.index') }}" class="sidebar-link">
                                 <i class="ri-article-line"></i>
                                 <span class='hide-menu'>Rekap Nota</span>

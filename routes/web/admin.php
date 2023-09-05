@@ -71,7 +71,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Route::get('pharmacy-report-log/{id}', [PharmacyReportController::class, 'log'])->name('pharmacy-report.log');
 
         Route::resource('purchase', PurchaseController::class);
+        Route::get('purchase-archived/', [PurchaseController::class, 'archived'])->name('purchase.archived');
         Route::post('purchase/{purchase}/change-status', [PurchaseController::class, 'changeStatus'])->name('purchase.status');
+        Route::post('purchase/{purchase}/archive', [PurchaseController::class, 'archive'])->name('purchase.archive');
+        Route::post('purchase/{purchase}/white', [PurchaseController::class, 'uploadWhite'])->name('purchase.upload-white');
+        Route::post('purchase/{purchase}/yellow', [PurchaseController::class, 'uploadYellow'])->name('purchase.upload-yellow');
+        Route::get('purchase/{purchase}/white', [PurchaseController::class, 'checkWhite'])->name('purchase.check-white');
+        Route::get('purchase/{purchase}/yellow', [PurchaseController::class, 'checkYellow'])->name('purchase.check-yellow');
+        Route::get('purchase/{purchase}/bill', [PurchaseController::class, 'bill'])->name('purchase.bill');
+        Route::get('purchase/{purchase}/bill/create', [PurchaseController::class, 'billCreate'])->name('purchase.bill.create');
+        Route::post('purchase/{purchase}/bill/store', [PurchaseController::class, 'billStore'])->name('purchase.bill.store');
 
         Route::get('province', [AddressController::class, 'province_index'])->name('province.index');
         Route::post('province/{id}', [AddressController::class, 'province_status'])->name('province.status');

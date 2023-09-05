@@ -55,4 +55,9 @@ class Purchase extends Model
     {
         return $this->belongsTo(Pharmacy::class, 'pharmacy_id', 'id_apotek');
     }
+
+    public function bills()
+    {
+        return $this->hasMany(PurchaseBill::class);
+    }
 }

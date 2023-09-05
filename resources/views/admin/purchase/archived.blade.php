@@ -1,18 +1,16 @@
 @extends('layouts.admin')
-@section('title', __('Rekap Nota'))
+@section('title', __('Nota Diarsipkan'))
 
 @section('content')
     <div class="card">
         <div class="card-header d-flex align-items-center">
             <div class="card-title mb-0 flex-grow-1">
                 <div class="btn btn-primary">
-                    <h6 class="mb-0 text-light">Daftar Rekap Nota</h6>
+                    <h6 class="mb-0 text-light">Daftar Nota Diarsipkan</h6>
                 </div>
             </div>
-            <a class="btn btn-secondary rounded-pill btn-label mr-3" href="{{ route('admin.purchase.archived') }}"><i
-                    class="fa fa-trash"></i> Nota Diarsipkan</a>
-            <a class="btn btn-success rounded-pill btn-label" href="{{ route('admin.purchase.create') }}"><i
-                    class="ri-add-circle-line label-icon"></i> Tambah Data</a>
+            <a class="btn btn-success rounded-pill btn-label mr-3" href="{{ route('admin.purchase.index') }}"><i
+                    class="fa fa-check"></i> Nota Normal</a>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -83,7 +81,7 @@
                 fixedColumns: true,
                 scrollX: false,
                 ajax: {
-                    url: '{{ route('admin.purchase.index') }}'
+                    url: '{{ route('admin.purchase.archived') }}'
                 },
                 columns: [{
                         data: 'code',
@@ -117,12 +115,6 @@
             })
         })
 
-        $(document).on('click', '.btn_update_status', function(e) {
-            e.preventDefault();
-            id_use = $(this).data('id')
-            $('#modal_status').modal('show');
-        })
-
         $(document).on('click', '.archiveButton', function(e) {
             e.preventDefault();
 
@@ -132,7 +124,7 @@
 
             Swal.fire({
                 icon: 'question',
-                text: 'Apakah anda yakin ingin mengarsipkan nota ini?',
+                text: 'Apakah anda yakin ingin mengeluarkan nota ini dari arsip?',
                 showCancelButton: true,
                 confirmButtonClass: 'btn btn-primary rounded-pill w-xs me-2 mb-1 mr-3',
                 confirmButtonText: "Ya , Lunasi",
@@ -153,50 +145,7 @@
                         dataType: "JSON",
                         success: function(data) {
                             Swal.fire({
-                                text: 'Berhasil Mengarsipkan Nota!',
-                                icon: 'success',
-                                showConfirmButton: false,
-                                timer: 1500
-                            });
-                            table.ajax.reload();
-                        },
-                        error: function(jqXHR, textStatus, errorThrown) {
-                            notif_error("Mohon Lengkapi Data");
-                        }
-                    })
-                }
-            });
-        })
-
-        $(document).on('click', '.payOffButton', function(e) {
-            e.preventDefault();
-            let payId = $(this).data('id');
-            let formData = new FormData();
-            formData.append('_token', '{{ csrf_token() }}')
-
-            Swal.fire({
-                icon: 'question',
-                text: 'Apakah anda yakin ingin melunasi nota ini?',
-                showCancelButton: true,
-                confirmButtonClass: 'btn btn-primary rounded-pill w-xs me-2 mb-1 mr-3',
-                confirmButtonText: "Ya , Lunasi",
-                cancelButtonText: "Batal",
-                cancelButtonClass: 'btn btn-danger rounded-pill w-xs mb-1',
-                closeOnConfirm: true,
-                closeOnCancel: true,
-                buttonsStyling: false,
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: `{{ route('admin.purchase.status', ':id') }}`.replace(':id', payId),
-                        type: "POST",
-                        contentType: false,
-                        data: formData,
-                        processData: false,
-                        dataType: "JSON",
-                        success: function(data) {
-                            Swal.fire({
-                                text: 'Berhasil Melunasi Nota!',
+                                text: 'Berhasil Mengeluarkan Nota Dari Arsip!',
                                 icon: 'success',
                                 showConfirmButton: false,
                                 timer: 1500
