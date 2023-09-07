@@ -301,8 +301,10 @@
             $('.modalTbody').empty();
             $.each(item.products, function(index, product) {
                 $('.modalTbody').append(`
+                <tr>
                 <td>${product.product.nama}</td>
                 <td>${product.stock}</td>
+                </tr>
                 `)
             })
 
