@@ -285,7 +285,7 @@
                                 <h3 class="text-center">Nota</h3>
                                 <div class="text-center" style="margin: auto">
                                     <img src="" id="imageFile" class="text-center"
-                                        style="margin: auto; max-height:400px">
+                                        style="margin: auto; max-height:400px; max-width:700px">
                                 </div>
                             </div>
                         </div>
@@ -296,8 +296,8 @@
                                         <tr class="table-active">
                                             <th>Nama Produk</th>
                                             <th>Jumlah</th>
-                                            <th>Harga Satuan</th>
-                                            <th>Total</th>
+                                            {{-- <th>Harga Satuan</th>
+                                            <th>Total</th> --}}
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -305,8 +305,8 @@
                                             <tr>
                                                 <td>{{ $product->product->nama }}</td>
                                                 <td>{{ $product->stock }}</td>
-                                                <td>Rp. {{ number_format($product->price) }}</td>
-                                                <td>Rp. {{ number_format($product->stock * $product->price) }}</td>
+                                                {{-- <td>Rp. {{ number_format($product->price) }}</td>
+                                                <td>Rp. {{ number_format($product->stock * $product->price) }}</td> --}}
                                             </tr>
                                         @endforeach
                                     </tbody>

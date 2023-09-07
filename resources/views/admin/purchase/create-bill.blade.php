@@ -41,7 +41,7 @@
                     <div class="product_item">
                         @foreach ($purchase->products as $purchaseProduct)
                             <div class="row">
-                                <div class="col-md-6 product_data" data-id="{{ $indexProduct }}">
+                                <div class="col-md-8 product_data" data-id="{{ $indexProduct }}">
                                     <div class="form-group">
                                         <label for="products[{{ $indexProduct }}][product_id]">Produk</label>
                                         <select name="products[{{ $indexProduct }}][product_id]"
@@ -54,20 +54,12 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-2 product_data" data-id="{{ $indexProduct }}">
+                                <div class="col-md-3 product_data" data-id="{{ $indexProduct }}">
                                     <div class="form-group">
                                         <label for="products[{{ $indexProduct }}][stock]">Jumlah</label>
                                         <input type="number" class="form-control" value="{{ $purchaseProduct->stock }}"
                                             name="products[{{ $indexProduct }}][stock]"
                                             id="products[{{ $indexProduct }}][stock]">
-                                    </div>
-                                </div>
-                                <div class="col-md-3 product_data" data-id="{{ $indexProduct }}">
-                                    <div class="form-group">
-                                        <label for="products[{{ $indexProduct }}][price]">Harga Satuan</label>
-                                        <input type="number" class="form-control" value="{{ $purchaseProduct->price }}"
-                                            name="products[{{ $indexProduct }}][price]"
-                                            id="products[{{ $indexProduct }}][price]">
                                     </div>
                                 </div>
                                 <div class="col-md-1 product_data" data-id="{{ $indexProduct }}">

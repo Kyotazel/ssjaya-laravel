@@ -115,11 +115,15 @@ class PurchaseController extends Controller
         $validatedData = request()->validate([
             'sales_id' => ['required'],
             'pharmacy_id' => ['required'],
+            'yellow_image' => ['nullable', 'image'],
             'products' => ['array'],
             'products.*.product_id' => ['required'],
             'products.*.stock' => ['required'],
-            'products.*.price' => ['required'],
         ]);
+
+        if (request()->has('yellow_image')) {
+            $validatedData['yellow_purchase'] = $validatedData['yellow_image']->store('public');
+        }
 
         $validatedData['code'] = '#0001';
         $purchase = Purchase::latest()->first();
@@ -133,6 +137,7 @@ class PurchaseController extends Controller
             $purchase = Purchase::create($validatedData);
 
             foreach ($validatedData['products'] as $product) {
+                $product['price'] = 0;
                 $purchase->products()->create($product);
             }
 
@@ -159,11 +164,15 @@ class PurchaseController extends Controller
         $validatedData = request()->validate([
             'sales_id' => ['required'],
             'pharmacy_id' => ['required'],
+            'yellow_image' => ['nullable'],
             'products' => ['array'],
             'products.*.product_id' => ['required'],
             'products.*.stock' => ['required'],
-            'products.*.price' => ['required'],
         ]);
+
+        if (request()->has('yellow_image')) {
+            $validatedData['yellow_purchase'] = $validatedData['yellow_image']->store('public');
+        }
 
         try {
             DB::beginTransaction();
@@ -172,6 +181,7 @@ class PurchaseController extends Controller
             $purchase->products()->delete();
 
             foreach ($validatedData['products'] as $product) {
+                $product['price'] = 0;
                 $purchase->products()->create($product);
             }
 
@@ -279,7 +289,6 @@ class PurchaseController extends Controller
             'products' => ['array'],
             'products.*.product_id' => ['required'],
             'products.*.stock' => ['required'],
-            'products.*.price' => ['required'],
         ]);
 
         try {
@@ -297,6 +306,7 @@ class PurchaseController extends Controller
             $bill = PurchaseBill::create($validatedData);
 
             foreach ($validatedData['products'] as $product) {
+                $product['price'] = 0;
                 $bill->products()->create($product);
             }
 

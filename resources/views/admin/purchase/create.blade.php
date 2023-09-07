@@ -41,6 +41,12 @@
                             </select>
                         </div>
                     </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="yellow_image">Nota Setor / Kuning</label>
+                            <input type="file" name="yellow_image" class="form-control">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -87,7 +93,7 @@
         function appendProduct(index) {
             let html = `
                         <div class="row">
-                            <div class="col-md-6 product_data" data-id="${product_index}">
+                            <div class="col-md-8 product_data" data-id="${product_index}">
                                 <div class="form-group">
                                     <label for="products[${product_index}][product_id]">Produk</label>
                                     <select name="products[${product_index}][product_id]" id="products[${product_index}][product_id]" class="form-control">
@@ -95,16 +101,10 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-2 product_data" data-id="${product_index}">
+                            <div class="col-md-3 product_data" data-id="${product_index}">
                                 <div class="form-group">
                                     <label for="products[${product_index}][stock]">Jumlah</label>
                                     <input type="number" class="form-control" name="products[${product_index}][stock]" id="products[${product_index}][stock]">
-                                </div>
-                            </div>
-                            <div class="col-md-3 product_data" data-id="${product_index}">
-                                <div class="form-group">
-                                    <label for="products[${product_index}][price]">Harga Satuan</label>
-                                    <input type="number" class="form-control" name="products[${product_index}][price]" id="products[${product_index}][price]">
                                 </div>
                             </div>
                             <div class="col-md-1 product_data" data-id="${product_index}">
