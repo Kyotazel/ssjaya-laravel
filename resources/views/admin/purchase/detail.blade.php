@@ -44,6 +44,13 @@
             font-weight: 500;
             line-height: normal;
         }
+
+        .test {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            justify-content: space-between;
+        }
     </style>
 @endsection
 
@@ -158,22 +165,30 @@
             </div>
         </div>
         <div class="card-body">
-            <div class="row align-items-center">
-                <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-6 test">
                     <h3>Nota Lunas / Putih</h3>
-                    <br>
-                    <input type="file" name="form-control" id="whitePaper">
-                    <br>
-                    <br>
-                    <button class="btn btn-outline-primary checkhite btn-block">Cek</button>
+                    <label style="margin: auto" for="whitePaper">
+                        <img src="{{ $purchase->white_purchase ?? asset('assets/images/upload-image.png') }}"
+                            alt="" style="max-width: 100%" id="whitePreview">
+                    </label>
+                    <input type="file" class="d-none form-control previewable" style="margin-bottom: 20px"
+                        data-preview-id="whitePreview" id="whitePaper">
+                    <div>
+                        <button class="btn btn-outline-primary checkhite btn-block">Cek</button>
+                    </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6 test">
                     <h3>Note Setor / Kuning</h3>
-                    <br>
-                    <input type="file" name="form-control" id="yellowPaper">
-                    <br>
-                    <br>
-                    <button class="btn btn-outline-primary checkYellow btn-block">Cek</button>
+                    <label style="margin: auto" for="yellowPaper">
+                        <img src="{{ $purchase->yellow_purchase ?? asset('assets/images/upload-image.png') }}"
+                            alt="" style="max-width: 100%" id="yellowPreview">
+                    </label>
+                    <input type="file" class="d-none form-control previewable" style="margin-bottom: 20px"
+                        data-preview-id="yellowPreview" id="yellowPaper">
+                    <div>
+                        <button class="btn btn-outline-primary checkYellow btn-block">Cek</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -284,7 +299,7 @@
                             <div class="col-md-12">
                                 <h3 class="text-center">Nota</h3>
                                 <div class="text-center" style="margin: auto">
-                                    <img src="" id="imageFile" class="text-center"
+                                    <img src="" class="text-center imageFile"
                                         style="margin: auto; max-height:400px; max-width:700px">
                                 </div>
                             </div>
@@ -345,6 +360,7 @@
                         showConfirmButton: false,
                         timer: 1500
                     });
+                    $('#whitePreview').attr('src', data.img)
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     notif_error(textStatus);
@@ -374,6 +390,7 @@
                         showConfirmButton: false,
                         timer: 1500
                     });
+                    $('#yellowPreview').attr('src', data.img)
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     notif_error(textStatus);
@@ -394,7 +411,7 @@
                 },
                 success: function(data) {
                     Swal.close();
-                    $('#imageFile').attr('src', data.image);
+                    $('.imageFile').attr('src', data.image);
                     $('#modal_paper').modal('show');
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
@@ -421,7 +438,7 @@
                 },
                 success: function(data) {
                     Swal.close();
-                    $('#imageFile').attr('src', data.image);
+                    $('.imageFile').attr('src', data.image);
                     $('#modal_paper').modal('show');
                 },
                 error: function(jqXHR, textStatus, errorThrown) {

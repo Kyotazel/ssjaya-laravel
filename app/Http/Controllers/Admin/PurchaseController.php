@@ -228,8 +228,9 @@ class PurchaseController extends Controller
 
         $purchase = Purchase::find($id);
         $purchase->update(['white_purchase' => $image]);
+        $newPurchase = Purchase::find($id);
 
-        return response()->json(['ok']);
+        return response()->json(['img' => $newPurchase->white_purchase]);
     }
 
 
@@ -239,8 +240,9 @@ class PurchaseController extends Controller
 
         $purchase = Purchase::find($id);
         $purchase->update(['yellow_purchase' => $image]);
+        $newPurchase = Purchase::find($id);
 
-        return response()->json(['ok']);
+        return response()->json(['img' => $newPurchase->yellow_purchase]);
     }
 
     public function checkWhite($id)
