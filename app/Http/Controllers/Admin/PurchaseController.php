@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\Purchase;
 use App\Models\PurchaseBill;
 use App\Models\Sales;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -20,7 +21,16 @@ class PurchaseController extends Controller
         if (request()->wantsJson()) {
             $query = Purchase::query()
                 ->with(['sales', 'pharmacy'])
-                ->where('is_archived', false);
+                ->where('is_archived', false)
+                ->when(request()->year, function ($q) {
+                    $q->whereYear('created_at', request()->year);
+                })
+                ->when(request()->month, function ($q) {
+                    $q->whereMonth('created_at', request()->month);
+                })
+                ->when(request()->day, function ($q) {
+                    $q->whereDay('created_at', request()->day);
+                });
 
             return DataTables::of($query)
                 ->addIndexColumn()
@@ -56,7 +66,9 @@ class PurchaseController extends Controller
                 ->toJson();
         }
 
-        return view('admin.purchase.index');
+        $firstYear = now()->subYears(5)->year;
+        $lastYear = now()->addYears(5)->year;
+        return view('admin.purchase.index', get_defined_vars());
     }
 
     public function archived()
@@ -319,5 +331,10 @@ class PurchaseController extends Controller
         }
 
         return response()->json();
+    }
+
+    public function calendar()
+    {
+        return view('admin.purchase.calendar');
     }
 }

@@ -82,6 +82,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('purchase/{purchase}/bill/create', [PurchaseController::class, 'billCreate'])->name('purchase.bill.create');
         Route::post('purchase/{purchase}/bill/store', [PurchaseController::class, 'billStore'])->name('purchase.bill.store');
 
+        Route::get('purchase-calendar', [PurchaseController::class, 'calendar'])->name('purchase.calendar');
+
         Route::get('province', [AddressController::class, 'province_index'])->name('province.index');
         Route::post('province/{id}', [AddressController::class, 'province_status'])->name('province.status');
 
