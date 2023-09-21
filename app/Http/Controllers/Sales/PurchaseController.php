@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Sales;
 
 use App\Http\Controllers\Controller;
 use App\Models\Pharmacy;
@@ -8,9 +8,9 @@ use App\Models\Product;
 use App\Models\Purchase;
 use App\Models\PurchaseBill;
 use App\Models\Sales;
-use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -20,8 +20,8 @@ class PurchaseController extends Controller
     {
         if (request()->wantsJson()) {
             $query = Purchase::query()
-                ->with(['sales', 'pharmacy'])
-                ->where('is_archived', false)
+                ->with(['pharmacy'])
+                ->where(['is_archived' => false, 'sales_id' => Auth::id()])
                 ->when(request()->year, function ($q) {
                     $q->whereYear('created_at', request()->year);
                 })
@@ -44,21 +44,13 @@ class PurchaseController extends Controller
                     return "<div class='badge badge-danger'>BELUM LUNAS</div>";
                 })
                 ->addColumn('action', function ($item) {
-                    $detail_route = route('admin.purchase.show', $item->id);
-                    $edit_route = route('admin.purchase.edit', $item->id);
-
-                    $archiveButton = (!$item->is_archived && authUser()->is_admin) ? "<button class='dropdown-item archiveButton' data-id='$item->id'><i class='fa fa-trash'></i> Arsipkan</button>" : '';
-                    $editDropdown = ($item->status == Purchase::BELUMLUNAS && !$item->is_archived && authUser()->is_admin) ? "<a class='dropdown-item' href='$edit_route'><i class='ri-ball-pen-line'></i> Edit</a>" : '';
-                    $payOffButton = ($item->status == Purchase::BELUMLUNAS) && !$item->is_archived  ? "<a class='dropdown-item payOffButton' data-id='$item->id' href='#'><i class='fa fa-check'></i> Lunasi</a>" : '';
+                    $detail_route = route('sales.purchase.show', $item->id);
                     return "<div class='dropdown'>
                                 <button class='btn btn-secondary dropdown-toggle' type='button' id='dropdownMenuButton' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
                                     Action 
                                 </button>
                                 <div class='dropdown-menu' aria-labelledby='dropdownMenuButton'>
                                 <a class='dropdown-item' href='$detail_route'><i class='fa fa-desktop'></i> Detail</a>
-                                    $editDropdown
-                                    $payOffButton
-                                    $archiveButton
                                 </div>
                             </div>";;
                 })
@@ -68,15 +60,15 @@ class PurchaseController extends Controller
 
         $firstYear = now()->subYears(5)->year;
         $lastYear = now()->addYears(5)->year;
-        return view('admin.purchase.index', get_defined_vars());
+        return view('sales.purchase.index', get_defined_vars());
     }
 
     public function archived()
     {
         if (request()->wantsJson()) {
             $query = Purchase::query()
-                ->with(['sales', 'pharmacy'])
-                ->where('is_archived', true);
+                ->with(['pharmacy'])
+                ->where(['is_archived' => true, 'sales_id' => Auth::id()]);
 
             return DataTables::of($query)
                 ->addIndexColumn()
@@ -90,21 +82,13 @@ class PurchaseController extends Controller
                     return "<div class='badge badge-danger'>BELUM LUNAS</div>";
                 })
                 ->addColumn('action', function ($item) {
-                    $detail_route = route('admin.purchase.show', $item->id);
-                    $edit_route = route('admin.purchase.edit', $item->id);
-
-                    $archiveButton =  "<button class='dropdown-item archiveButton' data-id='$item->id'><i class='fa fa-cross'></i> Keluar Arsip</button>";
-                    $editDropdown = ($item->status == Purchase::BELUMLUNAS && $item->is_archived == false && authUser()->is_admin) ? "<a class='dropdown-item' href='$edit_route'><i class='ri-ball-pen-line'></i> Edit</a>" : '';
-                    $payOffButton = ($item->status == Purchase::BELUMLUNAS && $item->is_archived == false && authUser()->is_admin) ? "<a class='dropdown-item payOffButton' data-id='$item->id' href='#'><i class='fa fa-check'></i> Lunasi</a>" : '';
+                    $detail_route = route('sales.purchase.show', $item->id);
                     return "<div class='dropdown'>
                                 <button class='btn btn-secondary dropdown-toggle' type='button' id='dropdownMenuButton' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
                                     Action 
                                 </button>
                                 <div class='dropdown-menu' aria-labelledby='dropdownMenuButton'>
                                 <a class='dropdown-item' href='$detail_route'><i class='fa fa-desktop'></i> Detail</a>
-                                    $editDropdown
-                                    $payOffButton
-                                    $archiveButton
                                 </div>
                             </div>";;
                 })
@@ -112,26 +96,27 @@ class PurchaseController extends Controller
                 ->toJson();
         }
 
-        return view('admin.purchase.archived');
+        return view('sales.purchase.archived');
     }
 
     public function create()
     {
-        $saless = Sales::get();
         $products = Product::get();
-        return view('admin.purchase.create', get_defined_vars());
+        $pharmacies = Pharmacy::where(['id_sales' => Auth::user()->id_sales])->get();
+        return view('sales.purchase.create', get_defined_vars());
     }
 
     public function store()
     {
         $validatedData = request()->validate([
-            'sales_id' => ['required'],
             'pharmacy_id' => ['required'],
             'yellow_image' => ['nullable', 'image'],
             'products' => ['array'],
             'products.*.product_id' => ['required'],
             'products.*.stock' => ['required'],
         ]);
+
+        $validatedData['sales_id'] = Auth::id();
 
         if (request()->has('yellow_image')) {
             $validatedData['yellow_purchase'] = $validatedData['yellow_image']->store('public');
@@ -162,76 +147,13 @@ class PurchaseController extends Controller
         return response()->json();
     }
 
-    public function edit($id)
-    {
-        $saless = Sales::get();
-        $products = Product::get();
-        $purchase = Purchase::with(['products', 'sales'])->find($id);
-        $pharmacies = Pharmacy::where('id_sales', $purchase->sales->id_sales)->get();
-        return view('admin.purchase.edit', get_defined_vars());
-    }
-
-    public function update($id)
-    {
-        $validatedData = request()->validate([
-            'sales_id' => ['required'],
-            'pharmacy_id' => ['required'],
-            'yellow_image' => ['nullable'],
-            'products' => ['array'],
-            'products.*.product_id' => ['required'],
-            'products.*.stock' => ['required'],
-        ]);
-
-        if (request()->has('yellow_image')) {
-            $validatedData['yellow_purchase'] = $validatedData['yellow_image']->store('public');
-        }
-
-        try {
-            DB::beginTransaction();
-
-            $purchase = Purchase::with(['products'])->find($id);
-            $purchase->products()->delete();
-
-            foreach ($validatedData['products'] as $product) {
-                $product['price'] = 0;
-                $purchase->products()->create($product);
-            }
-
-            DB::commit();
-        } catch (Exception $e) {
-            DB::rollBack();
-            throw $e;
-        }
-
-        return response()->json();
-    }
-
-    public function changeStatus($id)
-    {
-        $purchase = Purchase::find($id);
-
-        $purchase->update(['status' => Purchase::LUNAS]);
-
-        return response()->json();
-    }
-
-    public function archive($id)
-    {
-        $purchase = Purchase::find($id);
-
-        if ($purchase->is_archived == true) {
-            $purchase->update(['is_archived' => false]);
-        } else {
-            $purchase->update(['is_archived' => true]);
-        }
-
-        return response()->json();
-    }
-
     public function show($id)
     {
         $purchase = Purchase::with(['products.product'])->find($id);
-        return view('admin.purchase.detail', get_defined_vars());
+        if ($purchase->sales_id != Auth::id()) {
+            abort(403);
+        }
+        return view('sales.purchase.detail', get_defined_vars());
     }
 
     public function uploadWhite($id)
@@ -239,6 +161,9 @@ class PurchaseController extends Controller
         $image = request()->image->store('public');
 
         $purchase = Purchase::find($id);
+        if ($purchase->sales_id != Auth::id()) {
+            abort(403);
+        }
         $purchase->update(['white_purchase' => $image]);
         $newPurchase = Purchase::find($id);
 
@@ -251,6 +176,9 @@ class PurchaseController extends Controller
         $image = request()->image->store('public');
 
         $purchase = Purchase::find($id);
+        if ($purchase->sales_id != Auth::id()) {
+            abort(403);
+        }
         $purchase->update(['yellow_purchase' => $image]);
         $newPurchase = Purchase::find($id);
 
@@ -283,7 +211,10 @@ class PurchaseController extends Controller
             'products.product',
             'bills.products.product:id,nama'
         ])->find($id);
-        return view('admin.purchase.bill', get_defined_vars());;
+        if ($purchase->sales_id != Auth::id()) {
+            abort(403);
+        }
+        return view('sales.purchase.bill', get_defined_vars());;
     }
 
     public function billCreate($id)
@@ -293,7 +224,10 @@ class PurchaseController extends Controller
         $purchase = Purchase::with(['products', 'sales'])->find($id);
         $pharmacies = Pharmacy::where('id_sales', $purchase->sales->id_sales)->get();
 
-        return view('admin.purchase.create-bill', get_defined_vars());
+        if ($purchase->sales_id != Auth::id()) {
+            abort(403);
+        }
+        return view('sales.purchase.create-bill', get_defined_vars());
     }
 
     public function billStore($id)

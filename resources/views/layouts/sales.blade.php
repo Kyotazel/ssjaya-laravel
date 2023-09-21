@@ -145,12 +145,18 @@
                         </li>
 
                         <li class='nav-small-cap'><span class='hide-menu'>Transaksi Data</span></li>
-                        <li class="sidebar-item {{ Route::is('sales.ongoing*') ? 'selected' : '' }}">
+                        <li class="sidebar-item {{ Route::is('sales.purchase.*') ? 'selected' : '' }}">
+                            <a href="{{ route('sales.purchase.index') }}" class="sidebar-link">
+                                <i class="ri-article-line"></i>
+                                <span class='hide-menu'>Rekap Nota</span>
+                            </a>
+                        </li>
+                        {{-- <li class="sidebar-item {{ Route::is('sales.ongoing*') ? 'selected' : '' }}">
                             <a href="{{ route('sales.ongoing-request.index') }}" class="sidebar-link">
                                 <i data-feather="log-out" class="feather-icon"></i>
                                 <span class='hide-menu'>Barang Keluar</span>
                             </a>
-                        </li>
+                        </li> --}}
                         {{-- <li class="sidebar-item {{ Route::is('sales.ongoing*') ? 'selected' : '' }}">
                             <a href="{{ route('sales.ongoing-request.index') }}" class="sidebar-link">
                                 <i data-feather="log-out" class="feather-icon"></i>
