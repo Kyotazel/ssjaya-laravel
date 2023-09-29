@@ -75,7 +75,7 @@
                     <thead>
                         <tr>
                             <th>Nomor Nota</th>
-                            <th>Tanggal Dibuat</th>
+                            <th>Tanggal</th>
                             <th>Sales</th>
                             <th>Apotek</th>
                             <th>Status</th>
@@ -151,7 +151,7 @@
                         data: 'code',
                     },
                     {
-                        data: 'created_at',
+                        data: 'date',
                     },
                     {
                         data: 'sales.nama',

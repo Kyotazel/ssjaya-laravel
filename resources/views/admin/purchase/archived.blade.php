@@ -18,7 +18,7 @@
                     <thead>
                         <tr>
                             <th>Nomor Nota</th>
-                            <th>Tanggal Dibuat</th>
+                            <th>Tanggal</th>
                             <th>Sales</th>
                             <th>Apotek</th>
                             <th>Status</th>
@@ -87,7 +87,7 @@
                         data: 'code',
                     },
                     {
-                        data: 'created_at',
+                        data: 'date',
                     },
                     {
                         data: 'sales.nama',
@@ -159,5 +159,42 @@
                 }
             });
         })
+
+        $(document).on('click', '.deleteButton', function() {
+            id = $(this).data('id');
+            console.log(id);
+            Swal.fire({
+                icon: 'question',
+                text: 'Yakin ingin menghapus data?',
+                showCancelButton: true,
+                confirmButtonClass: 'btn btn-primary rounded-pill w-xs me-2 mb-1 mr-3',
+                confirmButtonText: "Ya , Lanjutkan",
+                cancelButtonText: "Batal",
+                cancelButtonClass: 'btn btn-danger rounded-pill w-xs mb-1',
+                closeOnConfirm: true,
+                closeOnCancel: true,
+                buttonsStyling: false,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: `{{ route('admin.purchase.destroy', ':id') }}`.replace(
+                            ':id', id),
+                        type: "POST",
+                        dataType: "JSON",
+                        data: {
+                            _token: `{{ csrf_token() }}`,
+                            _method: `DELETE`
+                        },
+                        success: function(data) {
+                            notif_success(`<b>Sukses : </b> ${data.message}`)
+                            table.ajax.reload(null, false);
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            notif_error(textStatus);
+                        }
+                    })
+                }
+            });
+        });
     </script>
 @endsection

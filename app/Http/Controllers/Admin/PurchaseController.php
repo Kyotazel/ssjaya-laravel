@@ -34,8 +34,8 @@ class PurchaseController extends Controller
 
             return DataTables::of($query)
                 ->addIndexColumn()
-                ->editColumn('created_at', function ($item) {
-                    return $item->created_at->format('d M Y');
+                ->editColumn('date', function ($item) {
+                    return carbonParse($item->date)->format('d M Y');
                 })
                 ->editColumn('status', function ($item) {
                     if ($item->status == Purchase::LUNAS) {
@@ -80,14 +80,14 @@ class PurchaseController extends Controller
 
             return DataTables::of($query)
                 ->addIndexColumn()
-                ->editColumn('created_at', function ($item) {
-                    return $item->created_at->format('d M Y');
-                })
                 ->editColumn('status', function ($item) {
                     if ($item->status == Purchase::LUNAS) {
                         return "<div class='badge badge-success'>LUNAS</div>";
                     }
                     return "<div class='badge badge-danger'>BELUM LUNAS</div>";
+                })
+                ->editColumn('date', function ($item) {
+                    return carbonParse($item->date)->format('d M Y');
                 })
                 ->addColumn('action', function ($item) {
                     $detail_route = route('admin.purchase.show', $item->id);
@@ -96,6 +96,8 @@ class PurchaseController extends Controller
                     $archiveButton =  "<button class='dropdown-item archiveButton' data-id='$item->id'><i class='fa fa-cross'></i> Keluar Arsip</button>";
                     $editDropdown = ($item->status == Purchase::BELUMLUNAS && $item->is_archived == false && authUser()->is_admin) ? "<a class='dropdown-item' href='$edit_route'><i class='ri-ball-pen-line'></i> Edit</a>" : '';
                     $payOffButton = ($item->status == Purchase::BELUMLUNAS && $item->is_archived == false && authUser()->is_admin) ? "<a class='dropdown-item payOffButton' data-id='$item->id' href='#'><i class='fa fa-check'></i> Lunasi</a>" : '';
+                    $payOffButton = ($item->status == Purchase::BELUMLUNAS && $item->is_archived == false && authUser()->is_admin) ? "<a class='dropdown-item payOffButton' data-id='$item->id' href='#'><i class='fa fa-check'></i> Lunasi</a>" : '';
+                    $deleteButton = (authUser()->is_admin) ? "<a class='dropdown-item deleteButton' data-id='$item->id' href='#'><i class='fa fa-trash'></i> Hapus</a>" : '';
                     return "<div class='dropdown'>
                                 <button class='btn btn-secondary dropdown-toggle' type='button' id='dropdownMenuButton' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
                                     Action 
@@ -103,6 +105,7 @@ class PurchaseController extends Controller
                                 <div class='dropdown-menu' aria-labelledby='dropdownMenuButton'>
                                 <a class='dropdown-item' href='$detail_route'><i class='fa fa-desktop'></i> Detail</a>
                                     $editDropdown
+                                    $deleteButton
                                     $payOffButton
                                     $archiveButton
                                 </div>
@@ -131,16 +134,12 @@ class PurchaseController extends Controller
             'products' => ['array'],
             'products.*.product_id' => ['required'],
             'products.*.stock' => ['required'],
+            'code' => ['required'],
+            'date' => ['required']
         ]);
 
         if (request()->has('yellow_image')) {
             $validatedData['yellow_purchase'] = $validatedData['yellow_image']->store('public');
-        }
-
-        $validatedData['code'] = '#0001';
-        $purchase = Purchase::latest()->first();
-        if ($purchase) {
-            $validatedData['code'] = '#' . sprintf('%04d', ($purchase->id + 1));
         }
 
         try {
@@ -180,6 +179,8 @@ class PurchaseController extends Controller
             'products' => ['array'],
             'products.*.product_id' => ['required'],
             'products.*.stock' => ['required'],
+            'code' => ['required'],
+            'date' => ['required']
         ]);
 
         if (request()->has('yellow_image')) {
@@ -190,6 +191,9 @@ class PurchaseController extends Controller
             DB::beginTransaction();
 
             $purchase = Purchase::with(['products'])->find($id);
+
+            $purchase->update($validatedData);
+
             $purchase->products()->delete();
 
             foreach ($validatedData['products'] as $product) {
@@ -331,5 +335,12 @@ class PurchaseController extends Controller
         }
 
         return response()->json();
+    }
+
+    public function destroy($id)
+    {
+        $purchase = Purchase::find($id)->delete();
+
+        return response()->json(['message' => 'Testimoni Berhasil Dihapus']);
     }
 }

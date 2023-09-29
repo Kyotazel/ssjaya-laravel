@@ -118,18 +118,19 @@ class PurchaseController extends Controller
 
         $validatedData['sales_id'] = Auth::id();
 
-        if (request()->has('yellow_image')) {
-            $validatedData['yellow_purchase'] = $validatedData['yellow_image']->store('public');
-        }
-
-        $validatedData['code'] = '#0001';
-        $purchase = Purchase::latest()->first();
-        if ($purchase) {
-            $validatedData['code'] = '#' . sprintf('%04d', ($purchase->id + 1));
-        }
 
         try {
             DB::beginTransaction();
+
+            if (request()->has('yellow_image')) {
+                $validatedData['yellow_purchase'] = $validatedData['yellow_image']->store('public');
+            }
+
+            $validatedData['code'] = '#0001';
+            $purchase = Purchase::latest()->first();
+            if ($purchase) {
+                $validatedData['code'] = '#' . sprintf('%04d', ($purchase->id + 1));
+            }
 
             $purchase = Purchase::create($validatedData);
 

@@ -16,7 +16,8 @@ class Purchase extends Model
         'status',
         'is_archived',
         'white_purchase',
-        'yellow_purchase'
+        'yellow_purchase',
+        'date'
     ];
 
     protected $casts = [
@@ -30,6 +31,18 @@ class Purchase extends Model
 
     const LUNAS = 'LUNAS';
     const BELUMLUNAS = 'BELUM LUNAS';
+
+    protected static function booted()
+    {
+        static::deleting(function (Purchase $purchase) { // before delete() method call this
+
+            foreach ($purchase->bills as $bill) {
+                $bill->products()->delete();
+            }
+            $purchase->bills()->delete();
+            $purchase->products()->delete();
+        });
+    }
 
     public function getWhitePurchaseAttribute($value)
     {

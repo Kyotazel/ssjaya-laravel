@@ -50,8 +50,22 @@
                     </div>
                     <div class="col-md-12">
                         <div class="form-group">
+                            <label for="code">Nomor Nota</label>
+                            <input type="text" name="code" class="form-control" value="{{ $purchase->code }}"
+                                placeholder="Masukkan Nomor Nota">
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
                             <label for="yellow_image">Nota Setor / Kuning</label>
                             <input type="file" name="yellow_image" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="date">Tanggal Setor</label>
+                            <input type="date" name="date" value="{{ carbonParse($purchase->date)->format('Y-m-d') }}"
+                                class="form-control">
                         </div>
                     </div>
                 </div>
