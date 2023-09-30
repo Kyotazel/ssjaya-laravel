@@ -58,9 +58,9 @@
     <div class="card">
         <div class="card-header d-flex align-items-center">
             <div class="card-title mb-0 flex-grow-1">
-                <div class="btn btn-primary">
-                    <h4 class="mb-0 text-light">Detail Rekap Nota</h4>
-                </div>
+                <button class="btn btn-sm btn-primary mr-3" type="button" onclick="history.back()"><i
+                        class="fa fa-arrow-left"></i></button>
+                <h4 class="mb-0 text-dark d-inline"> Detail Rekap Nota</h4>
             </div>
         </div>
         <div class="card-body">

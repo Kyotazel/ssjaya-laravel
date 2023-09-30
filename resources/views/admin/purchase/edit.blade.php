@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('title', __('Tambahkan Nota'))
+@section('title', __('Edit Nota'))
 
 @section('style')
     <style>
@@ -13,7 +13,9 @@
         <div class="card">
             <div class="card-header d-flex align-items-center">
                 <div class="card-title mb-0 flex-grow-1">
-                    <h3 class="mb-0 text-dark">Tambah Nota</h3>
+                    <button class="btn btn-sm btn-primary mr-3" type="button" onclick="history.back()"><i
+                            class="fa fa-arrow-left"></i></button>
+                    <h4 class="mb-0 text-dark d-inline"> Edit Nota</h4>
                 </div>
                 <a class="btn btn-lg btn-outline-primary rounded-pill btn-label mr-2"
                     href="{{ route('admin.purchase.index') }}">
