@@ -52,7 +52,7 @@
                     <td style="border: 1px solid black;">{{ $purchase->code }}</td>
                     <td style="border: 1px solid black;">{{ $purchase->pharmacy->nama_apotek ?? '' }}</td>
                     <td style="border: 1px solid black;">{{ $purchase->sales->nama }}</td>
-                    <td style="border: 1px solid black;">{{ $purchase->pharmacy->city->nama }}</td>
+                    <td style="border: 1px solid black;">{{ $purchase->pharmacy->city->nama ?? '' }}</td>
                     <td style="border: 1px solid black;">{{ carbonParse($purchase->date)->format('d M Y') }}</td>
                     <td style="border: 1px solid black;">{{ $purchase->status }}</td>
                 </tr>

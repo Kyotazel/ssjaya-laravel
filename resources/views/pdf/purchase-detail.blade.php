@@ -55,7 +55,7 @@
         <tr>
             <td><b>Area</b></td>
             <td>:</td>
-            <td>{{ $purchase->pharmacy->city->nama }}</td>
+            <td>{{ $purchase->pharmacy->city->nama ?? '' }}</td>
         </tr>
         <tr>
             <td><b>Tanggal</b></td>
