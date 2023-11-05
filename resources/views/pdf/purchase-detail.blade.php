@@ -45,7 +45,7 @@
         <tr>
             <td><b>Nama Apotek</b></td>
             <td>:</td>
-            <td>{{ $purchase->pharmacy->nama_apotek }}</td>
+            <td>{{ $purchase->pharmacy->nama_apotek ?? '' }}</td>
         </tr>
         <tr>
             <td><b>Nama Sales</b></td>
