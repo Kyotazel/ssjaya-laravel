@@ -51,6 +51,8 @@
                     <div class="col-md-12 text-right">
                         <button type="submit" id="filter_submit" class="btn btn-primary mr-1"><i class="fa fa-filter"></i>
                             Filter Data</button>
+                        <button type="button" id="btn_export_pdf" class="btn btn-danger mr-1"><i
+                                class="fas fa-file-pdf"></i> Export Pdf</button>
                     </div>
                 </div>
             </form>
@@ -312,6 +314,30 @@
                     })
                 }
             });
+        })
+
+        $(document).on('click', '#btn_export_pdf', function(e) {
+            e.preventDefault();
+
+            let route = '{{ route('admin.purchase.export-list') }}'
+            let year = $('#year').val()
+            let month = $('#month').val()
+            let day = $('#day').val()
+
+            if (year) {
+                route += `?year=${year}`
+
+                if (month) {
+                    route += `&month=${month}`
+
+                    if (day) {
+                        route += `&day=${day}`
+                    }
+                }
+            }
+
+            window.open(route, '_blank')
+
         })
     </script>
 @endsection

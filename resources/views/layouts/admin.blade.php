@@ -211,10 +211,17 @@
                         @endif
 
                         <li class='nav-small-cap'><span class='hide-menu'>Transaksi Data</span></li>
-                        <li class="sidebar-item {{ Route::is('admin.purchase.*') ? 'selected' : '' }}">
+                        <li
+                            class="sidebar-item {{ Route::is('admin.purchase.*') and (!Route::is('admin.purchase.belum-lunas') ? 'selected' : '') }}">
                             <a href="{{ route('admin.purchase.index') }}" class="sidebar-link">
                                 <i class="ri-article-line"></i>
                                 <span class='hide-menu'>Rekap Nota</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item {{ Route::is('admin.purchase.belum-lunas') ? 'selected' : '' }}">
+                            <a href="{{ route('admin.purchase.belum-lunas') }}" class="sidebar-link">
+                                <i class="ri-article-line"></i>
+                                <span class='hide-menu'>Nota Belum Lunas</span>
                             </a>
                         </li>
                         {{-- <li class="sidebar-item {{ Route::is('admin.deposit*') ? 'selected' : '' }}">

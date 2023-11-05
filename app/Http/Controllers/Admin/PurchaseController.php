@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\Purchase;
 use App\Models\PurchaseBill;
 use App\Models\Sales;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -23,13 +24,18 @@ class PurchaseController extends Controller
                 ->with(['sales', 'pharmacy'])
                 ->where('is_archived', false)
                 ->when(request()->year, function ($q) {
-                    $q->whereYear('created_at', request()->year);
+                    $q->whereYear('date', request()->year);
                 })
                 ->when(request()->month, function ($q) {
-                    $q->whereMonth('created_at', request()->month);
+                    $q->whereMonth('date', request()->month);
                 })
                 ->when(request()->day, function ($q) {
-                    $q->whereDay('created_at', request()->day);
+                    $q->whereDay('date', request()->day);
+                })
+                ->when(request()->status, function ($q) {
+                    $q->where('status', request()->status)
+                        ->orderByDesc('date')
+                        ->whereBetween('date', [now()->subMonths(3), now()]);
                 });
 
             return DataTables::of($query)
@@ -46,6 +52,7 @@ class PurchaseController extends Controller
                 ->addColumn('action', function ($item) {
                     $detail_route = route('admin.purchase.show', $item->id);
                     $edit_route = route('admin.purchase.edit', $item->id);
+                    $export_route = route('admin.purchase.export-detail', $item->id);
 
                     $archiveButton = (!$item->is_archived && authUser()->is_admin) ? "<button class='dropdown-item archiveButton' data-id='$item->id'><i class='fa fa-trash'></i> Arsipkan</button>" : '';
                     $editDropdown = ($item->status == Purchase::BELUMLUNAS && !$item->is_archived && authUser()->is_admin) ? "<a class='dropdown-item' href='$edit_route'><i class='ri-ball-pen-line'></i> Edit</a>" : '';
@@ -56,9 +63,10 @@ class PurchaseController extends Controller
                                 </button>
                                 <div class='dropdown-menu' aria-labelledby='dropdownMenuButton'>
                                 <a class='dropdown-item' href='$detail_route'><i class='fa fa-desktop'></i> Detail</a>
-                                    $editDropdown
-                                    $payOffButton
-                                    $archiveButton
+                                $editDropdown
+                                $payOffButton
+                                $archiveButton
+                                <a class='dropdown-item' target='_blank' href='$export_route'><i class='fas fa-file-pdf'></i> Export Pdf</a>
                                 </div>
                             </div>";;
                 })
@@ -342,5 +350,56 @@ class PurchaseController extends Controller
         $purchase = Purchase::find($id)->delete();
 
         return response()->json(['message' => 'Testimoni Berhasil Dihapus']);
+    }
+
+    public function exportList()
+    {
+        $purchases = Purchase::query()
+            ->with(['sales', 'pharmacy.city'])
+            ->where('is_archived', false)
+            ->when(request()->year, function ($q) {
+                $q->whereYear('date', request()->year);
+            })
+            ->when(request()->month, function ($q) {
+                $q->whereMonth('date', request()->month);
+            })
+            ->when(request()->day, function ($q) {
+                $q->whereDay('date', request()->day);
+            })->get();
+
+        $pdf = Pdf::loadView('pdf.purchase-report', get_defined_vars());
+        return $pdf->download('Laporan Rekap Nota.pdf');
+    }
+
+    public function exportDetail($id)
+    {
+        $purchase = Purchase::with([
+            'sales',
+            'pharmacy.city',
+            'products.product'
+        ])->find($id);
+
+
+        $pdf = Pdf::loadView('pdf.purchase-detail', get_defined_vars());
+
+        return $pdf->download("Detail Nota $purchase->code.pdf");
+    }
+
+    public function exportBelumLunas()
+    {
+        $startDate = now()->subMonths(3);
+        $endDate = now();
+        $purchases = Purchase::query()
+            ->with(['sales', 'pharmacy.city'])
+            ->where('is_archived', false)
+            ->where('status', Purchase::BELUMLUNAS)
+            ->whereBetween('date', [$startDate, $endDate])
+            ->get();
+
+        $namedStart = $startDate->format('d M Y');
+        $namedEnd = $endDate->format('d M Y');
+
+        $pdf = Pdf::loadView('pdf.purchase-report-belum-lunas', get_defined_vars());
+        return $pdf->download("Nota Belum Lunas ($namedStart = $namedEnd).pdf");
     }
 }

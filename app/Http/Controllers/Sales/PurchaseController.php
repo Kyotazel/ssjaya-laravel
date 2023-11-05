@@ -23,19 +23,19 @@ class PurchaseController extends Controller
                 ->with(['pharmacy'])
                 ->where(['is_archived' => false, 'sales_id' => Auth::id()])
                 ->when(request()->year, function ($q) {
-                    $q->whereYear('created_at', request()->year);
+                    $q->whereYear('date', request()->year);
                 })
                 ->when(request()->month, function ($q) {
-                    $q->whereMonth('created_at', request()->month);
+                    $q->whereMonth('date', request()->month);
                 })
                 ->when(request()->day, function ($q) {
-                    $q->whereDay('created_at', request()->day);
+                    $q->whereDay('date', request()->day);
                 });
 
             return DataTables::of($query)
                 ->addIndexColumn()
-                ->editColumn('created_at', function ($item) {
-                    return $item->created_at->format('d M Y');
+                ->editColumn('date', function ($item) {
+                    return $item->date->format('d M Y');
                 })
                 ->editColumn('status', function ($item) {
                     if ($item->status == Purchase::LUNAS) {

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DatamasterController;
 use App\Http\Controllers\Landing\HomeController;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
@@ -15,6 +16,11 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::get('ping', function () {
+    $pdf = Pdf::loadView('pdf.purchase-report');
+    return $pdf->download('purchase-report.pdf');
+});
 
 Route::get('/', [HomeController::class, 'index'])->name('homepage');
 Route::get('about-us', [HomeController::class, 'aboutUs'])->name('about-us');
