@@ -394,6 +394,7 @@ class PurchaseController extends Controller
             ->where('is_archived', false)
             ->where('status', Purchase::BELUMLUNAS)
             ->whereBetween('date', [$startDate, $endDate])
+            ->orderByDesc('date')
             ->get();
 
         $namedStart = $startDate->format('d M Y');
