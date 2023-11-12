@@ -367,6 +367,8 @@ class PurchaseController extends Controller
                 $q->whereDay('date', request()->day);
             })->get();
 
+        return view('pdf.purchase-report', get_defined_vars());
+
         $pdf = Pdf::loadView('pdf.purchase-report', get_defined_vars());
         return $pdf->download('Laporan Rekap Nota.pdf');
     }
@@ -379,6 +381,7 @@ class PurchaseController extends Controller
             'products.product'
         ])->find($id);
 
+        // return view('pdf.purchase-detail', get_defined_vars());
 
         $pdf = Pdf::loadView('pdf.purchase-detail', get_defined_vars());
 

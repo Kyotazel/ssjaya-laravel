@@ -62,11 +62,11 @@
             <td>:</td>
             <td>{{ carbonParse($purchase->date)->format('d M Y') }}</td>
         </tr>
-        <tr>
+        {{-- <tr>
             <td><b>Status</b></td>
             <td>:</td>
             <td>{{ $purchase->status }}</td>
-        </tr>
+        </tr> --}}
     </table>
 
     <h3>List Barang : </h3>
@@ -86,6 +86,9 @@
             @endforeach
         </tbody>
     </table>
+
+    <img src="{{ asset('assets/images/stampel.png') }}" alt=""
+        style="height: 125px ;float: right; margin: 20px">
 
 </body>
 
