@@ -62,4 +62,15 @@
 
 </body>
 
+<style>
+    @page {
+        size: auto;
+        margin: 0mm;
+    }
+</style>
+
+<script>
+    window.print();
+</script>
+
 </html>
