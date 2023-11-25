@@ -65,7 +65,7 @@
 <style>
     @page {
         size: auto;
-        margin: 0mm;
+        margin-top: 0mm;
     }
 </style>
 
