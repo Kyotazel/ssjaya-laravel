@@ -35,13 +35,16 @@ class PurchaseController extends Controller
                 ->when(request()->status, function ($q) {
                     $q->where('status', request()->status)
                         ->orderByDesc('date')
-                        ->whereBetween('date', [now()->subMonths(3), now()]);
+                        ->wheredate('date', '<=', now()->subMonths(3));
                 });
 
             return DataTables::of($query)
                 ->addIndexColumn()
                 ->editColumn('date', function ($item) {
                     return carbonParse($item->date)->format('d M Y');
+                })
+                ->editColumn('pharmacy.nama_apotek', function ($item) {
+                    return $item->pharmacy->nama_apotek ?? '(Data Apotek Dihapus)';
                 })
                 ->editColumn('status', function ($item) {
                     if ($item->status == Purchase::LUNAS) {
@@ -94,6 +97,9 @@ class PurchaseController extends Controller
                     }
                     return "<div class='badge badge-danger'>BELUM LUNAS</div>";
                 })
+                ->editColumn('pharmacy.nama_apotek', function ($item) {
+                    return $item->pharmacy->nama_apotek ?? '(Data Apotek Dihapus)';
+                })
                 ->editColumn('date', function ($item) {
                     return carbonParse($item->date)->format('d M Y');
                 })
@@ -139,6 +145,7 @@ class PurchaseController extends Controller
             'sales_id' => ['required'],
             'pharmacy_id' => ['required'],
             'yellow_image' => ['nullable', 'image'],
+            'white_image' => ['nullable', 'image'],
             'products' => ['array'],
             'products.*.product_id' => ['required'],
             'products.*.stock' => ['required'],
@@ -148,6 +155,10 @@ class PurchaseController extends Controller
 
         if (request()->has('yellow_image')) {
             $validatedData['yellow_purchase'] = $validatedData['yellow_image']->store('public');
+        }
+
+        if (request()->has('white_image')) {
+            $validatedData['white_purchase'] = $validatedData['white_image']->store('public');
         }
 
         try {
@@ -184,6 +195,7 @@ class PurchaseController extends Controller
             'sales_id' => ['required'],
             'pharmacy_id' => ['required'],
             'yellow_image' => ['nullable'],
+            'white_image' => ['nullable'],
             'products' => ['array'],
             'products.*.product_id' => ['required'],
             'products.*.stock' => ['required'],
@@ -193,6 +205,10 @@ class PurchaseController extends Controller
 
         if (request()->has('yellow_image')) {
             $validatedData['yellow_purchase'] = $validatedData['yellow_image']->store('public');
+        }
+
+        if (request()->has('white_image')) {
+            $validatedData['white_purchase'] = $validatedData['white_image']->store('public');
         }
 
         try {
@@ -390,20 +406,19 @@ class PurchaseController extends Controller
 
     public function exportBelumLunas()
     {
-        $startDate = now()->subMonths(3);
-        $endDate = now();
         $purchases = Purchase::query()
             ->with(['sales', 'pharmacy.city'])
             ->where('is_archived', false)
             ->where('status', Purchase::BELUMLUNAS)
-            ->whereBetween('date', [$startDate, $endDate])
+            ->wheredate('date', '<=', now()->subMonths(3))
             ->orderByDesc('date')
             ->get();
 
-        $namedStart = $startDate->format('d M Y');
-        $namedEnd = $endDate->format('d M Y');
+        $namedDate = now()->subMonths(3)->format('d M Y');
 
-        $pdf = Pdf::loadView('pdf.purchase-report-belum-lunas', get_defined_vars());
-        return $pdf->download("Nota Belum Lunas ($namedStart = $namedEnd).pdf");
+        return view('pdf.purchase-report-belum-lunas', get_defined_vars());
+
+        // $pdf = Pdf::loadView('pdf.purchase-report-belum-lunas', get_defined_vars());
+        // return $pdf->download("Nota Belum Lunas ($namedStart = $namedEnd).pdf");
     }
 }

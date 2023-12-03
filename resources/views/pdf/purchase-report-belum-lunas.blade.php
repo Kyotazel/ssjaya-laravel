@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Laporan Rekap Nota Belum Lunas {{ $namedStart }} - {{ $namedEnd }}</title>
+    <title>Laporan Rekap Nota Belum Lunas Sebelum {{ $namedDate }}</title>
 </head>
 
 <body>
@@ -33,7 +33,7 @@
         }
     </style>
 
-    <h1>Nota Belum Lunas {{ $namedStart }} - {{ $namedEnd }}</h1>
+    <h1>Nota Belum Lunas Sebelum {{ $namedDate }}</h1>
 
     <table>
         <thead>
@@ -57,5 +57,16 @@
     </table>
 
 </body>
+
+<style>
+    @page {
+        size: auto;
+        margin-top: 0mm;
+    }
+</style>
+
+<script>
+    window.print();
+</script>
 
 </html>

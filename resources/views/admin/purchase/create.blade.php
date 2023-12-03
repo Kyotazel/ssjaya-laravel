@@ -51,8 +51,14 @@
                     </div>
                     <div class="col-md-12">
                         <div class="form-group">
+                            <label for="white_image">Nota Lunas / Putih</label>
+                            <input type="file" name="white_image" class="form-control" accept="image/*">
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
                             <label for="yellow_image">Nota Setor / Kuning</label>
-                            <input type="file" name="yellow_image" class="form-control">
+                            <input type="file" name="yellow_image" class="form-control" accept="image/*">
                         </div>
                     </div>
                     <div class="col-md-12">

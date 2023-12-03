@@ -70,8 +70,8 @@
                         <div class="col-auto p-0">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
-                                <rect x="2" y="3" width="20" height="18" rx="4.8"
-                                    stroke="#181B32" stroke-width="1.8" />
+                                <rect x="2" y="3" width="20" height="18" rx="4.8" stroke="#181B32"
+                                    stroke-width="1.8" />
                                 <path d="M2 7L9.00146 12.6012C10.7545 14.0036 13.2455 14.0036 14.9985 12.6012L22 7"
                                     stroke="#181B32" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
@@ -156,6 +156,42 @@
         <div class="card-header d-flex align-items-center">
             <div class="card-title mb-0 flex-grow-1">
                 <div class="btn btn-primary">
+                    <h4 class="mb-0 text-light">List Nota Barang</h4>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table table-bordered mt-2">
+                        <thead>
+                            <tr class="table-active">
+                                <th>Nama Produk</th>
+                                <th>Jumlah</th>
+                                {{-- <th>Harga Satuan</th>
+                                <th>Total</th> --}}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($purchase->products as $product)
+                                <tr>
+                                    <td>{{ $product->product->nama }}</td>
+                                    <td>{{ $product->stock }}</td>
+                                    {{-- <td>Rp. {{ number_format($product->price) }}</td>
+                                    <td>Rp. {{ number_format($product->stock * $product->price) }}</td> --}}
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header d-flex align-items-center">
+            <div class="card-title mb-0 flex-grow-1">
+                <div class="btn btn-primary">
                     <h4 class="mb-0 text-light">Foto Nota</h4>
                 </div>
                 <div class="float-right">
@@ -210,8 +246,8 @@
                                     <div class="col-auto p-0">
                                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                             xmlns="http://www.w3.org/2000/svg">
-                                            <rect x="2" y="3" width="20" height="18"
-                                                rx="4.8" stroke="#181B32" stroke-width="1.8" />
+                                            <rect x="2" y="3" width="20" height="18" rx="4.8"
+                                                stroke="#181B32" stroke-width="1.8" />
                                             <path
                                                 d="M2 7L9.00146 12.6012C10.7545 14.0036 13.2455 14.0036 14.9985 12.6012L22 7"
                                                 stroke="#181B32" stroke-width="1.8" stroke-linecap="round"
