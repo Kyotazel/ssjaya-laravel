@@ -32,6 +32,9 @@ class PurchaseController extends Controller
                 ->when(request()->day, function ($q) {
                     $q->whereDay('date', request()->day);
                 })
+                ->when(request()->sales_id, function ($q) {
+                    $q->where('sales_id', request()->sales_id);
+                })
                 ->when(request()->status, function ($q) {
                     $q->where('status', request()->status)
                         ->orderByDesc('date')
@@ -79,6 +82,7 @@ class PurchaseController extends Controller
 
         $firstYear = now()->subYears(5)->year;
         $lastYear = now()->addYears(5)->year;
+        $saless = Sales::get();
         return view('admin.purchase.index', get_defined_vars());
     }
 
@@ -381,7 +385,11 @@ class PurchaseController extends Controller
             })
             ->when(request()->day, function ($q) {
                 $q->whereDay('date', request()->day);
-            })->get();
+            })
+            ->when(request()->sales_id, function ($q) {
+                $q->where('sales_id', request()->sales_id);
+            })
+            ->get();
 
         return view('pdf.purchase-report', get_defined_vars());
 

@@ -48,6 +48,17 @@
                             </select>
                         </div>
                     </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="sales_id">Sales : </label>
+                            <select name="sales_id" id="sales_id" class="select2">
+                                <option value="">Pilih Sales</option>
+                                @foreach ($saless as $sales)
+                                    <option value="{{ $sales->id }}">{{ $sales->nama }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
                     <div class="col-md-12 text-right">
                         <button type="submit" id="filter_submit" class="btn btn-primary mr-1"><i class="fa fa-filter"></i>
                             Filter Data</button>
@@ -145,6 +156,7 @@
                         query.year = $('#year').val();
                         query.month = $('#month').val();
                         query.day = $('#day').val();
+                        query.sales_id = $('#sales_id').val();
 
                         return query
                     }
@@ -323,6 +335,7 @@
             let year = $('#year').val()
             let month = $('#month').val()
             let day = $('#day').val()
+            let sales_id = $('#sales_id').val()
 
             if (year) {
                 route += `?year=${year}`
@@ -333,6 +346,14 @@
                     if (day) {
                         route += `&day=${day}`
                     }
+                }
+
+                if (sales_id) {
+                    route += `&sales_id=${sales_id}`
+                }
+            } else {
+                if (sales_id) {
+                    route += `?sales_id=${sales_id}`
                 }
             }
 
