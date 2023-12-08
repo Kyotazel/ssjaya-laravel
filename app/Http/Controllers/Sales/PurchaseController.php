@@ -35,7 +35,7 @@ class PurchaseController extends Controller
             return DataTables::of($query)
                 ->addIndexColumn()
                 ->editColumn('date', function ($item) {
-                    return $item->date->format('d M Y');
+                    return carbonParse($item->date)->format('d M Y');
                 })
                 ->editColumn('status', function ($item) {
                     if ($item->status == Purchase::LUNAS) {
