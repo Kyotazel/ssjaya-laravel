@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\PurchaseAllExport;
+use App\Exports\PurchaseNotPaidExport;
 use App\Http\Controllers\Controller;
 use App\Models\Pharmacy;
 use App\Models\Product;
@@ -13,6 +15,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
 
 class PurchaseController extends Controller
@@ -38,7 +41,7 @@ class PurchaseController extends Controller
                 ->when(request()->status, function ($q) {
                     $q->where('status', request()->status)
                         ->orderByDesc('date')
-                        ->wheredate('date', '<=', now()->subMonths(3));
+                        ->whereBetween('date', [now()->subMonths(3), now()]);
                 });
 
             return DataTables::of($query)
@@ -372,9 +375,9 @@ class PurchaseController extends Controller
         return response()->json(['message' => 'Testimoni Berhasil Dihapus']);
     }
 
-    public function exportList()
+    private function listExportAll()
     {
-        $purchases = Purchase::query()
+        return Purchase::query()
             ->with(['sales', 'pharmacy.city'])
             ->where('is_archived', false)
             ->when(request()->year, function ($q) {
@@ -390,11 +393,23 @@ class PurchaseController extends Controller
                 $q->where('sales_id', request()->sales_id);
             })
             ->get();
+    }
+
+    public function exportPdfList()
+    {
+        $purchases = $this->listExportAll();
 
         return view('pdf.purchase-report', get_defined_vars());
 
         $pdf = Pdf::loadView('pdf.purchase-report', get_defined_vars());
         return $pdf->download('Laporan Rekap Nota.pdf');
+    }
+
+    public function exportExcelList()
+    {
+        $purchases = $this->listExportAll();
+
+        return Excel::download(new PurchaseAllExport($purchases), 'Laporan Rekap Nota.xlsx');
     }
 
     public function exportDetail($id)
@@ -412,21 +427,39 @@ class PurchaseController extends Controller
         return $pdf->download("Detail Nota $purchase->code.pdf");
     }
 
-    public function exportBelumLunas()
+    private function listExportNotPaid()
     {
-        $purchases = Purchase::query()
+        $startDate = now()->subMonths(3);
+        $endDate = now();
+        return Purchase::query()
             ->with(['sales', 'pharmacy.city'])
             ->where('is_archived', false)
             ->where('status', Purchase::BELUMLUNAS)
-            ->wheredate('date', '<=', now()->subMonths(3))
+            ->whereBetween('date', [$startDate, $endDate])
             ->orderByDesc('date')
             ->get();
+    }
 
-        $namedDate = now()->subMonths(3)->format('d M Y');
+    public function exportPdfBelumLunas()
+    {
+        $purchases = $this->listExportNotPaid();
+
+        $namedStart = now()->subMonths(3)->format('d M Y');
+        $namedEnd = now()->format('d M Y');
 
         return view('pdf.purchase-report-belum-lunas', get_defined_vars());
 
         // $pdf = Pdf::loadView('pdf.purchase-report-belum-lunas', get_defined_vars());
         // return $pdf->download("Nota Belum Lunas ($namedStart = $namedEnd).pdf");
+    }
+
+    public function exportExcelBelumLunas()
+    {
+        $purchases = $this->listExportNotPaid();
+
+        $namedStart = now()->subMonths(3)->format('d M Y');
+        $namedEnd = now()->format('d M Y');
+
+        return Excel::download(new PurchaseNotPaidExport($purchases), "Nota Belum Lunas ($namedStart - $namedEnd).xlsx");
     }
 }

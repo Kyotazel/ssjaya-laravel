@@ -64,6 +64,8 @@
                             Filter Data</button>
                         <button type="button" id="btn_export_pdf" class="btn btn-danger mr-1"><i
                                 class="fas fa-file-pdf"></i> Export Pdf</button>
+                        <button type="button" id="btn_export_excel" class="btn btn-success mr-1"><i
+                                class="fas fa-file-excel"></i> Export Excel</button>
                     </div>
                 </div>
             </form>
@@ -331,7 +333,40 @@
         $(document).on('click', '#btn_export_pdf', function(e) {
             e.preventDefault();
 
-            let route = '{{ route('admin.purchase.export-list') }}'
+            let route = '{{ route('admin.purchase.export-pdf-list') }}'
+            let year = $('#year').val()
+            let month = $('#month').val()
+            let day = $('#day').val()
+            let sales_id = $('#sales_id').val()
+
+            if (year) {
+                route += `?year=${year}`
+
+                if (month) {
+                    route += `&month=${month}`
+
+                    if (day) {
+                        route += `&day=${day}`
+                    }
+                }
+
+                if (sales_id) {
+                    route += `&sales_id=${sales_id}`
+                }
+            } else {
+                if (sales_id) {
+                    route += `?sales_id=${sales_id}`
+                }
+            }
+
+            window.open(route, '_blank')
+
+        })
+
+        $(document).on('click', '#btn_export_excel', function(e) {
+            e.preventDefault();
+
+            let route = '{{ route('admin.purchase.export-excel-list') }}'
             let year = $('#year').val()
             let month = $('#month').val()
             let day = $('#day').val()

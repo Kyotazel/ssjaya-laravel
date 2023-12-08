@@ -11,6 +11,8 @@
             </div>
             <button type="button" id="btn_export_pdf" class="btn btn-danger mr-1"><i class="fas fa-file-pdf"></i>
                 Export Pdf</button>
+            <button type="button" id="btn_export_excel" class="btn btn-success mr-1"><i class="fas fa-file-excel"></i>
+                Export Excel</button>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -72,7 +74,16 @@
         $(document).on('click', '#btn_export_pdf', function(e) {
             e.preventDefault();
 
-            let route = '{{ route('admin.purchase.export-belum-lunas') }}'
+            let route = '{{ route('admin.purchase.export-pdf-belum-lunas') }}'
+
+            window.open(route, '_blank')
+
+        })
+
+        $(document).on('click', '#btn_export_excel', function(e) {
+            e.preventDefault();
+
+            let route = '{{ route('admin.purchase.export-excel-belum-lunas') }}'
 
             window.open(route, '_blank')
 
