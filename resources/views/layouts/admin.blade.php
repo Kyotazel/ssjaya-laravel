@@ -224,6 +224,12 @@
                                 <span class='hide-menu'>Nota Belum Lunas</span>
                             </a>
                         </li>
+                        <li class="sidebar-item {{ Route::is('admin.purchase.rekap-bulanan') ? 'selected' : '' }}">
+                            <a href="{{ route('admin.purchase.rekap-bulanan') }}" class="sidebar-link">
+                                <i class="ri-article-line"></i>
+                                <span class='hide-menu'>Rekap Nota Bulanan</span>
+                            </a>
+                        </li>
                         {{-- <li class="sidebar-item {{ Route::is('admin.deposit*') ? 'selected' : '' }}">
                             <a href="{{ route('admin.deposit-report.index') }}" class="sidebar-link">
                                 <i data-feather="log-in" class="feather-icon"></i>

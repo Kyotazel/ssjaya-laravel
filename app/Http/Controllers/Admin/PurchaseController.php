@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Exports\PurchaseAllExport;
+use App\Exports\PurchaseMonthlyReport;
 use App\Exports\PurchaseNotPaidExport;
 use App\Http\Controllers\Controller;
 use App\Models\Pharmacy;
@@ -42,6 +43,9 @@ class PurchaseController extends Controller
                     $q->where('status', request()->status)
                         ->orderByDesc('date')
                         ->whereBetween('date', [now()->subMonths(3), now()]);
+                })
+                ->when(request()->start_date && request()->end_date, function ($q) {
+                    $q->whereBetween('date', [request()->start_date, request()->end_date]);
                 });
 
             return DataTables::of($query)
@@ -148,17 +152,22 @@ class PurchaseController extends Controller
 
     public function store()
     {
-        $validatedData = request()->validate([
-            'sales_id' => ['required'],
-            'pharmacy_id' => ['required'],
-            'yellow_image' => ['nullable', 'image'],
-            'white_image' => ['nullable', 'image'],
-            'products' => ['array'],
-            'products.*.product_id' => ['required'],
-            'products.*.stock' => ['required'],
-            'code' => ['required'],
-            'date' => ['required']
-        ]);
+        $validatedData = request()->validate(
+            [
+                'sales_id' => ['required'],
+                'pharmacy_id' => ['required'],
+                'yellow_image' => ['nullable', 'image'],
+                'white_image' => ['nullable', 'image'],
+                'products' => ['array'],
+                'products.*.product_id' => ['required'],
+                'products.*.stock' => ['required'],
+                'code' => ['required', 'unique:purchases,code'],
+                'date' => ['required']
+            ],
+            [
+                'code.unique' => 'Kode Nota Sudah Digunakan'
+            ]
+        );
 
         if (request()->has('yellow_image')) {
             $validatedData['yellow_purchase'] = $validatedData['yellow_image']->store('public');
@@ -198,17 +207,22 @@ class PurchaseController extends Controller
 
     public function update($id)
     {
-        $validatedData = request()->validate([
-            'sales_id' => ['required'],
-            'pharmacy_id' => ['required'],
-            'yellow_image' => ['nullable'],
-            'white_image' => ['nullable'],
-            'products' => ['array'],
-            'products.*.product_id' => ['required'],
-            'products.*.stock' => ['required'],
-            'code' => ['required'],
-            'date' => ['required']
-        ]);
+        $validatedData = request()->validate(
+            [
+                'sales_id' => ['required'],
+                'pharmacy_id' => ['required'],
+                'yellow_image' => ['nullable'],
+                'white_image' => ['nullable'],
+                'products' => ['array'],
+                'products.*.product_id' => ['required'],
+                'products.*.stock' => ['required'],
+                'code' => ['required', 'unique:purchases,code,' . $id],
+                'date' => ['required']
+            ],
+            [
+                'code.unique' => 'Kode Nota Sudah Digunakan'
+            ]
+        );
 
         if (request()->has('yellow_image')) {
             $validatedData['yellow_purchase'] = $validatedData['yellow_image']->store('public');
@@ -429,8 +443,8 @@ class PurchaseController extends Controller
 
     private function listExportNotPaid()
     {
-        $startDate = now()->subMonths(3);
-        $endDate = now();
+        $startDate = request()->start_date;
+        $endDate = request()->end_date;
         return Purchase::query()
             ->with(['sales', 'pharmacy.city'])
             ->where('is_archived', false)
@@ -444,8 +458,8 @@ class PurchaseController extends Controller
     {
         $purchases = $this->listExportNotPaid();
 
-        $namedStart = now()->subMonths(3)->format('d M Y');
-        $namedEnd = now()->format('d M Y');
+        $namedStart = carbonParse(request()->start_date)->format('d M Y');
+        $namedEnd = carbonParse(request()->end_date)->format('d M Y');
 
         return view('pdf.purchase-report-belum-lunas', get_defined_vars());
 
@@ -457,9 +471,51 @@ class PurchaseController extends Controller
     {
         $purchases = $this->listExportNotPaid();
 
-        $namedStart = now()->subMonths(3)->format('d M Y');
-        $namedEnd = now()->format('d M Y');
+        $namedStart = carbonParse(request()->start_date)->format('d M Y');
+        $namedEnd = carbonParse(request()->end_date)->format('d M Y');
 
         return Excel::download(new PurchaseNotPaidExport($purchases), "Nota Belum Lunas ($namedStart - $namedEnd).xlsx");
+    }
+
+    public function rekapBulananView()
+    {
+
+        if (request()->wantsJson()) {
+            $query = Purchase::query()
+                ->with(['pharmacy.city'])
+                ->withSum('products', 'stock')
+                ->when(request()->year, function ($q) {
+                    $q->whereYear('date', request()->year);
+                })
+                ->when(request()->start_month && request()->end_month, function ($q) {
+                    $q->whereMonth('date', '>=', request()->start_month)
+                        ->whereMonth('date', '<=', request()->end_month);
+                })
+                ->when(request()->filter_sales, function ($q) {
+                    $q->where('sales_id', request()->filter_sales);
+                });
+
+            return DataTables::of($query)
+                ->editColumn('pharmacy.nama_apotek', function ($item) {
+                    return $item->pharmacy->nama_apotek ?? '(Data Apotek Dihapus)';
+                })
+                ->editColumn('pharmacy.city.nama', function ($item) {
+                    return $item->pharmacy->city->nama ?? '(Data Apotek Dihapus)';
+                })
+                ->editColumn('date', function ($item) {
+                    return carbonParse($item->date)->format('d M Y');
+                })
+                ->toJson();
+        }
+
+        $firstYear = now()->subYears(5)->year;
+        $lastYear = now()->addYears(5)->year;
+        $saless = Sales::get();
+        return view('admin.purchase.rekap-bulanan', get_defined_vars());
+    }
+
+    public function exportExcelBulanan()
+    {
+        return Excel::download(new PurchaseMonthlyReport(request()->filter_sales, request()->year, request()->start_month, request()->end_month), 'Rekap Bulanan.xlsx');
     }
 }

@@ -43,7 +43,7 @@
                 <th style="border: 1px solid black;">Sales</th>
                 <th style="border: 1px solid black;">Alamat / Area</th>
                 <th style="border: 1px solid black;">Tanggal</th>
-                <th style="border: 1px solid black;">Status</th>
+                {{-- <th style="border: 1px solid black;">Status</th> --}}
             </tr>
         </thead>
         <tbody>
@@ -54,7 +54,7 @@
                     <td style="border: 1px solid black;">{{ $purchase->sales->nama }}</td>
                     <td style="border: 1px solid black;">{{ $purchase->pharmacy->city->nama ?? '' }}</td>
                     <td style="border: 1px solid black;">{{ carbonParse($purchase->date)->format('d M Y') }}</td>
-                    <td style="border: 1px solid black;">{{ $purchase->status }}</td>
+                    {{-- <td style="border: 1px solid black;">{{ $purchase->status }}</td> --}}
                 </tr>
             @endforeach
         </tbody>

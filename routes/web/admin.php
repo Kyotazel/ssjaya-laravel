@@ -82,12 +82,14 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('purchase/{purchase}/bill/create', [PurchaseController::class, 'billCreate'])->name('purchase.bill.create');
         Route::post('purchase/{purchase}/bill/store', [PurchaseController::class, 'billStore'])->name('purchase.bill.store');
         Route::view('purchase-belum-lunas', 'admin.purchase.belum-lunas')->name('purchase.belum-lunas');
+        Route::get('purchase-rekap-bulanan', [PurchaseController::class, 'rekapBulananView'])->name('purchase.rekap-bulanan');
 
         Route::get('export-pdf-report', [PurchaseController::class, 'exportPdfList'])->name('purchase.export-pdf-list');
         Route::get('export-excel-report', [PurchaseController::class, 'exportExcelList'])->name('purchase.export-excel-list');
         Route::get('export-detail/{id}', [PurchaseController::class, 'exportDetail'])->name('purchase.export-detail');
         Route::get('export-pdf-belum-lunas', [PurchaseController::class, 'exportPdfBelumLunas'])->name('purchase.export-pdf-belum-lunas');
         Route::get('export-excel-belum-lunas', [PurchaseController::class, 'exportExcelBelumLunas'])->name('purchase.export-excel-belum-lunas');
+        Route::get('export-excel-bulanan', [PurchaseController::class, 'exportExcelBulanan'])->name('purchase.export-excel-bulanan');
 
         Route::get('purchase-calendar', [PurchaseController::class, 'calendar'])->name('purchase.calendar');
 

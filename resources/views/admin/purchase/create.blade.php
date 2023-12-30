@@ -229,7 +229,13 @@
                             window.location.href = `{{ route('admin.purchase.index') }}`;
                         },
                         error: function(jqXHR, textStatus, errorThrown) {
-                            notif_error("Mohon Lengkapi Data");
+                            let errors = jqXHR.responseJSON.errors;
+                            let errorMessages = [];
+                            for (let key in errors) {
+                                errorMessages.push(errors[key][0]);
+                            }
+                            let errorMessage = errorMessages.join(', ');
+                            notif_error(errorMessage);
                         }
                     })
                 }
