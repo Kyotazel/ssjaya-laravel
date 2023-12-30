@@ -516,6 +516,22 @@ class PurchaseController extends Controller
 
     public function exportExcelBulanan()
     {
-        return Excel::download(new PurchaseMonthlyReport(request()->filter_sales, request()->year, request()->start_month, request()->end_month), 'Rekap Bulanan.xlsx');
+        $months = [
+            'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+            'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+        ];
+
+        $sales = Sales::find(request()->filter_sales);
+
+        $title = "Rekap Data Barang Nota $sales->nama Bulan ";
+
+        $monthList = [];
+        for ($i = request()->start_month; $i <= request()->end_month; $i++) {
+            $monthList[] = $months[$i - 1];
+        }
+        $title .= implode(', ', $monthList) . " ";
+        $title .= request()->year;
+
+        return Excel::download(new PurchaseMonthlyReport(request()->filter_sales, request()->year, request()->start_month, request()->end_month), "$title.xlsx");
     }
 }
