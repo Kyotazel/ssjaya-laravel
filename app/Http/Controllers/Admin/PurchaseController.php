@@ -41,7 +41,6 @@ class PurchaseController extends Controller
                 })
                 ->when(request()->status, function ($q) {
                     $q->where('status', request()->status)
-                        ->orderByDesc('date')
                         ->whereBetween('date', [now()->subMonths(3), now()]);
                 })
                 ->when(request()->start_date && request()->end_date, function ($q) {

@@ -54,7 +54,7 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="end_month">Bulan Awal : </label>
+                            <label for="end_month">Bulan Akhir : </label>
                             <select name="end_month" id="end_month" class="select2">
                                 <option value="">Pilih Bulan</option>
                                 <option value="1">Januari</option>

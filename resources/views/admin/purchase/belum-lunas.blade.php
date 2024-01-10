@@ -83,23 +83,30 @@
                 },
                 columns: [{
                         data: 'code',
+                        sortable: true,
                     },
                     {
                         data: 'date',
+                        sortable: true,
                     },
                     {
                         data: 'sales.nama',
-                        className: 'text-center'
+                        className: 'text-center',
+                        sortable: true,
                     },
                     {
                         data: 'pharmacy.nama_apotek',
-                        className: 'text-center'
+                        className: 'text-center',
+                        sortable: true,
                     }
                 ],
                 columnDefs: [{
                     targets: '_all',
                     defaultContent: '-'
                 }],
+                order: [
+                    [1, 'desc']
+                ],
             })
         })
 
